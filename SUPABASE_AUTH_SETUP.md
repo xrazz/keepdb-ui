@@ -2,11 +2,9 @@
 
 KeepDB UI uses Supabase Auth for website login.
 
-Enabled login methods in the UI:
+Enabled login method in the UI:
 
 - Email OTP / magic link
-- Google OAuth
-- Apple OAuth
 
 ## Environment Variables
 
@@ -24,9 +22,7 @@ The values come from Supabase project settings.
 In Supabase Auth settings:
 
 1. Enable Email provider.
-2. Enable Google provider.
-3. Enable Apple provider.
-4. Add redirect URLs:
+2. Add redirect URLs:
 
 ```txt
 http://localhost:3000/auth/callback
@@ -37,7 +33,7 @@ If the hosted domain is different, add that domain too.
 
 ## Routes
 
-- `/login`: email OTP, Google, and Apple login.
+- `/login`: email OTP login.
 - `/auth/callback`: exchanges Supabase OAuth/OTP code for a session.
 - `/account`: shows the current signed-in Supabase user.
 - `/auth/sign-out`: signs out and returns home.

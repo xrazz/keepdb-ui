@@ -9,6 +9,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://keepdb.dev'),
   title: 'KeepDB',
   description:
     'KeepDB saves plans, notes, ideas, decisions, and project context into KB folders your agents can search.',

@@ -4,8 +4,6 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const WAITLIST_URL = '#';
-
 const faqs = [
   {
     question: 'What is KeepDB?',
@@ -103,6 +101,12 @@ export default function Page() {
             />
           </Link>
           <div className="flex gap-5 text-sm font-semibold tracking-tight">
+            <Link href="/docs" className="text-gray-600 hover:text-black transition-colors">
+              Docs
+            </Link>
+            <Link href="/agents" className="text-gray-600 hover:text-black transition-colors">
+              Agents
+            </Link>
             <Link href="#features" className="text-gray-600 hover:text-black transition-colors">
               Features
             </Link>
@@ -129,13 +133,20 @@ export default function Page() {
           </p>
 
           <div className="flex flex-col items-center mb-16">
-            <a
-              href={WAITLIST_URL}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black text-white text-sm font-semibold hover:bg-gray-900 transition-colors mb-3"
-            >
-              {/* <img src="/apple.svg" alt="" width={16} height={16} aria-hidden="true" /> */}
-              Join V1 waitlist
-            </a>
+            <div className="flex flex-col sm:flex-row items-center gap-3 mb-3">
+              <Link
+                href="/docs"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black text-white text-sm font-semibold hover:bg-gray-900 transition-colors"
+              >
+                Read API docs
+              </Link>
+              <Link
+                href="/agents"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm font-semibold hover:border-gray-300 transition-colors"
+              >
+                Set up an agent
+              </Link>
+            </div>
             <p className="text-xs text-gray-400 tracking-wide">
               GPT, read the merge plan from Claude&apos;s KB memory.
             </p>

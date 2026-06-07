@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { hasSupabaseEnv } from '@/lib/supabase/env';
@@ -12,15 +13,18 @@ function getRedirectTo() {
 }
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
   const [status, setStatus] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState<'send' | 'verify' | null>(null);
   const configured = hasSupabaseEnv();
 
   async function signInWithEmail(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus('');
-    setLoading(true);
+    setLoading('send');
 
     try {
       const supabase = createSupabaseBrowserClient();
@@ -31,11 +35,34 @@ export default function LoginPage() {
         },
       });
       if (error) throw error;
-      setStatus('Check your email for the sign-in code or link.');
+      setSent(true);
+      setStatus('Check your email. Use the code here, or click the sign-in link.');
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Could not send login email.');
     } finally {
-      setLoading(false);
+      setLoading(null);
+    }
+  }
+
+  async function verifyCode(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setStatus('');
+    setLoading('verify');
+
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: code.replace(/\s/g, ''),
+        type: 'email',
+      });
+      if (error) throw error;
+      router.push('/account');
+      router.refresh();
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Could not verify code.');
+    } finally {
+      setLoading(null);
     }
   }
 
@@ -87,7 +114,7 @@ export default function LoginPage() {
               Sign in to KeepDB
             </h1>
             <p className="mt-2 text-sm leading-relaxed text-gray-500">
-              Enter your email and we&apos;ll send a sign-in code.
+              Enter your email. Use the code, or click the email link.
             </p>
           </div>
 
@@ -108,12 +135,33 @@ export default function LoginPage() {
             />
             <button
               type="submit"
-              disabled={!configured || loading}
+              disabled={!configured || loading === 'send'}
               className="inline-flex w-full justify-center rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? 'Sending code...' : 'Send login code'}
+              {loading === 'send' ? 'Sending code...' : sent ? 'Send code again' : 'Send login code'}
             </button>
           </form>
+
+          {sent && (
+            <form onSubmit={verifyCode} className="mt-4 space-y-3">
+              <input
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                required
+                value={code}
+                onChange={(event) => setCode(event.target.value)}
+                placeholder="Enter 6-digit code"
+                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-center font-mono text-lg tracking-[0.25em] outline-none transition-colors focus:border-gray-500"
+              />
+              <button
+                type="submit"
+                disabled={!configured || loading === 'verify'}
+                className="inline-flex w-full justify-center rounded-xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {loading === 'verify' ? 'Verifying...' : 'Verify code'}
+              </button>
+            </form>
+          )}
 
           {status && (
             <div className="mt-5 rounded-xl border border-gray-100 bg-gray-50 p-3 text-sm leading-relaxed text-gray-700">

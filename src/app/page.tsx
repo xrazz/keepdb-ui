@@ -133,20 +133,12 @@ export default function Page() {
           </p>
 
           <div className="flex flex-col items-center mb-16">
-            <div className="flex flex-col sm:flex-row items-center gap-3 mb-3">
-              <Link
-                href="/docs"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black text-white text-sm font-semibold hover:bg-gray-900 transition-colors"
-              >
-                Read API docs
-              </Link>
-              <Link
-                href="/agents"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm font-semibold hover:border-gray-300 transition-colors"
-              >
-                Set up an agent
-              </Link>
-            </div>
+            <a
+              href="mailto:hello@keepdb.dev?subject=KeepDB%20V1%20beta"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black text-white text-sm font-semibold hover:bg-gray-900 transition-colors mb-3"
+            >
+              Join V1 beta
+            </a>
             <p className="text-xs text-gray-400 tracking-wide">
               GPT, read the merge plan from Claude&apos;s KB memory.
             </p>

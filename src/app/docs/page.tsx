@@ -37,7 +37,7 @@ const endpoints = [
 
 function CodeBlock({ children }: { children: string }) {
   return (
-    <pre className="overflow-x-auto rounded-xl border border-gray-200 bg-gray-950 p-4 text-xs leading-relaxed text-gray-100">
+    <pre className="overflow-x-auto rounded-lg border border-gray-200 bg-[#f7f7f5] p-4 text-xs leading-relaxed text-gray-800">
       <code>{children}</code>
     </pre>
   );
@@ -45,8 +45,8 @@ function CodeBlock({ children }: { children: string }) {
 
 export default function DocsPage() {
   return (
-    <main className="min-h-screen bg-white text-gray-900 font-[family-name:var(--font-dm-sans)]">
-      <nav className="mx-auto flex max-w-3xl items-center justify-between px-6 py-6">
+    <main className="min-h-screen bg-[#fbfbf8] text-gray-900 font-[family-name:var(--font-dm-sans)]">
+      <nav className="mx-auto flex max-w-2xl items-center justify-between px-6 py-7">
         <Link href="/" className="text-sm font-bold tracking-tight">
           KeepDB
         </Link>
@@ -60,23 +60,19 @@ export default function DocsPage() {
         </div>
       </nav>
 
-      <section className="mx-auto max-w-3xl px-6 pb-16 pt-8">
-        <p className="mb-3 text-sm font-semibold text-emerald-700">API docs</p>
-        <h1 className="mb-5 text-4xl font-bold tracking-tight text-gray-950 md:text-5xl">
-          Store memory. Search it later.
+      <section className="mx-auto max-w-2xl px-6 pb-10 pt-12">
+        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">KeepDB documentation</p>
+        <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-950 md:text-5xl">
+          API Reference
         </h1>
         <p className="max-w-2xl text-base leading-relaxed text-gray-600">
           KeepDB V1 is a small memory API for agents and indie apps. One API key, named
           collections, full memories, searchable chunks, date filters, and soft delete.
         </p>
-
-        <div className="mt-8 rounded-xl border border-emerald-100 bg-emerald-50 p-5">
-          <p className="text-sm font-semibold text-emerald-950">Base URL</p>
-          <p className="mt-2 break-all font-mono text-sm text-emerald-900">{API_BASE}</p>
-        </div>
+        <p className="mt-8 border-y border-gray-200 py-4 font-mono text-sm text-gray-700">{API_BASE}</p>
       </section>
 
-      <section className="mx-auto max-w-3xl px-6 pb-16">
+      <section className="mx-auto max-w-2xl border-t border-gray-200 px-6 py-10">
         <h2 className="mb-4 text-xl font-bold tracking-tight">Authentication</h2>
         <p className="mb-4 text-sm leading-relaxed text-gray-600">
           All memory endpoints require a bearer API key. Missing keys return
@@ -86,10 +82,10 @@ export default function DocsPage() {
         <CodeBlock>{`Authorization: Bearer keep_sk_your_api_key`}</CodeBlock>
       </section>
 
-      <section className="mx-auto max-w-3xl px-6 pb-16">
+      <section className="mx-auto max-w-2xl border-t border-gray-200 px-6 py-10">
         <h2 className="mb-5 text-xl font-bold tracking-tight">Quickstart</h2>
-        <div className="space-y-8">
-          <div>
+        <div className="space-y-10">
+          <div className="space-y-3">
             <h3 className="mb-3 text-base font-semibold">1. Save a memory</h3>
             <CodeBlock>{`curl -sS -X POST "${API_BASE}/memory" \\
   -H "Authorization: Bearer keep_sk_your_api_key" \\
@@ -104,13 +100,13 @@ export default function DocsPage() {
   }'`}</CodeBlock>
           </div>
 
-          <div>
+          <div className="space-y-3">
             <h3 className="mb-3 text-base font-semibold">2. Search globally</h3>
             <CodeBlock>{`curl -sS "${API_BASE}/memory?query=feedbacks%20about%20cavenote&limit=5" \\
   -H "Authorization: Bearer keep_sk_your_api_key"`}</CodeBlock>
           </div>
 
-          <div>
+          <div className="space-y-3">
             <h3 className="mb-3 text-base font-semibold">3. Search one collection</h3>
             <CodeBlock>{`curl -sS "${API_BASE}/memory?query=ios%20feedback&collection=cavenote-feedback&limit=5" \\
   -H "Authorization: Bearer keep_sk_your_api_key"`}</CodeBlock>
@@ -118,13 +114,13 @@ export default function DocsPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-3xl px-6 pb-16">
+      <section className="mx-auto max-w-2xl border-t border-gray-200 px-6 py-10">
         <h2 className="mb-5 text-xl font-bold tracking-tight">Endpoints</h2>
-        <div className="grid gap-3">
+        <div className="divide-y divide-gray-200 border-y border-gray-200">
           {endpoints.map((endpoint) => (
-            <article key={`${endpoint.method}-${endpoint.path}`} className="rounded-xl border border-gray-200 p-5">
-              <div className="mb-2 flex flex-wrap items-center gap-3">
-                <span className="rounded-md bg-gray-950 px-2 py-1 font-mono text-xs font-semibold text-white">
+            <article key={`${endpoint.method}-${endpoint.path}`} className="py-5">
+              <div className="mb-2 flex flex-wrap items-baseline gap-3">
+                <span className="font-mono text-xs font-semibold text-gray-950">
                   {endpoint.method}
                 </span>
                 <span className="font-mono text-sm text-gray-700">{endpoint.path}</span>
@@ -136,9 +132,9 @@ export default function DocsPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-3xl px-6 pb-24">
+      <section className="mx-auto max-w-2xl border-t border-gray-200 px-6 py-10 pb-24">
         <h2 className="mb-5 text-xl font-bold tracking-tight">Search filters</h2>
-        <div className="grid gap-2 text-sm text-gray-700 sm:grid-cols-2">
+        <div className="grid gap-x-8 gap-y-2 text-sm text-gray-700 sm:grid-cols-2">
           {[
             'query',
             'limit',
@@ -153,7 +149,7 @@ export default function DocsPage() {
             'dayOfWeek',
             'timezone',
           ].map((filter) => (
-            <div key={filter} className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 font-mono">
+            <div key={filter} className="border-b border-gray-200 py-2 font-mono">
               {filter}
             </div>
           ))}

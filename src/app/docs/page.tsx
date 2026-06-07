@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 const API_BASE = 'https://keepdb-api-production.up.railway.app';
@@ -37,7 +38,7 @@ const endpoints = [
 
 function CodeBlock({ children }: { children: string }) {
   return (
-    <pre className="overflow-x-auto rounded-lg border border-gray-200 bg-[#f7f7f5] p-4 text-xs leading-relaxed text-gray-800">
+    <pre className="mt-4 overflow-x-auto rounded-lg border border-gray-100 bg-gray-50 p-4 text-xs leading-relaxed text-gray-700">
       <code>{children}</code>
     </pre>
   );
@@ -45,48 +46,76 @@ function CodeBlock({ children }: { children: string }) {
 
 export default function DocsPage() {
   return (
-    <main className="min-h-screen bg-[#fbfbf8] text-gray-900 font-[family-name:var(--font-dm-sans)]">
-      <nav className="mx-auto flex max-w-2xl items-center justify-between px-6 py-7">
-        <Link href="/" className="text-sm font-bold tracking-tight">
-          KeepDB
-        </Link>
-        <div className="flex items-center gap-5 text-sm font-semibold">
-          <Link href="/agents" className="text-gray-600 hover:text-black">
-            Agents
+    <div className="min-h-screen bg-white text-gray-900 font-medium font-[family-name:var(--font-dm-sans)]">
+      <div
+        style={{
+          backgroundImage: "url('/sky.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
+          backgroundRepeat: 'no-repeat',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)',
+        }}
+      >
+        <nav
+          aria-label="Main navigation"
+          className="max-w-2xl mx-auto px-6 py-6 flex items-center justify-between"
+        >
+          <Link href="/" className="flex items-center gap-2" aria-label="KeepDB home">
+            <Image
+              src="/keepdb-logo.png"
+              alt="KeepDB logo"
+              width={56}
+              height={56}
+              className="rounded-md"
+            />
           </Link>
-          <Link href="/" className="text-gray-600 hover:text-black">
-            Home
-          </Link>
-        </div>
-      </nav>
+          <div className="flex gap-5 text-sm font-semibold tracking-tight">
+            <Link href="/docs" className="text-gray-600 hover:text-black transition-colors">
+              Docs
+            </Link>
+            <Link href="/agents" className="text-gray-600 hover:text-black transition-colors">
+              Agents
+            </Link>
+          </div>
+        </nav>
 
-      <section className="mx-auto max-w-2xl px-6 pb-10 pt-12">
-        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">KeepDB documentation</p>
-        <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-950 md:text-5xl">
-          API Reference
-        </h1>
-        <p className="max-w-2xl text-base leading-relaxed text-gray-600">
-          KeepDB V1 is a small memory API for agents and indie apps. One API key, named
-          collections, full memories, searchable chunks, date filters, and soft delete.
-        </p>
-        <p className="mt-8 border-y border-gray-200 py-4 font-mono text-sm text-gray-700">{API_BASE}</p>
-      </section>
+        <header className="max-w-2xl mx-auto px-6 pt-12 md:pt-16 pb-24">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight leading-tight text-gray-900">
+            API Reference
+          </h1>
+          <p className="text-sm text-gray-500 mt-2">Last updated: June 2026</p>
+        </header>
+      </div>
 
-      <section className="mx-auto max-w-2xl border-t border-gray-200 px-6 py-10">
-        <h2 className="mb-4 text-xl font-bold tracking-tight">Authentication</h2>
-        <p className="mb-4 text-sm leading-relaxed text-gray-600">
-          All memory endpoints require a bearer API key. Missing keys return
-          <span className="font-mono"> 401 API key is required</span>. Invalid keys return
-          <span className="font-mono"> 401 Invalid API key</span>.
-        </p>
-        <CodeBlock>{`Authorization: Bearer keep_sk_your_api_key`}</CodeBlock>
-      </section>
+      <main className="max-w-2xl mx-auto px-6 -mt-8 pb-24 relative z-10">
+        <div className="text-sm text-gray-600 leading-relaxed space-y-10">
+          <section>
+            <h2 className="text-sm text-gray-900 font-bold mb-3">KeepDB V1</h2>
+            <p>
+              KeepDB is a small memory API for agents and indie apps. One API key can save
+              full memories into named collections, then search them later with hybrid retrieval,
+              date filters, tags, and soft delete.
+            </p>
+            <p className="mt-4 font-mono text-xs text-gray-500 break-all">{API_BASE}</p>
+          </section>
 
-      <section className="mx-auto max-w-2xl border-t border-gray-200 px-6 py-10">
-        <h2 className="mb-5 text-xl font-bold tracking-tight">Quickstart</h2>
-        <div className="space-y-10">
-          <div className="space-y-3">
-            <h3 className="mb-3 text-base font-semibold">1. Save a memory</h3>
+          <section>
+            <h2 className="text-sm text-gray-900 font-bold mb-3">Authentication</h2>
+            <p>
+              All memory endpoints require a bearer API key. Missing keys return{' '}
+              <span className="font-mono">401 API key is required</span>. Invalid keys return{' '}
+              <span className="font-mono">401 Invalid API key</span>.
+            </p>
+            <CodeBlock>{`Authorization: Bearer keep_sk_your_api_key`}</CodeBlock>
+          </section>
+
+          <section>
+            <h2 className="text-sm text-gray-900 font-bold mb-3">Save a memory</h2>
+            <p>
+              Send text content and a collection name. If the collection does not exist, KeepDB
+              creates it for the authenticated user.
+            </p>
             <CodeBlock>{`curl -sS -X POST "${API_BASE}/memory" \\
   -H "Authorization: Bearer keep_sk_your_api_key" \\
   -H "Content-Type: application/json" \\
@@ -98,67 +127,61 @@ export default function DocsPage() {
       "tags": ["feedback", "cavenote"]
     }
   }'`}</CodeBlock>
-          </div>
+          </section>
 
-          <div className="space-y-3">
-            <h3 className="mb-3 text-base font-semibold">2. Search globally</h3>
+          <section>
+            <h2 className="text-sm text-gray-900 font-bold mb-3">Search memory</h2>
+            <p>
+              Search is global by default. Add a collection, folder, tag, type, or date filter when
+              the scope is clear.
+            </p>
             <CodeBlock>{`curl -sS "${API_BASE}/memory?query=feedbacks%20about%20cavenote&limit=5" \\
   -H "Authorization: Bearer keep_sk_your_api_key"`}</CodeBlock>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="mb-3 text-base font-semibold">3. Search one collection</h3>
             <CodeBlock>{`curl -sS "${API_BASE}/memory?query=ios%20feedback&collection=cavenote-feedback&limit=5" \\
   -H "Authorization: Bearer keep_sk_your_api_key"`}</CodeBlock>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      <section className="mx-auto max-w-2xl border-t border-gray-200 px-6 py-10">
-        <h2 className="mb-5 text-xl font-bold tracking-tight">Endpoints</h2>
-        <div className="divide-y divide-gray-200 border-y border-gray-200">
-          {endpoints.map((endpoint) => (
-            <article key={`${endpoint.method}-${endpoint.path}`} className="py-5">
-              <div className="mb-2 flex flex-wrap items-baseline gap-3">
-                <span className="font-mono text-xs font-semibold text-gray-950">
-                  {endpoint.method}
-                </span>
-                <span className="font-mono text-sm text-gray-700">{endpoint.path}</span>
-              </div>
-              <h3 className="text-sm font-bold text-gray-950">{endpoint.title}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-gray-600">{endpoint.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-2xl border-t border-gray-200 px-6 py-10 pb-24">
-        <h2 className="mb-5 text-xl font-bold tracking-tight">Search filters</h2>
-        <div className="grid gap-x-8 gap-y-2 text-sm text-gray-700 sm:grid-cols-2">
-          {[
-            'query',
-            'limit',
-            'threshold',
-            'collection',
-            'folder',
-            'tag',
-            'type',
-            'createdAfter',
-            'createdBefore',
-            'createdOn',
-            'dayOfWeek',
-            'timezone',
-          ].map((filter) => (
-            <div key={filter} className="border-b border-gray-200 py-2 font-mono">
-              {filter}
+          <section>
+            <h2 className="text-sm text-gray-900 font-bold mb-3">Endpoints</h2>
+            <div className="space-y-5">
+              {endpoints.map((endpoint) => (
+                <div key={`${endpoint.method}-${endpoint.path}`}>
+                  <p className="font-mono text-xs text-gray-500">
+                    {endpoint.method} {endpoint.path}
+                  </p>
+                  <h3 className="text-sm text-gray-900 font-bold mt-1">{endpoint.title}</h3>
+                  <p>{endpoint.description}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </section>
+
+          <section>
+            <h2 className="text-sm text-gray-900 font-bold mb-3">Search filters</h2>
+            <p>
+              Supported filters are <span className="font-mono">query</span>,{' '}
+              <span className="font-mono">limit</span>, <span className="font-mono">threshold</span>,{' '}
+              <span className="font-mono">collection</span>, <span className="font-mono">folder</span>,{' '}
+              <span className="font-mono">tag</span>, <span className="font-mono">type</span>,{' '}
+              <span className="font-mono">createdAfter</span>, <span className="font-mono">createdBefore</span>,{' '}
+              <span className="font-mono">createdOn</span>, <span className="font-mono">dayOfWeek</span>, and{' '}
+              <span className="font-mono">timezone</span>.
+            </p>
+          </section>
         </div>
-        <p className="mt-6 text-sm leading-relaxed text-gray-500">
-          Use <span className="font-mono">content</span> as the full memory. Use{' '}
-          <span className="font-mono">matchedChunk</span> as the snippet explaining why a result matched.
-        </p>
-      </section>
-    </main>
+      </main>
+
+      <footer className="max-w-2xl mx-auto px-6 py-12 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-6 text-gray-500 text-xs">
+        <p>© 2026 KeepDB. All rights reserved.</p>
+        <nav aria-label="Footer navigation" className="flex gap-4">
+          <Link href="/agents" className="hover:text-black transition-colors">
+            Agents
+          </Link>
+          <Link href="mailto:hello@keepdb.dev" className="hover:text-black transition-colors">
+            Support
+          </Link>
+        </nav>
+      </footer>
+    </div>
   );
 }

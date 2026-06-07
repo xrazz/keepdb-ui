@@ -6,7 +6,7 @@ Enabled login methods in the UI:
 
 - Email OTP / magic link
 - Google OAuth
-- Microsoft OAuth through the Supabase `azure` provider
+- Apple OAuth
 
 ## Environment Variables
 
@@ -25,7 +25,7 @@ In Supabase Auth settings:
 
 1. Enable Email provider.
 2. Enable Google provider.
-3. Enable Azure provider for Microsoft login.
+3. Enable Apple provider.
 4. Add redirect URLs:
 
 ```txt
@@ -37,7 +37,7 @@ If the hosted domain is different, add that domain too.
 
 ## Routes
 
-- `/login`: email OTP, Google, and Microsoft login.
+- `/login`: email OTP, Google, and Apple login.
 - `/auth/callback`: exchanges Supabase OAuth/OTP code for a session.
 - `/account`: shows the current signed-in Supabase user.
 - `/auth/sign-out`: signs out and returns home.

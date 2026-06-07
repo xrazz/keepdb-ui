@@ -1,5 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+See [SUPABASE_AUTH_SETUP.md](./SUPABASE_AUTH_SETUP.md) for email OTP, Google, and Microsoft login setup.
+
 ## Getting Started
 
 First, run the development server:

@@ -77,6 +77,9 @@ export default function DocsPage() {
             <Link href="/agents" className="text-gray-600 hover:text-black transition-colors">
               Agents
             </Link>
+            <Link href="/login" className="text-gray-600 hover:text-black transition-colors">
+              Login
+            </Link>
           </div>
         </nav>
 

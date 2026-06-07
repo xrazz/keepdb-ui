@@ -110,6 +110,9 @@ export default function Page() {
             <Link href="#features" className="text-gray-600 hover:text-black transition-colors">
               Features
             </Link>
+            <Link href="/login" className="text-gray-600 hover:text-black transition-colors">
+              Login
+            </Link>
           </div>
         </nav>
 

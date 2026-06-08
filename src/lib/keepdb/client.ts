@@ -32,6 +32,18 @@ export type KeepDbCollection = {
   lastMemoryAt?: string | null;
 };
 
+export type KeepDbApiKey = {
+  id: string;
+  name: string;
+  keyPrefix: string;
+  type: string;
+  scopes: string[];
+  collection?: string | null;
+  lastUsedAt?: string | null;
+  createdAt: string;
+  revokedAt?: string | null;
+};
+
 type KeepDbResponse<T> =
   | { configured: true; success: true; data: T }
   | { configured: true; success: false; message: string }
@@ -104,6 +116,14 @@ export async function listKeepDbMemories(limit = 50) {
 export async function searchKeepDbMemories(query: string, limit = 10) {
   const params = new URLSearchParams({ query, limit: String(limit) });
   return keepDbFetch<{ results: KeepDbMemory[]; retrieval?: unknown }>(`/dashboard/search?${params}`);
+}
+
+export async function listKeepDbApiKeys() {
+  return keepDbFetch<{ results: KeepDbApiKey[] }>('/dashboard/api-keys');
+}
+
+export async function getKeepDbDashboard(path: string) {
+  return keepDbFetch<unknown>(path);
 }
 
 export function formatKeepDbDate(value?: string | null) {

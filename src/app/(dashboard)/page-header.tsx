@@ -8,10 +8,8 @@ const pageTitles: Record<string, string> = {
   '/dashboard': 'Overview',
   '/search': 'Search',
   '/memories': 'Memories',
-  '/collections': 'Collections',
-  '/api-keys': 'API Keys',
+  '/api-keys': 'API Key',
   '/agent-setup': 'Agents',
-  '/settings': 'Settings',
 };
 
 export function PageHeader({ userEmail }: { userEmail: string }) {

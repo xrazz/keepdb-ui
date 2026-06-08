@@ -1,9 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Bellefair } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
 import { WaitlistForm } from './waitlist-form';
+
+const bellefair = Bellefair({
+  subsets: ['latin'],
+  weight: '400',
+});
 
 const faqs = [
   {
@@ -120,7 +126,7 @@ export default function Page() {
         >
           <h1
             id="hero-heading"
-            className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] mb-6 text-gray-900 text-center"
+            className={`${bellefair.className} text-5xl md:text-6xl font-normal tracking-normal leading-[1.02] mb-6 text-gray-900 text-center`}
           >
             Structured memory for your AI
           </h1>

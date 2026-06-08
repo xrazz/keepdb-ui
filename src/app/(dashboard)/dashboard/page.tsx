@@ -5,6 +5,7 @@ import {
   listKeepDbMemories,
   previewMemory,
 } from '@/lib/keepdb/client';
+import Link from 'next/link';
 
 function responseMessage(response: { success: boolean; message?: string }) {
   return response.success ? null : response.message || null;
@@ -22,12 +23,11 @@ export default async function DashboardPage() {
   const apiKeys = apiKeysResponse.success ? apiKeysResponse.data.results : [];
   const activeApiKeys = apiKeys.filter((key) => !key.revokedAt);
   const totalMemories = collections.reduce((sum, collection) => sum + collection.memories, 0);
-  const totalBytes = collections.reduce((sum, collection) => sum + collection.contentBytes, 0);
-  const primaryKey = activeApiKeys[0];
+  const latestMemory = memories[0];
   const stats = [
-    { label: 'Total memories', value: totalMemories.toLocaleString() },
-    { label: 'Stored data', value: `${Math.max(totalBytes / 1024 / 1024, 0).toFixed(1)} MB` },
-    { label: 'Agent keys', value: activeApiKeys.length.toLocaleString() },
+    { label: 'Saved memories', value: totalMemories.toLocaleString() },
+    { label: 'Memory spaces', value: collections.length.toLocaleString() },
+    { label: 'Agent connection', value: activeApiKeys.length > 0 ? 'Active' : 'Not connected' },
   ];
   const configMessage =
     responseMessage(collectionsResponse) ||
@@ -42,14 +42,27 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      <form action="/search" className="mb-4">
-        <input
-          type="search"
-          name="q"
-          placeholder="Search everything in your memory..."
-          className="h-12 w-full rounded-md border border-zinc-200 bg-white px-4 text-base outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-400"
-        />
-      </form>
+      <section className="mb-4 rounded-md border border-zinc-200 bg-white px-4 py-4">
+        <div className="mb-3 flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
+          <div>
+            <h2 className="text-base font-semibold text-zinc-950">Search your memory</h2>
+            <p className="mt-1 text-sm text-zinc-500">
+              Find feedback, prompts, notes, logs, and decisions saved to KeepDB.
+            </p>
+          </div>
+          {latestMemory && (
+            <p className="text-xs text-zinc-400">Last saved {formatKeepDbDate(latestMemory.createdAt)}</p>
+          )}
+        </div>
+        <form action="/search">
+          <input
+            type="search"
+            name="q"
+            placeholder="Search anything..."
+            className="h-12 w-full rounded-md border border-zinc-200 bg-zinc-50 px-4 text-base outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-400 focus:bg-white"
+          />
+        </form>
+      </section>
 
       <div className="grid gap-3 md:grid-cols-3">
         {stats.map((stat) => (
@@ -60,10 +73,10 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+      <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
         <section className="rounded-md border border-zinc-200 bg-white">
           <div className="border-b border-zinc-200 px-4 py-3">
-            <h2 className="text-sm font-semibold text-zinc-950">Recent memories</h2>
+            <h2 className="text-sm font-semibold text-zinc-950">Recent saves</h2>
           </div>
           {memories.length > 0 ? (
             <div className="divide-y divide-zinc-200">
@@ -88,35 +101,27 @@ export default async function DashboardPage() {
 
         <section className="rounded-md border border-zinc-200 bg-white">
           <div className="border-b border-zinc-200 px-4 py-3">
-            <h2 className="text-sm font-semibold text-zinc-950">Agent API key</h2>
+            <h2 className="text-sm font-semibold text-zinc-950">Agent connection</h2>
           </div>
-          {primaryKey ? (
-            <div className="px-4 py-4">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-sm font-semibold text-zinc-950">{primaryKey.name}</h3>
-                  <p className="mt-1 font-mono text-xs text-zinc-500">{primaryKey.keyPrefix}...</p>
-                </div>
-                <span className="rounded-md border border-zinc-200 bg-zinc-50 px-2 py-1 text-xs font-medium text-zinc-600">
-                  Active
-                </span>
+          {activeApiKeys.length > 0 ? (
+            <div className="px-4 py-4 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-500">Status</span>
+                <span className="font-medium text-zinc-950">Connected</span>
               </div>
-              <div className="mt-4 space-y-3 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-zinc-500">Scopes</span>
-                  <span className="font-medium text-zinc-700">{primaryKey.scopes.join(', ')}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-zinc-500">Last used</span>
-                  <span className="font-medium text-zinc-700">
-                    {formatKeepDbDate(primaryKey.lastUsedAt)}
-                  </span>
-                </div>
-              </div>
+              <p className="mt-4 leading-relaxed text-zinc-500">
+                Your agents can save and search memory from this account.
+              </p>
+              <Link
+                href="/agent-setup"
+                className="mt-4 inline-flex h-8 items-center rounded-md border border-zinc-200 bg-zinc-50 px-3 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
+              >
+                Open agent setup
+              </Link>
             </div>
           ) : (
             <div className="px-4 py-5 text-sm text-zinc-500">
-              No active agent key found for this account.
+              Connect an agent to start saving memory automatically.
             </div>
           )}
         </section>

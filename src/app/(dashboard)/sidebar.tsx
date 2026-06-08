@@ -1,6 +1,6 @@
 'use client';
 
-import { Bot, Database, Home, KeyRound, Search } from 'lucide-react';
+import { Bot, Database, Home, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -9,7 +9,6 @@ const navItems = [
   { label: 'Overview', href: '/dashboard', icon: Home },
   { label: 'Search', href: '/search', icon: Search },
   { label: 'Memories', href: '/memories', icon: Database },
-  { label: 'API Key', href: '/api-keys', icon: KeyRound },
   { label: 'Agents', href: '/agent-setup', icon: Bot },
 ];
 

@@ -8,7 +8,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard': 'Overview',
   '/search': 'Search',
   '/memories': 'Memories',
-  '/api-keys': 'API Key',
+  '/api-keys': 'Agent Connection',
   '/agent-setup': 'Agents',
 };
 

@@ -78,6 +78,16 @@ export async function searchKeepDbMemories(query: string, limit = 10) {
   return keepDbFetch<{ results: KeepDbMemory[]; retrieval?: unknown }>(`/memory?${params}`);
 }
 
+export async function timedSearchKeepDbMemories(query: string, limit = 10) {
+  const startedAt = performance.now();
+  const response = await searchKeepDbMemories(query, limit);
+
+  return {
+    response,
+    elapsedMs: Math.round(performance.now() - startedAt),
+  };
+}
+
 export function formatKeepDbDate(value?: string | null) {
   if (!value) return 'No memories yet';
   return new Intl.DateTimeFormat('en', {

@@ -1,4 +1,4 @@
-import { formatKeepDbDate, previewMemory, searchKeepDbMemories } from '@/lib/keepdb/client';
+import { formatKeepDbDate, previewMemory, timedSearchKeepDbMemories } from '@/lib/keepdb/client';
 
 type SearchPageProps = {
   searchParams?: Promise<{ q?: string }>;
@@ -7,7 +7,9 @@ type SearchPageProps = {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const query = params?.q?.trim() || '';
-  const response = query ? await searchKeepDbMemories(query, 10) : null;
+  const search = query ? await timedSearchKeepDbMemories(query, 10) : null;
+  const response = search?.response || null;
+  const searchMs = search?.elapsedMs ?? null;
   const results = response?.success ? response.data.results : [];
 
   return (
@@ -41,6 +43,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <div className="rounded-md border border-zinc-200 bg-white">
           <div className="border-b border-zinc-200 px-4 py-3 text-xs font-medium text-zinc-500">
             {results.length} results for <span>&quot;{query}&quot;</span>
+            {searchMs !== null && <span> in {searchMs} ms</span>}
           </div>
           {results.length > 0 ? (
             <div className="divide-y divide-zinc-200">

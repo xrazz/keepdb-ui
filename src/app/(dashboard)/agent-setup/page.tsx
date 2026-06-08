@@ -11,7 +11,7 @@ export default async function AgentSetupPage() {
           <h2 className="text-sm font-semibold text-zinc-950">Connect agents and APIs</h2>
         </div>
         <div className="px-4 py-5 text-sm leading-relaxed text-zinc-500">
-          Create a user-facing API key here, then paste it into Codex, Claude, MCP, or your app backend.
+          Create user-facing keys for Codex, Claude, MCP, or your app backend. The hidden dashboard key is not shown here.
         </div>
       </section>
 

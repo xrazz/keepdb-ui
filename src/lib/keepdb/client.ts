@@ -1,6 +1,8 @@
 import { requireCurrentUser } from '@/lib/auth/current-user';
+import { cookies } from 'next/headers';
 
 const DEFAULT_KEEPDB_API_BASE = 'https://keepdb-api-production.up.railway.app';
+export const KEEPDB_CONNECTION_COOKIE = 'keepdb_connection_key';
 
 export type KeepDbMemory = {
   memoryId: string;
@@ -38,25 +40,25 @@ type KeepDbResponse<T> =
   | { configured: false; success: false; message: string };
 
 function getKeepDbConfig() {
-  const apiKey = process.env.KEEPDB_API_KEY;
   const apiBase = process.env.KEEPDB_API_BASE || DEFAULT_KEEPDB_API_BASE;
-  return { apiBase: apiBase.replace(/\/$/, ''), apiKey };
+  return { apiBase: apiBase.replace(/\/$/, '') };
 }
 
 async function keepDbFetch<T>(path: string): Promise<KeepDbResponse<T>> {
-  const { apiBase, apiKey } = getKeepDbConfig();
+  const { apiBase } = getKeepDbConfig();
+  await requireCurrentUser();
+  const cookieStore = await cookies();
+  const apiKey = cookieStore.get(KEEPDB_CONNECTION_COOKIE)?.value;
 
   if (!apiKey) {
     return {
       configured: false,
       success: false,
-      message: 'KeepDB is not connected for this dashboard yet.',
+      message: 'Connect KeepDB to load your dashboard.',
     };
   }
 
   try {
-    await requireCurrentUser();
-
     const response = await fetch(`${apiBase}${path}`, {
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -94,6 +96,12 @@ export async function listKeepDbMemories(limit = 50) {
 export async function searchKeepDbMemories(query: string, limit = 10) {
   const params = new URLSearchParams({ query, limit: String(limit) });
   return keepDbFetch<{ results: KeepDbMemory[]; retrieval?: unknown }>(`/memory?${params}`);
+}
+
+export async function hasKeepDbConnection() {
+  await requireCurrentUser();
+  const cookieStore = await cookies();
+  return Boolean(cookieStore.get(KEEPDB_CONNECTION_COOKIE)?.value);
 }
 
 export function formatKeepDbDate(value?: string | null) {

@@ -26,7 +26,17 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user && request.nextUrl.pathname === '/login') {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/dashboard';
+    redirectUrl.search = '';
+    return NextResponse.redirect(redirectUrl);
+  }
+
   return response;
 }
 

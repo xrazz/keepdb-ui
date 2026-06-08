@@ -1,6 +1,7 @@
 'use client';
 
-import { Bot, Database, Folder, Home, KeyRound, Settings, Sparkles } from 'lucide-react';
+import { Bot, Database, Folder, Home, KeyRound, Settings } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -27,9 +28,14 @@ export function Sidebar({ userEmail }: { userEmail: string }) {
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-zinc-200 bg-zinc-50">
       <div className="flex h-16 items-center border-b border-zinc-200 px-5">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <span className="flex size-7 items-center justify-center rounded-md border border-zinc-200 bg-white">
-            <Sparkles className="size-3.5 text-zinc-700" strokeWidth={1.8} />
-          </span>
+          <Image
+            src="/keepdb-logo.png"
+            alt="KeepDB logo"
+            width={28}
+            height={28}
+            className="rounded-md"
+            priority
+          />
           <span className="text-sm font-semibold tracking-wide">KeepDB</span>
         </Link>
       </div>

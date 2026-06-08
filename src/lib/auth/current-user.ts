@@ -11,3 +11,13 @@ export async function requireCurrentUser() {
   if (!data.user) redirect('/login');
   return data.user;
 }
+
+export async function requireCurrentSession() {
+  if (!hasSupabaseEnv()) redirect('/login');
+
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase!.auth.getSession();
+
+  if (!data.session?.user || !data.session.access_token) redirect('/login');
+  return data.session;
+}

@@ -1,4 +1,4 @@
-import { requireCurrentUser } from '@/lib/auth/current-user';
+import { requireCurrentSession } from '@/lib/auth/current-user';
 
 const DEFAULT_KEEPDB_API_BASE = 'https://keepdb-api-production.up.railway.app';
 
@@ -50,38 +50,19 @@ type KeepDbResponse<T> =
   | { configured: false; success: false; message: string };
 
 function getKeepDbConfig() {
-  const dashboardSecret = process.env.KEEPDB_DASHBOARD_SECRET;
   const apiBase = process.env.KEEPDB_API_BASE || DEFAULT_KEEPDB_API_BASE;
-  return { apiBase: apiBase.replace(/\/$/, ''), dashboardSecret };
+  return { apiBase: apiBase.replace(/\/$/, '') };
 }
 
 async function keepDbFetch<T>(path: string): Promise<KeepDbResponse<T>> {
-  const { apiBase, dashboardSecret } = getKeepDbConfig();
-
-  if (!dashboardSecret) {
-    return {
-      configured: false,
-      success: false,
-      message: 'Add KEEPDB_DASHBOARD_SECRET to this deployment to load live KeepDB data.',
-    };
-  }
+  const { apiBase } = getKeepDbConfig();
 
   try {
-    const user = await requireCurrentUser();
-    const email = user.email;
-
-    if (!email) {
-      return {
-        configured: true,
-        success: false,
-        message: 'Signed-in user has no email address.',
-      };
-    }
+    const session = await requireCurrentSession();
 
     const response = await fetch(`${apiBase}${path}`, {
       headers: {
-        'X-KeepDB-Dashboard-Secret': dashboardSecret,
-        'X-KeepDB-User-Email': email,
+        Authorization: `Bearer ${session.access_token}`,
       },
       cache: 'no-store',
     });

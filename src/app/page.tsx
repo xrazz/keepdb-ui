@@ -74,7 +74,7 @@ export default function Page() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 font-medium font-[family-name:var(--font-dm-sans)]">
+    <div className="min-h-screen bg-white text-gray-900 font-medium font-sans">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -110,9 +110,6 @@ export default function Page() {
             </Link>
             <Link href="#features" className="text-gray-600 hover:text-black transition-colors">
               Features
-            </Link>
-            <Link href="/login" className="text-gray-600 hover:text-black transition-colors">
-              Login
             </Link>
           </div>
         </nav>

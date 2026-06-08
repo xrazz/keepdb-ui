@@ -1,4 +1,4 @@
-import { requireCurrentSession } from '@/lib/auth/current-user';
+import { requireCurrentUser } from '@/lib/auth/current-user';
 
 const DEFAULT_KEEPDB_API_BASE = 'https://keepdb-api-production.up.railway.app';
 
@@ -32,37 +32,34 @@ export type KeepDbCollection = {
   lastMemoryAt?: string | null;
 };
 
-export type KeepDbApiKey = {
-  id: string;
-  name: string;
-  keyPrefix: string;
-  type: string;
-  scopes: string[];
-  collection?: string | null;
-  lastUsedAt?: string | null;
-  createdAt: string;
-  revokedAt?: string | null;
-};
-
 type KeepDbResponse<T> =
   | { configured: true; success: true; data: T }
   | { configured: true; success: false; message: string }
   | { configured: false; success: false; message: string };
 
 function getKeepDbConfig() {
+  const apiKey = process.env.KEEPDB_API_KEY;
   const apiBase = process.env.KEEPDB_API_BASE || DEFAULT_KEEPDB_API_BASE;
-  return { apiBase: apiBase.replace(/\/$/, '') };
+  return { apiBase: apiBase.replace(/\/$/, ''), apiKey };
 }
 
 async function keepDbFetch<T>(path: string): Promise<KeepDbResponse<T>> {
-  const { apiBase } = getKeepDbConfig();
+  const { apiBase, apiKey } = getKeepDbConfig();
+
+  if (!apiKey) {
+    return {
+      configured: false,
+      success: false,
+      message: 'KeepDB is not connected for this dashboard yet.',
+    };
+  }
 
   try {
-    const session = await requireCurrentSession();
+    await requireCurrentUser();
 
     const response = await fetch(`${apiBase}${path}`, {
       headers: {
-        Authorization: `Bearer ${session.access_token}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       cache: 'no-store',
     });
@@ -87,24 +84,16 @@ async function keepDbFetch<T>(path: string): Promise<KeepDbResponse<T>> {
 }
 
 export async function listKeepDbCollections() {
-  return keepDbFetch<{ results: KeepDbCollection[] }>('/dashboard/collections');
+  return keepDbFetch<{ results: KeepDbCollection[] }>('/collections');
 }
 
 export async function listKeepDbMemories(limit = 50) {
-  return keepDbFetch<{ results: KeepDbMemory[] }>(`/dashboard/memories?limit=${limit}`);
+  return keepDbFetch<{ results: KeepDbMemory[] }>(`/memories?limit=${limit}`);
 }
 
 export async function searchKeepDbMemories(query: string, limit = 10) {
   const params = new URLSearchParams({ query, limit: String(limit) });
-  return keepDbFetch<{ results: KeepDbMemory[]; retrieval?: unknown }>(`/dashboard/search?${params}`);
-}
-
-export async function listKeepDbApiKeys() {
-  return keepDbFetch<{ results: KeepDbApiKey[] }>('/dashboard/api-keys');
-}
-
-export async function getKeepDbDashboard(path: string) {
-  return keepDbFetch<unknown>(path);
+  return keepDbFetch<{ results: KeepDbMemory[]; retrieval?: unknown }>(`/memory?${params}`);
 }
 
 export function formatKeepDbDate(value?: string | null) {

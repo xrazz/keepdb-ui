@@ -1,27 +1,39 @@
-const stats = [
-  { label: 'Total memories', value: '0' },
-  { label: 'Collections', value: '0' },
-  { label: 'API keys', value: '0' },
-];
+import {
+  formatKeepDbDate,
+  listKeepDbCollections,
+  listKeepDbMemories,
+  previewMemory,
+} from '@/lib/keepdb/client';
 
-const setupSteps = [
-  {
-    title: 'Create your first API key',
-    description: 'Generate a KeepDB key that agents and apps can use to save and search memory.',
-  },
-  {
-    title: 'Copy agent instructions',
-    description: 'Paste the generated instructions into Codex, Claude, Cursor, or your own agent runtime.',
-  },
-  {
-    title: 'Send a test memory',
-    description: 'Store one note, feedback item, or app log, then search it from the dashboard.',
-  },
-];
+function responseMessage(response: { success: boolean; message?: string }) {
+  return response.success ? null : response.message || null;
+}
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const [collectionsResponse, memoriesResponse] = await Promise.all([
+    listKeepDbCollections(),
+    listKeepDbMemories(5),
+  ]);
+
+  const collections = collectionsResponse.success ? collectionsResponse.data.results : [];
+  const memories = memoriesResponse.success ? memoriesResponse.data.results : [];
+  const totalMemories = collections.reduce((sum, collection) => sum + collection.memories, 0);
+  const totalBytes = collections.reduce((sum, collection) => sum + collection.contentBytes, 0);
+  const stats = [
+    { label: 'Total memories', value: totalMemories.toLocaleString() },
+    { label: 'Collections', value: collections.length.toLocaleString() },
+    { label: 'Stored data', value: `${Math.max(totalBytes / 1024 / 1024, 0).toFixed(1)} MB` },
+  ];
+  const configMessage = responseMessage(collectionsResponse) || responseMessage(memoriesResponse);
+
   return (
     <div className="w-full pb-12">
+      {configMessage && (
+        <div className="mb-4 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          {configMessage}
+        </div>
+      )}
+
       <div className="grid gap-3 md:grid-cols-3">
         {stats.map((stat) => (
           <div key={stat.label} className="rounded-md border border-zinc-200 bg-white px-4 py-3">
@@ -34,41 +46,50 @@ export default function DashboardPage() {
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <section className="rounded-md border border-zinc-200 bg-white">
           <div className="border-b border-zinc-200 px-4 py-3">
-            <h2 className="text-sm font-semibold text-zinc-950">Quick setup</h2>
+            <h2 className="text-sm font-semibold text-zinc-950">Recent memories</h2>
           </div>
-          <div className="divide-y divide-zinc-200">
-            {setupSteps.map((step, index) => (
-              <div key={step.title} className="flex gap-3 px-4 py-4">
-                <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-zinc-50 text-xs font-semibold text-zinc-600">
-                  {index + 1}
+          {memories.length > 0 ? (
+            <div className="divide-y divide-zinc-200">
+              {memories.map((memory) => (
+                <div key={memory.memoryId} className="px-4 py-4">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="font-mono text-xs font-medium text-zinc-500">{memory.collection}</span>
+                    <span className="shrink-0 text-xs text-zinc-400">
+                      {formatKeepDbDate(memory.createdAt)}
+                    </span>
+                  </div>
+                  <p className="text-sm leading-relaxed text-zinc-700">{previewMemory(memory, 220)}</p>
                 </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-zinc-950">{step.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-zinc-500">{step.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="px-4 py-5 text-sm text-zinc-500">
+              Live memories will appear here after your KeepDB API key is configured.
+            </div>
+          )}
         </section>
 
         <section className="rounded-md border border-zinc-200 bg-white">
           <div className="border-b border-zinc-200 px-4 py-3">
-            <h2 className="text-sm font-semibold text-zinc-950">System status</h2>
+            <h2 className="text-sm font-semibold text-zinc-950">Top collections</h2>
           </div>
-          <div className="space-y-4 px-4 py-4 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-zinc-500">Auth</span>
-              <span className="font-medium text-zinc-950">Connected</span>
+          {collections.length > 0 ? (
+            <div className="divide-y divide-zinc-200">
+              {collections.slice(0, 6).map((collection) => (
+                <div key={collection.id} className="flex items-center justify-between gap-4 px-4 py-4">
+                  <div>
+                    <h3 className="font-mono text-sm font-semibold text-zinc-950">{collection.name}</h3>
+                    <p className="mt-1 text-xs text-zinc-400">
+                      Last memory {formatKeepDbDate(collection.lastMemoryAt)}
+                    </p>
+                  </div>
+                  <span className="text-sm font-medium text-zinc-600">{collection.memories}</span>
+                </div>
+              ))}
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-zinc-500">API key</span>
-              <span className="font-medium text-zinc-400">Not created</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-zinc-500">Memory sync</span>
-              <span className="font-medium text-zinc-400">Waiting</span>
-            </div>
-          </div>
+          ) : (
+            <div className="px-4 py-5 text-sm text-zinc-500">No live collections loaded yet.</div>
+          )}
         </section>
       </div>
     </div>

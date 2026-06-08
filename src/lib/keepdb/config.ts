@@ -15,3 +15,9 @@ export function getKeepDbEncryptionSecret() {
   if (!secret) throw new Error('KEEPDB_KEY_ENCRYPTION_SECRET is required');
   return secret;
 }
+
+export function getKeepDbWaitlistApiKey() {
+  const apiKey = process.env.KEEPDB_WAITLIST_API_KEY || process.env.KEEPDB_API_KEY;
+  if (!apiKey) throw new Error('KEEPDB_WAITLIST_API_KEY is required');
+  return apiKey;
+}

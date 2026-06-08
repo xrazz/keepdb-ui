@@ -27,9 +27,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 KEEPDB_DATABASE_URL=
 KEEPDB_KEY_ENCRYPTION_SECRET=
 KEEPDB_API_BASE=
+KEEPDB_WAITLIST_API_KEY=
 ```
 
-`KEEPDB_API_BASE` is optional and defaults to production.
+`KEEPDB_API_BASE` is optional and defaults to production. `KEEPDB_WAITLIST_API_KEY` is server-only and saves landing page signups into the `keepdb-waitlist` collection.
 
 ## Code Map
 
@@ -42,3 +43,4 @@ KEEPDB_API_BASE=
 - `src/lib/keepdb/agent-keys.ts`: creates, lists, and revokes user-facing agent keys.
 - `src/lib/keepdb/client.ts`: calls the KeepDB backend data API.
 - `src/app/api/keepdb/*`: dashboard API routes used by the UI.
+- `src/app/api/waitlist`: saves public landing page signups into KeepDB.

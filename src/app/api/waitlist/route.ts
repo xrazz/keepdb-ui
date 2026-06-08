@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getKeepDbSql } from '@/lib/keepdb/database';
+import { getKeepDbApiBase, getKeepDbWaitlistApiKey } from '@/lib/keepdb/config';
 
 function normalizeEmail(value: unknown) {
   if (typeof value !== 'string') return null;
@@ -19,24 +19,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = getKeepDbSql();
+    const signedUpAt = new Date().toISOString();
+    const response = await fetch(`${getKeepDbApiBase()}/memory`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${getKeepDbWaitlistApiKey()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        collection: 'keepdb-waitlist',
+        type: 'waitlist-signup',
+        content: [
+          'KeepDB waitlist signup',
+          `email: ${email}`,
+          'source: landing',
+          `timestamp: ${signedUpAt}`,
+        ].join('\n'),
+        metadata: {
+          email,
+          source: 'landing',
+          tags: ['waitlist', 'keepdb-beta'],
+          signedUpAt,
+        },
+      }),
+    });
 
-    await db`
-      CREATE TABLE IF NOT EXISTS waitlist_signups (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        email TEXT UNIQUE NOT NULL,
-        source TEXT NOT NULL DEFAULT 'landing',
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      )
-    `;
-
-    await db`
-      INSERT INTO waitlist_signups (email, source)
-      VALUES (${email}, 'landing')
-      ON CONFLICT (email)
-      DO UPDATE SET updated_at = NOW()
-    `;
+    const result = await response.json().catch(() => null);
+    if (!response.ok || !result?.success) {
+      throw new Error(result?.message || 'KeepDB waitlist save failed');
+    }
 
     return NextResponse.json({ success: true });
   } catch {

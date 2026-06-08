@@ -1,3 +1,5 @@
+import { requireCurrentUser } from '@/lib/auth/current-user';
+
 const DEFAULT_KEEPDB_API_BASE = 'https://keepdb-api-production.up.railway.app';
 
 export type KeepDbMemory = {
@@ -36,25 +38,39 @@ type KeepDbResponse<T> =
   | { configured: false; success: false; message: string };
 
 function getKeepDbConfig() {
-  const apiKey = process.env.KEEPDB_API_KEY;
+  const dashboardSecret = process.env.KEEPDB_DASHBOARD_SECRET;
   const apiBase = process.env.KEEPDB_API_BASE || DEFAULT_KEEPDB_API_BASE;
-  return { apiBase: apiBase.replace(/\/$/, ''), apiKey };
+  return { apiBase: apiBase.replace(/\/$/, ''), dashboardSecret };
 }
 
 async function keepDbFetch<T>(path: string): Promise<KeepDbResponse<T>> {
-  const { apiBase, apiKey } = getKeepDbConfig();
+  const { apiBase, dashboardSecret } = getKeepDbConfig();
 
-  if (!apiKey) {
+  if (!dashboardSecret) {
     return {
       configured: false,
       success: false,
-      message: 'Add KEEPDB_API_KEY to this deployment to load live KeepDB data.',
+      message: 'Add KEEPDB_DASHBOARD_SECRET to this deployment to load live KeepDB data.',
     };
   }
 
   try {
+    const user = await requireCurrentUser();
+    const email = user.email;
+
+    if (!email) {
+      return {
+        configured: true,
+        success: false,
+        message: 'Signed-in user has no email address.',
+      };
+    }
+
     const response = await fetch(`${apiBase}${path}`, {
-      headers: { Authorization: `Bearer ${apiKey}` },
+      headers: {
+        'X-KeepDB-Dashboard-Secret': dashboardSecret,
+        'X-KeepDB-User-Email': email,
+      },
       cache: 'no-store',
     });
     const body = await response.json().catch(() => null);
@@ -78,16 +94,16 @@ async function keepDbFetch<T>(path: string): Promise<KeepDbResponse<T>> {
 }
 
 export async function listKeepDbCollections() {
-  return keepDbFetch<{ results: KeepDbCollection[] }>('/collections');
+  return keepDbFetch<{ results: KeepDbCollection[] }>('/dashboard/collections');
 }
 
 export async function listKeepDbMemories(limit = 50) {
-  return keepDbFetch<{ results: KeepDbMemory[] }>(`/memories?limit=${limit}`);
+  return keepDbFetch<{ results: KeepDbMemory[] }>(`/dashboard/memories?limit=${limit}`);
 }
 
 export async function searchKeepDbMemories(query: string, limit = 10) {
   const params = new URLSearchParams({ query, limit: String(limit) });
-  return keepDbFetch<{ results: KeepDbMemory[]; retrieval?: unknown }>(`/memory?${params}`);
+  return keepDbFetch<{ results: KeepDbMemory[]; retrieval?: unknown }>(`/dashboard/search?${params}`);
 }
 
 export function formatKeepDbDate(value?: string | null) {

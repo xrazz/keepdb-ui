@@ -24,6 +24,7 @@ export function AgentKeyManager({ initialKeys }: { initialKeys: AgentApiKey[] })
   const [rawKey, setRawKey] = useState('');
   const [message, setMessage] = useState('');
   const [creating, setCreating] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   async function createKey(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -39,6 +40,7 @@ export function AgentKeyManager({ initialKeys }: { initialKeys: AgentApiKey[] })
 
     if (body.success && 'rawKey' in body) {
       setRawKey(body.rawKey);
+      setCopied(false);
       setKeys((current) => [body.key, ...current]);
       setMessage('');
     } else if (!body.success) {
@@ -46,6 +48,12 @@ export function AgentKeyManager({ initialKeys }: { initialKeys: AgentApiKey[] })
     }
 
     setCreating(false);
+  }
+
+  async function copyRawKey() {
+    await navigator.clipboard.writeText(rawKey);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1600);
   }
 
   async function revokeKey(id: string) {
@@ -87,9 +95,18 @@ export function AgentKeyManager({ initialKeys }: { initialKeys: AgentApiKey[] })
         <section className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-4">
           <p className="text-sm font-semibold text-emerald-950">Copy this key now</p>
           <p className="mt-1 text-xs text-emerald-800">It will only be shown once.</p>
-          <code className="mt-3 block overflow-x-auto rounded-md border border-emerald-200 bg-white px-3 py-2 text-xs text-zinc-900">
-            {rawKey}
-          </code>
+          <div className="mt-3 flex gap-2">
+            <code className="min-w-0 flex-1 overflow-x-auto rounded-md border border-emerald-200 bg-white px-3 py-2 text-xs text-zinc-900">
+              {rawKey}
+            </code>
+            <button
+              type="button"
+              onClick={() => void copyRawKey()}
+              className="h-9 rounded-md bg-emerald-950 px-3 text-xs font-medium text-white"
+            >
+              {copied ? 'Copied' : 'Copy'}
+            </button>
+          </div>
         </section>
       )}
 

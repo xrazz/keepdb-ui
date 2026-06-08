@@ -1,0 +1,13 @@
+import { redirect } from 'next/navigation';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { hasSupabaseEnv } from '@/lib/supabase/env';
+
+export async function requireCurrentUser() {
+  if (!hasSupabaseEnv()) redirect('/login');
+
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase!.auth.getUser();
+
+  if (!data.user) redirect('/login');
+  return data.user;
+}

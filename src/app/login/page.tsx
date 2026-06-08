@@ -57,7 +57,7 @@ export default function LoginPage() {
         type: 'email',
       });
       if (error) throw error;
-      router.push('/account');
+      router.push('/dashboard');
       router.refresh();
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Could not verify code.');

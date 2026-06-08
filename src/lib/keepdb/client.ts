@@ -1,4 +1,5 @@
 import { requireCurrentUser } from '@/lib/auth/current-user';
+import { getOrCreateClientApiKey } from '@/lib/keepdb/client-key';
 
 const DEFAULT_KEEPDB_API_BASE = 'https://keepdb-api-production.up.railway.app';
 
@@ -38,77 +39,19 @@ type KeepDbResponse<T> =
   | { configured: false; success: false; message: string };
 
 function getKeepDbConfig() {
-  const internalSecret = process.env.KEEPDB_INTERNAL_SECRET;
   const apiBase = process.env.KEEPDB_API_BASE || DEFAULT_KEEPDB_API_BASE;
-  return { apiBase: apiBase.replace(/\/$/, ''), internalSecret };
-}
-
-async function getClientApiKey() {
-  const { apiBase, internalSecret } = getKeepDbConfig();
-  const user = await requireCurrentUser();
-
-  if (!internalSecret) {
-    return {
-      success: false as const,
-      configured: false as const,
-      message: 'KeepDB is not connected for this deployment yet.',
-    };
-  }
-
-  if (!user.email) {
-    return {
-      success: false as const,
-      configured: true as const,
-      message: 'Signed-in user has no email address.',
-    };
-  }
-
-  const response = await fetch(`${apiBase}/internal/client-key`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-KeepDB-Internal-Secret': internalSecret,
-    },
-    body: JSON.stringify({
-      supabaseUserId: user.id,
-      email: user.email,
-      name: user.user_metadata?.name || user.email.split('@')[0],
-    }),
-    cache: 'no-store',
-  });
-  const body = await response.json().catch(() => null);
-
-  if (!response.ok || !body?.success || !body?.apiKey?.rawKey) {
-    return {
-      success: false as const,
-      configured: true as const,
-      message: body?.message || `KeepDB connection failed with ${response.status}`,
-    };
-  }
-
-  return {
-    success: true as const,
-    configured: true as const,
-    apiKey: body.apiKey.rawKey as string,
-  };
+  return { apiBase: apiBase.replace(/\/$/, '') };
 }
 
 async function keepDbFetch<T>(path: string): Promise<KeepDbResponse<T>> {
   const { apiBase } = getKeepDbConfig();
-  const clientKey = await getClientApiKey();
-
-  if (!clientKey.success) {
-    return {
-      configured: clientKey.configured,
-      success: false,
-      message: clientKey.message,
-    };
-  }
 
   try {
+    await requireCurrentUser();
+    const clientKey = await getOrCreateClientApiKey();
     const response = await fetch(`${apiBase}${path}`, {
       headers: {
-        Authorization: `Bearer ${clientKey.apiKey}`,
+        Authorization: `Bearer ${clientKey}`,
       },
       cache: 'no-store',
     });

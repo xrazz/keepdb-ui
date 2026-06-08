@@ -1,8 +1,6 @@
 import { requireCurrentUser } from '@/lib/auth/current-user';
-import { cookies } from 'next/headers';
 
 const DEFAULT_KEEPDB_API_BASE = 'https://keepdb-api-production.up.railway.app';
-export const KEEPDB_CONNECTION_COOKIE = 'keepdb_connection_key';
 
 export type KeepDbMemory = {
   memoryId: string;
@@ -40,28 +38,77 @@ type KeepDbResponse<T> =
   | { configured: false; success: false; message: string };
 
 function getKeepDbConfig() {
+  const internalSecret = process.env.KEEPDB_INTERNAL_SECRET;
   const apiBase = process.env.KEEPDB_API_BASE || DEFAULT_KEEPDB_API_BASE;
-  return { apiBase: apiBase.replace(/\/$/, '') };
+  return { apiBase: apiBase.replace(/\/$/, ''), internalSecret };
+}
+
+async function getClientApiKey() {
+  const { apiBase, internalSecret } = getKeepDbConfig();
+  const user = await requireCurrentUser();
+
+  if (!internalSecret) {
+    return {
+      success: false as const,
+      configured: false as const,
+      message: 'KeepDB is not connected for this deployment yet.',
+    };
+  }
+
+  if (!user.email) {
+    return {
+      success: false as const,
+      configured: true as const,
+      message: 'Signed-in user has no email address.',
+    };
+  }
+
+  const response = await fetch(`${apiBase}/internal/client-key`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-KeepDB-Internal-Secret': internalSecret,
+    },
+    body: JSON.stringify({
+      supabaseUserId: user.id,
+      email: user.email,
+      name: user.user_metadata?.name || user.email.split('@')[0],
+    }),
+    cache: 'no-store',
+  });
+  const body = await response.json().catch(() => null);
+
+  if (!response.ok || !body?.success || !body?.apiKey?.rawKey) {
+    return {
+      success: false as const,
+      configured: true as const,
+      message: body?.message || `KeepDB connection failed with ${response.status}`,
+    };
+  }
+
+  return {
+    success: true as const,
+    configured: true as const,
+    apiKey: body.apiKey.rawKey as string,
+  };
 }
 
 async function keepDbFetch<T>(path: string): Promise<KeepDbResponse<T>> {
   const { apiBase } = getKeepDbConfig();
-  await requireCurrentUser();
-  const cookieStore = await cookies();
-  const apiKey = cookieStore.get(KEEPDB_CONNECTION_COOKIE)?.value;
+  const clientKey = await getClientApiKey();
 
-  if (!apiKey) {
+  if (!clientKey.success) {
     return {
-      configured: false,
+      configured: clientKey.configured,
       success: false,
-      message: 'Connect KeepDB to load your dashboard.',
+      message: clientKey.message,
     };
   }
 
   try {
     const response = await fetch(`${apiBase}${path}`, {
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${clientKey.apiKey}`,
       },
       cache: 'no-store',
     });
@@ -96,12 +143,6 @@ export async function listKeepDbMemories(limit = 50) {
 export async function searchKeepDbMemories(query: string, limit = 10) {
   const params = new URLSearchParams({ query, limit: String(limit) });
   return keepDbFetch<{ results: KeepDbMemory[]; retrieval?: unknown }>(`/memory?${params}`);
-}
-
-export async function hasKeepDbConnection() {
-  await requireCurrentUser();
-  const cookieStore = await cookies();
-  return Boolean(cookieStore.get(KEEPDB_CONNECTION_COOKIE)?.value);
 }
 
 export function formatKeepDbDate(value?: string | null) {

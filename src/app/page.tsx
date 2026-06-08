@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { WaitlistForm } from './waitlist-form';
 
 const faqs = [
   {
@@ -132,15 +133,10 @@ export default function Page() {
             folders your agents can search.
           </p>
 
-          <div className="flex flex-col items-center mb-16">
-            <a
-              href="mailto:hello@keepdb.dev?subject=KeepDB%20V1%20beta"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black text-white text-sm font-semibold hover:bg-gray-900 transition-colors mb-3"
-            >
-              Join V1 beta
-            </a>
-            <p className="text-xs text-gray-400 tracking-wide">
-              GPT, read the merge plan from Claude&apos;s KB memory.
+          <div className="mb-16">
+            <WaitlistForm />
+            <p className="mt-4 text-center text-xs text-gray-400 tracking-wide">
+              Early access for indie hackers building with agents.
             </p>
           </div>
         </section>

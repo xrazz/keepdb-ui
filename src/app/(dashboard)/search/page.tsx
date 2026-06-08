@@ -26,8 +26,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <section className="rounded-md border border-zinc-200 bg-white px-4 py-5">
           <h2 className="text-sm font-semibold text-zinc-950">Personal search for your KeepDB</h2>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-500">
-            Search across all memories, collections, feedback, logs, prompts, and notes connected to
-            your account.
+            Search everything saved to your account.
           </p>
         </section>
       )}

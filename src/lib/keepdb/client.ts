@@ -1,7 +1,5 @@
-import { requireCurrentUser } from '@/lib/auth/current-user';
-import { getOrCreateClientApiKey } from '@/lib/keepdb/client-key';
-
-const DEFAULT_KEEPDB_API_BASE = 'https://keepdb-api-production.up.railway.app';
+import { getKeepDbApiBase } from '@/lib/keepdb/config';
+import { getOrCreateDashboardClientKey } from '@/lib/keepdb/dashboard-client-key';
 
 export type KeepDbMemory = {
   memoryId: string;
@@ -38,18 +36,10 @@ type KeepDbResponse<T> =
   | { configured: true; success: false; message: string }
   | { configured: false; success: false; message: string };
 
-function getKeepDbConfig() {
-  const apiBase = process.env.KEEPDB_API_BASE || DEFAULT_KEEPDB_API_BASE;
-  return { apiBase: apiBase.replace(/\/$/, '') };
-}
-
 async function keepDbFetch<T>(path: string): Promise<KeepDbResponse<T>> {
-  const { apiBase } = getKeepDbConfig();
-
   try {
-    await requireCurrentUser();
-    const clientKey = await getOrCreateClientApiKey();
-    const response = await fetch(`${apiBase}${path}`, {
+    const clientKey = await getOrCreateDashboardClientKey();
+    const response = await fetch(`${getKeepDbApiBase()}${path}`, {
       headers: {
         Authorization: `Bearer ${clientKey}`,
       },

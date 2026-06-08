@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getOrCreateClientApiKey } from '@/lib/keepdb/client-key';
+import { getOrCreateDashboardClientKey } from '@/lib/keepdb/dashboard-client-key';
 
 export async function POST() {
   try {
-    await getOrCreateClientApiKey();
+    await getOrCreateDashboardClientKey();
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json(

@@ -13,9 +13,12 @@ Add these to local `.env.local` and to the hosted deployment:
 ```txt
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+KEEPDB_DATABASE_URL=
+KEEPDB_KEY_ENCRYPTION_SECRET=
+KEEPDB_API_BASE=
 ```
 
-The values come from Supabase project settings.
+The Supabase values come from Supabase project settings. `KEEPDB_API_BASE` is optional and defaults to the production KeepDB API.
 
 ## Supabase Dashboard
 
@@ -37,14 +40,17 @@ If the hosted domain is different, add that domain too.
 - `/auth/callback`: exchanges Supabase OAuth/OTP code for a session.
 - `/account`: shows the current signed-in Supabase user.
 - `/auth/sign-out`: signs out and returns home.
+- `/api/keepdb/*`: server-side dashboard routes that fetch KeepDB data.
+- `/api/internal/client-key`: server-side route that provisions the hidden dashboard client key.
 
-## Next Step
+## KeepDB Connection
 
-After login works, connect the Supabase user to the KeepDB backend:
+After login, the Next.js server connects the Supabase user to KeepDB:
 
 1. User signs in with Supabase.
-2. UI calls a KeepDB backend endpoint with the Supabase JWT.
-3. Backend verifies the JWT.
-4. Backend creates or returns the KeepDB user and API keys.
+2. Next.js reads the signed-in Supabase user on the server.
+3. Next.js creates or finds the matching KeepDB user in Postgres.
+4. Next.js creates or decrypts a hidden `client` API key for that user.
+5. Next.js calls the normal KeepDB backend with that API key.
 
-KeepDB backend should still own KeepDB API keys. Supabase only owns website login.
+The browser never receives the hidden dashboard key. User-facing agent keys are separate.

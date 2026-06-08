@@ -74,7 +74,7 @@ export default function Page() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 font-medium font-sans">
+    <div className="min-h-screen bg-white text-gray-900 font-medium [font-family:Plain,var(--font-dm-sans),Arial,sans-serif]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

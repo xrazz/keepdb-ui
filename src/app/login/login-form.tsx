@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
-import { hasSupabaseEnv } from '@/lib/supabase/env';
+import { getPublicAppUrl, hasSupabaseEnv } from '@/lib/supabase/env';
 
 function getRedirectTo() {
-  if (typeof window === 'undefined') return undefined;
-  return `${window.location.origin}/auth/callback`;
+  const appUrl = getPublicAppUrl();
+  if (appUrl) return `${appUrl}/auth/callback`;
+  if (typeof window !== 'undefined') return `${window.location.origin}/auth/callback`;
+  return undefined;
 }
 
 export function LoginForm() {

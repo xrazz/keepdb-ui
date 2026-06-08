@@ -37,6 +37,8 @@ KEEPDB_API_BASE=
 - `src/lib/keepdb/config.ts`: reads KeepDB environment variables.
 - `src/lib/keepdb/database.ts`: creates the Postgres client.
 - `src/lib/keepdb/key-crypto.ts`: creates, hashes, encrypts, and decrypts API keys.
+- `src/lib/keepdb/keep-user.ts`: maps the Supabase user to a KeepDB user row.
 - `src/lib/keepdb/dashboard-client-key.ts`: creates or loads the hidden dashboard key.
+- `src/lib/keepdb/agent-keys.ts`: creates, lists, and revokes user-facing agent keys.
 - `src/lib/keepdb/client.ts`: calls the KeepDB backend data API.
 - `src/app/api/keepdb/*`: dashboard API routes used by the UI.

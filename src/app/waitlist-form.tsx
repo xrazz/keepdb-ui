@@ -35,18 +35,18 @@ export function WaitlistForm() {
   return (
     <form onSubmit={submit} className="mx-auto w-full max-w-md">
       <div className="flex flex-col gap-2 sm:flex-row">
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="you@example.com"
-          className="h-12 min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-gray-500"
-        />
+     <input
+  type="email"
+  required
+  value={email}
+  onChange={(event) => setEmail(event.target.value)}
+  placeholder="you@example.com"
+  className="h-12 w-full sm:flex-1 rounded-none border border-gray-300 bg-white px-4 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-gray-500"
+/>
         <button
           type="submit"
           disabled={state === 'loading'}
-          className="h-12 rounded-xl bg-black px-5 text-sm font-semibold text-white transition-colors hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
+          className="h-12 rounded-none bg-black px-5 text-sm font-semibold text-white transition-colors hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {state === 'loading' ? 'Joining...' : 'Join V1 beta'}
         </button>

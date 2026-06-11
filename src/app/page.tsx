@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Lora } from 'next/font/google';
-import Image from 'next/image';
 import Link from 'next/link';
 import { WaitlistForm } from './waitlist-form';
 
@@ -182,29 +181,29 @@ export default function Page() {
                   <span className="text-purple-600">await</span>{' '}
                   <span className="text-blue-600">fetch</span>(
                   <span className="text-emerald-600">
-                    "https://api.keepdb.dev/memory"
+                    &quot;https://api.keepdb.dev/memory&quot;
                   </span>
                   , {'{'}
                   {'\n  '}
-                  <span className="text-red-600">method</span>:{" "}
-                  <span className="text-emerald-600">"POST"</span>,
+                  <span className="text-red-600">method</span>:{' '}
+                  <span className="text-emerald-600">&quot;POST&quot;</span>,
                   {'\n  '}
                   <span className="text-red-600">headers</span>: {'{'}
                   {'\n    '}
-                  <span className="text-red-600">Authorization</span>:{" "}
-                  <span className="text-emerald-600">"Bearer keep_sk_..."</span>
+                  <span className="text-red-600">Authorization</span>:{' '}
+                  <span className="text-emerald-600">&quot;Bearer keep_sk_...&quot;</span>
                   {'\n  '}
                   {'}'},
                   {'\n  '}
-                  <span className="text-red-600">body</span>:{" "}
+                  <span className="text-red-600">body</span>:{' '}
                   <span className="text-blue-600">JSON.stringify</span>({'{'}
                   {'\n    '}
-                  <span className="text-red-600">collection</span>:{" "}
-                  <span className="text-emerald-600">"feedback"</span>,
+                  <span className="text-red-600">collection</span>:{' '}
+                  <span className="text-emerald-600">&quot;feedback&quot;</span>,
                   {'\n    '}
-                  <span className="text-red-600">content</span>:{" "}
+                  <span className="text-red-600">content</span>:{' '}
                   <span className="text-emerald-600">
-                    "Dark mode would be nice"
+                    &quot;Dark mode would be nice&quot;
                   </span>
                   {'\n  '}
                   {'}'})

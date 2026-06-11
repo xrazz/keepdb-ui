@@ -13,13 +13,12 @@ Add these to local `.env.local` and to the hosted deployment:
 ```txt
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
-NEXT_PUBLIC_APP_URL=
 KEEPDB_DATABASE_URL=
 KEEPDB_KEY_ENCRYPTION_SECRET=
 KEEPDB_API_BASE=
 ```
 
-The Supabase values come from Supabase project settings. `NEXT_PUBLIC_APP_URL` is the public URL of this UI app, for example `https://keepdb-ui-production.up.railway.app`. `KEEPDB_API_BASE` is optional and defaults to the production KeepDB API.
+The Supabase values come from Supabase project settings. `KEEPDB_API_BASE` is optional and defaults to the production KeepDB API.
 
 ## Supabase Dashboard
 
@@ -36,10 +35,10 @@ https://keepdb.dev/auth/callback
 
 If the hosted domain is different, add that domain too.
 
-Set the Supabase Site URL to the primary hosted app URL. If `keepdb.dev` is not live yet, use:
+Set the Supabase Site URL to the primary hosted app URL:
 
 ```txt
-https://keepdb-ui-production.up.railway.app
+https://keepdb.dev
 ```
 
 ## Routes

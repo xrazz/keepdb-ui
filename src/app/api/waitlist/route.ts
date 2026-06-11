@@ -1,47 +1,59 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { getKeepDbApiBase, getKeepDbWaitlistApiKey } from '@/lib/keepdb/config';
 
-export async function POST(request: Request) {
+function normalizeEmail(value: unknown) {
+  if (typeof value !== 'string') return null;
+  const email = value.trim().toLowerCase();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : null;
+}
+
+export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json();
-    
-    // ⚠️ Drop your live token string in here when pushing to production
-    const KEEPDB_WRITE_KEY = 'keep_sk_wiVF_2asr2p_kc34D4r4syJh2Yw88HEpaeEz8th0gVw'; 
+    const body = await request.json().catch(() => ({}));
+    const email = normalizeEmail(body.email);
 
-    console.log('Forwarding waitlist target packet:', email);
+    if (!email) {
+      return NextResponse.json(
+        { success: false, message: 'Enter a valid email address.' },
+        { status: 400 },
+      );
+    }
 
-    // This request mirrors your working curl layout exactly
-    const response = await fetch('https://keepdb-api-production.up.railway.app/memory', {
+    const signedUpAt = new Date().toISOString();
+    const response = await fetch(`${getKeepDbApiBase()}/memory`, {
       method: 'POST',
       headers: {
+        Authorization: `Bearer ${getKeepDbWaitlistApiKey()}`,
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${KEEPDB_WRITE_KEY}`,
       },
       body: JSON.stringify({
-        collection: 'waitlist', 
-        content: `Waitlist Signup: ${email}`, 
+        collection: 'keepdb-waitlist',
+        type: 'waitlist-signup',
+        content: [
+          'KeepDB waitlist signup',
+          `email: ${email}`,
+          'source: landing',
+          `timestamp: ${signedUpAt}`,
+        ].join('\n'),
         metadata: {
-          source: 'agent',      // Matches the strict string value from your spec template
-          tags: ['waitlist']    // Passes a clean string array descriptor structure
+          email,
+          source: 'landing',
+          tags: ['waitlist', 'keepdb-beta'],
+          signedUpAt,
         },
       }),
     });
 
-    const responseText = await response.text();
-    console.log(`KeepDB Execution Node Status: ${response.status} ->`, responseText);
-
-    if (response.ok) {
-      return NextResponse.json({ success: true });
+    const result = await response.json().catch(() => null);
+    if (!response.ok || !result?.success) {
+      throw new Error(result?.message || 'KeepDB waitlist save failed');
     }
 
+    return NextResponse.json({ success: true });
+  } catch {
     return NextResponse.json(
-      { success: false, message: `Database execution error slot: ${response.status}` },
-      { status: response.status }
-    );
-  } catch (error: any) {
-    console.error('Next.js API Engine Proxy Crash:', error);
-    return NextResponse.json(
-      { success: false, message: 'Internal gateway connection pipeline broke.' },
-      { status: 500 }
+      { success: false, message: 'Could not join the waitlist right now.' },
+      { status: 500 },
     );
   }
 }

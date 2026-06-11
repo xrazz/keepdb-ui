@@ -33,7 +33,7 @@ export function WaitlistForm() {
 
       setState('error');
       setMessage(body?.message || 'Could not join the waitlist right now.');
-    } catch (err) {
+    } catch {
       setState('error');
       setMessage('Network error. Please try again later.');
     }

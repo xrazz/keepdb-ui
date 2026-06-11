@@ -67,19 +67,19 @@ export default function Page() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex justify-center font-[family-name:var(--font-dm-sans)]">
+    <div className="min-h-screen bg-white flex justify-center font-[family-name:var(--font-dm-sans)]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
       {/* Main Structural Container with vertical side borders */}
-      <div className="w-full max-w-3xl bg-white border-x border-gray-200 flex flex-col min-h-screen">
+      <div className="w-full max-w-4xl bg-white border border-gray-200 flex flex-col min-h-screen">
 
         {/* Header and Hero area wrapper */}
         <div
           style={{
-            backgroundImage: "url('/sky.png')",
+            backgroundImage: "url('/bs4.png')",
             backgroundSize: 'cover',
             backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat',
@@ -120,9 +120,9 @@ export default function Page() {
               Store customer feedback and waitlist emails or any data just like you would in a normal database, alongside agent memories, prompts, and project context. Everything stays organized, so nothing gets lost or mixed together. Your agents can search and update it automatically, while you can browse and manage the same data yourself.
             </p>
 
-            <div className="mb-8 w-full max-w-md [&_input]:bg-gray-50 [&_input]:border-gray-200 [&_input]:rounded-none">
+            <div className="mb-8 w-full max-w-md [&_input]:bg-white  [&_input]:rounded-none">
               <WaitlistForm />
-              <p className="mt-4 text-left text-xs text-gray-400 tracking-wide">
+              <p className="mt-4 text-left text-xs font-medium text-gray-400 tracking-wide">
                 Early access for indie hackers building with agents.
               </p>
             </div>

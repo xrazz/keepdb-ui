@@ -48,7 +48,7 @@ export function WaitlistForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@example.com"
-          className="h-12 w-full sm:flex-1 rounded-none border border-gray-300 bg-white px-4 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-gray-500"
+          className="h-12 w-full sm:flex-1 rounded-none border border-gray-400 px-4 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-gray-500"
           disabled={state === 'loading'}
         />
         <button

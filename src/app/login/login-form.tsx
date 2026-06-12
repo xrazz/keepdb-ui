@@ -74,6 +74,19 @@ export function LoginForm({ initialStatus = '' }: LoginFormProps) {
       const { data } = await supabase.auth.getSession();
       if (!data.session) throw new Error('Login succeeded but the session was not saved. Try the code again.');
 
+      const sessionResponse = await fetch('/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token,
+        }),
+      });
+      const sessionBody = await sessionResponse.json().catch(() => null);
+      if (!sessionResponse.ok || !sessionBody?.success) {
+        throw new Error(sessionBody?.message || 'Could not finish login. Try the code again.');
+      }
+
       router.replace('/dashboard');
       router.refresh();
     } catch (error) {

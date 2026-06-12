@@ -6,8 +6,11 @@ export async function requireCurrentUser() {
   if (!hasSupabaseEnv()) redirect('/login');
 
   const supabase = await createSupabaseServerClient();
-  const { data } = await supabase!.auth.getUser();
+  const { data, error } = await supabase!.auth.getUser();
 
-  if (!data.user) redirect('/login');
+  if (error || !data.user) {
+    redirect('/login?error=Your session expired. Please sign in again.');
+  }
+
   return data.user;
 }

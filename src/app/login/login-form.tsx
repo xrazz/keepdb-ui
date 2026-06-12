@@ -12,11 +12,15 @@ function getRedirectTo() {
   return undefined;
 }
 
-export function LoginForm() {
+type LoginFormProps = {
+  initialStatus?: string;
+};
+
+export function LoginForm({ initialStatus = '' }: LoginFormProps) {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(initialStatus);
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState<'send' | 'verify' | null>(null);
   const configured = hasSupabaseEnv();

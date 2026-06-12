@@ -3,7 +3,13 @@ import { LoginForm } from './login-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { hasSupabaseEnv } from '@/lib/supabase/env';
 
-export default async function LoginPage() {
+type LoginPageProps = {
+  searchParams?: Promise<{ error?: string }>;
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const params = await searchParams;
+
   if (hasSupabaseEnv()) {
     const supabase = await createSupabaseServerClient();
     const { data } = await supabase!.auth.getUser();
@@ -11,5 +17,5 @@ export default async function LoginPage() {
     if (data.user) redirect('/dashboard');
   }
 
-  return <LoginForm />;
+  return <LoginForm initialStatus={params?.error || ''} />;
 }

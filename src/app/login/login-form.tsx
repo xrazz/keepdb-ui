@@ -12,6 +12,16 @@ function getRedirectTo() {
   return undefined;
 }
 
+function getLoginErrorMessage(error: unknown, fallback: string) {
+  if (!(error instanceof Error)) return fallback;
+
+  if (error.message.toLowerCase().includes('unsupported state')) {
+    return 'That email link is stale. Request a fresh code and enter the 6-digit code here.';
+  }
+
+  return error.message;
+}
+
 type LoginFormProps = {
   initialStatus?: string;
 };
@@ -40,9 +50,9 @@ export function LoginForm({ initialStatus = '' }: LoginFormProps) {
       });
       if (error) throw error;
       setSent(true);
-      setStatus('Check your email. Use the code here, or click the sign-in link.');
+      setStatus('Check your email and enter the 6-digit code here. Ignore the magic link for now.');
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : 'Could not send login email.');
+      setStatus(getLoginErrorMessage(error, 'Could not send login email.'));
     } finally {
       setLoading(null);
     }
@@ -61,10 +71,13 @@ export function LoginForm({ initialStatus = '' }: LoginFormProps) {
         type: 'email',
       });
       if (error) throw error;
-      router.push('/dashboard');
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) throw new Error('Login succeeded but the session was not saved. Try the code again.');
+
+      router.replace('/dashboard');
       router.refresh();
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : 'Could not verify code.');
+      setStatus(getLoginErrorMessage(error, 'Could not verify code.'));
     } finally {
       setLoading(null);
     }
@@ -118,7 +131,7 @@ export function LoginForm({ initialStatus = '' }: LoginFormProps) {
               Sign in to KeepDB
             </h1>
             <p className="mt-2 text-sm leading-relaxed text-gray-500">
-              Enter your email. Use the code, or click the email link.
+              Enter your email and use the 6-digit code.
             </p>
           </div>
 

@@ -1,5 +1,13 @@
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { NextResponse, type NextRequest } from 'next/server';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getSupabaseBrowserEnv, hasSupabaseEnv } from '@/lib/supabase/env';
+
+type SupabaseCookie = {
+  name: string;
+  value: string;
+  options?: Parameters<NextResponse['cookies']['set']>[2];
+};
 
 function getSafeNext(value: string | null) {
   if (!value || !value.startsWith('/') || value.startsWith('//')) return '/dashboard';
@@ -35,11 +43,25 @@ export async function GET(request: NextRequest) {
     return redirectToLogin('Missing login code. Request a fresh sign-in email.');
   }
 
-  const supabase = await createSupabaseServerClient();
-
-  if (!supabase) {
+  if (!hasSupabaseEnv()) {
     return redirectToLogin('Supabase auth is not configured.');
   }
+
+  const { url: supabaseUrl, anonKey } = getSupabaseBrowserEnv();
+  const cookieStore = await cookies();
+  const cookiesToSet: SupabaseCookie[] = [];
+  const supabase = createServerClient(supabaseUrl, anonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(nextCookies) {
+        nextCookies.forEach(({ name, value, options }) => {
+          cookiesToSet.push({ name, value, options });
+        });
+      },
+    },
+  });
 
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
@@ -53,5 +75,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  return redirectToPath(next);
+  const response = redirectToPath(next);
+  cookiesToSet.forEach(({ name, value, options }) => {
+    response.cookies.set(name, value, options);
+  });
+  return response;
 }

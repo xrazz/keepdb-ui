@@ -10,10 +10,8 @@ function responseMessage(response: { success: boolean; message?: string }) {
 }
 
 export default async function DashboardPage() {
-  const [collectionsResponse, memoriesResponse] = await Promise.all([
-    listKeepDbCollections(),
-    listKeepDbMemories(5),
-  ]);
+  const collectionsResponse = await listKeepDbCollections();
+  const memoriesResponse = await listKeepDbMemories(5);
 
   const collections = collectionsResponse.success ? collectionsResponse.data.results : [];
   const memories = memoriesResponse.success ? memoriesResponse.data.results : [];

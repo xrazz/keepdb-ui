@@ -1,9 +1,10 @@
+import { cache } from 'react';
 import { requireCurrentUser } from '@/lib/auth/current-user';
 import { getKeepDbSql } from '@/lib/keepdb/database';
 
 const DEFAULT_STORAGE_LIMIT_BYTES = 104857600;
 
-export async function getOrCreateKeepDbUser() {
+export const getOrCreateKeepDbUser = cache(async function getOrCreateKeepDbUser() {
   const user = await requireCurrentUser();
   if (!user.email) throw new Error('Signed-in user has no email address.');
 
@@ -41,4 +42,4 @@ export async function getOrCreateKeepDbUser() {
   `;
 
   return keepUser as { id: string; email: string; name: string | null };
-}
+});

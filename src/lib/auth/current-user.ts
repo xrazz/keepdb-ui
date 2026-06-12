@@ -1,8 +1,9 @@
+import { cache } from 'react';
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { hasSupabaseEnv } from '@/lib/supabase/env';
 
-export async function requireCurrentUser() {
+export const requireCurrentUser = cache(async function requireCurrentUser() {
   if (!hasSupabaseEnv()) redirect('/login');
 
   const supabase = await createSupabaseServerClient();
@@ -13,4 +14,4 @@ export async function requireCurrentUser() {
   }
 
   return data.user;
-}
+});

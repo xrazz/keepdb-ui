@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { getKeepDbSql } from '@/lib/keepdb/database';
 import { getOrCreateKeepDbUser } from '@/lib/keepdb/keep-user';
 import {
@@ -8,7 +9,7 @@ import {
   hashApiKey,
 } from '@/lib/keepdb/key-crypto';
 
-export async function getOrCreateDashboardClientKey() {
+export const getOrCreateDashboardClientKey = cache(async function getOrCreateDashboardClientKey() {
   const keepUser = await getOrCreateKeepDbUser();
   const db = getKeepDbSql();
 
@@ -52,4 +53,4 @@ export async function getOrCreateDashboardClientKey() {
   `;
 
   return rawKey;
-}
+});

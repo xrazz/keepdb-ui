@@ -79,7 +79,6 @@ export function LoginForm({ initialStatus = '' }: LoginFormProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           access_token: data.session.access_token,
-          refresh_token: data.session.refresh_token,
         }),
       });
       const sessionBody = await sessionResponse.json().catch(() => null);

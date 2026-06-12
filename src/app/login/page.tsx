@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import { LoginForm } from './login-form';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { hasSupabaseEnv } from '@/lib/supabase/env';
+import { getAppSessionUser } from '@/lib/auth/app-session';
 
 type LoginPageProps = {
   searchParams?: Promise<{ error?: string }>;
@@ -9,13 +8,9 @@ type LoginPageProps = {
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
+  const user = await getAppSessionUser();
 
-  if (hasSupabaseEnv()) {
-    const supabase = await createSupabaseServerClient();
-    const { data } = await supabase!.auth.getUser();
-
-    if (data.user) redirect('/dashboard');
-  }
+  if (user) redirect('/dashboard');
 
   return <LoginForm initialStatus={params?.error || ''} />;
 }

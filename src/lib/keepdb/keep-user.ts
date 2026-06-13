@@ -10,10 +10,7 @@ export const getOrCreateKeepDbUser = cache(async function getOrCreateKeepDbUser(
 
   const db = getKeepDbSql();
   const email = user.email.trim().toLowerCase();
-  const name =
-    typeof user.user_metadata?.name === 'string'
-      ? user.user_metadata.name
-      : email.split('@')[0];
+  const name = user.name || email.split('@')[0];
 
   const [keepUser] = await db`
     INSERT INTO users (

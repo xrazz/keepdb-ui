@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { UserButton } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
 
 const pageTitles: Record<string, string> = {
@@ -20,12 +20,7 @@ export function PageHeader({ userEmail }: { userEmail: string }) {
 
       <div className="flex items-center gap-3">
         <span className="max-w-52 truncate text-xs font-medium text-zinc-500">{userEmail}</span>
-        <Link
-          href="/auth/sign-out"
-          className="flex h-[30px] items-center rounded-md border border-zinc-200 bg-zinc-50 px-3 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
-        >
-          Sign out
-        </Link>
+        <UserButton />
       </div>
     </header>
   );

@@ -119,8 +119,8 @@ export default function AgentsPage() {
             <Link href="/agents" className="text-gray-600 hover:text-black transition-colors">
               Agents
             </Link>
-            <Link href="/login" className="text-gray-600 hover:text-black transition-colors">
-              Login
+            <Link href="/sign-in" className="text-gray-600 hover:text-black transition-colors">
+              Sign in
             </Link>
           </div>
         </nav>

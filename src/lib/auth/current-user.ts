@@ -1,13 +1,22 @@
 import { cache } from 'react';
+import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { getAppSessionUser } from '@/lib/auth/app-session';
 
 export const requireCurrentUser = cache(async function requireCurrentUser() {
-  const user = await getAppSessionUser();
+  const user = await currentUser();
 
   if (!user) {
-    redirect('/login?error=Your session expired. Please sign in again.');
+    redirect('/sign-in');
   }
 
-  return user;
+  const email =
+    user.primaryEmailAddress?.emailAddress ||
+    user.emailAddresses[0]?.emailAddress ||
+    '';
+
+  return {
+    id: user.id,
+    email,
+    name: user.fullName || user.username || email.split('@')[0],
+  };
 });

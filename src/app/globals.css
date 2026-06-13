@@ -25,3 +25,20 @@ html {
   background: #dff6ed;
   color: #0d6b51;
 }
+
+.cl-card,
+.cl-cardBox,
+.cl-modalContent {
+  box-shadow: none !important;
+}
+
+.cl-card,
+.cl-cardBox {
+  border: 1px solid #e4e4e7 !important;
+}
+
+.cl-footerAction,
+.cl-footerActionText,
+.cl-footerActionLink {
+  display: none !important;
+}

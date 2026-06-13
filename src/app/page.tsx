@@ -99,7 +99,7 @@ export default function Page() {
               <Show when="signed-out">
                 <Link
                   href="/sign-in"
-                  className="rounded-md bg-black px-3 py-1.5 text-white transition-colors hover:bg-gray-900"
+                  className="rounded-full bg-black px-3 py-1 text-xs text-white transition-colors hover:bg-gray-900"
                 >
                   Sign in
                 </Link>

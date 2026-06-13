@@ -45,7 +45,7 @@ export default async function DashboardPage() {
 
       <div className="mt-8">
         <section className="rounded-md border border-zinc-200 bg-white">
-          <div className="border-b border-zinc-200 px-4 py-3">
+          <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3">
             <h2 className="text-sm font-semibold text-zinc-950">Recent saves</h2>
           </div>
           <RecentSaves memories={memories} />

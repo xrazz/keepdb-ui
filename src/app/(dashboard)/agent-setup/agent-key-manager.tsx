@@ -71,7 +71,7 @@ export function AgentKeyManager({ initialKeys }: { initialKeys: AgentApiKey[] })
   return (
     <div className="space-y-4">
       <section className="rounded-md border border-zinc-200 bg-white">
-        <div className="border-b border-zinc-200 px-4 py-3">
+        <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3">
           <h2 className="text-sm font-semibold text-zinc-950">Create an agent key</h2>
         </div>
         <form onSubmit={createKey} className="flex flex-col gap-3 px-4 py-4 sm:flex-row">
@@ -117,7 +117,7 @@ export function AgentKeyManager({ initialKeys }: { initialKeys: AgentApiKey[] })
       )}
 
       <section className="rounded-md border border-zinc-200 bg-white">
-        <div className="border-b border-zinc-200 px-4 py-3">
+        <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3">
           <h2 className="text-sm font-semibold text-zinc-950">Agent keys</h2>
         </div>
         {keys.length > 0 ? (

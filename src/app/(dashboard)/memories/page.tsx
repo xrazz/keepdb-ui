@@ -13,7 +13,7 @@ export default async function MemoriesPage() {
       )}
 
       <div className="rounded-md border border-zinc-200 bg-white">
-        <div className="grid grid-cols-[180px_1fr_140px] border-b border-zinc-200 px-4 py-3 text-xs font-medium text-zinc-500">
+        <div className="grid grid-cols-[180px_1fr_140px] border-b border-zinc-200 bg-zinc-50 px-4 py-3 text-xs font-medium text-zinc-500">
           <span>Database</span>
           <span>Memory</span>
           <span>Created</span>

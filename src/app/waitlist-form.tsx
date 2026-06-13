@@ -54,7 +54,7 @@ export function WaitlistForm() {
         <button
           type="submit"
           disabled={state === 'loading'}
-          className="h-12 rounded-none bg-black px-5 text-sm font-semibold text-white transition-colors hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60 shrink-0"
+          className="h-12 rounded-none bg-black px-5 text-sm font-medium text-white transition-colors hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60 shrink-0"
         >
           {state === 'loading' ? 'Joining...' : 'Join V1 beta'}
         </button>

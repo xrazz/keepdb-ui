@@ -105,7 +105,7 @@ export function AgentKeyManager({
     <div className="space-y-4">
       <section className="rounded-md border border-zinc-200 bg-white">
         <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3">
-          <h2 className="text-sm font-semibold text-zinc-950">Create an agent key</h2>
+          <h2 className="text-sm font-medium text-zinc-950">Create an agent key</h2>
         </div>
         <form onSubmit={createKey} className="space-y-3 px-4 py-4">
           <input
@@ -174,7 +174,7 @@ export function AgentKeyManager({
 
       {rawKey && (
         <section className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-4">
-          <p className="text-sm font-semibold text-emerald-950">Copy this key now</p>
+          <p className="text-sm font-medium text-emerald-950">Copy this key now</p>
           <p className="mt-1 text-xs text-emerald-800">It will only be shown once.</p>
           <div className="mt-3 flex gap-2">
             <code className="min-w-0 flex-1 overflow-x-auto rounded-md border border-emerald-200 bg-white px-3 py-2 text-xs text-zinc-900">
@@ -199,7 +199,7 @@ export function AgentKeyManager({
 
       <section className="rounded-md border border-zinc-200 bg-white">
         <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3">
-          <h2 className="text-sm font-semibold text-zinc-950">Agent keys</h2>
+          <h2 className="text-sm font-medium text-zinc-950">Agent keys</h2>
         </div>
         {keys.length > 0 ? (
           <div className="divide-y divide-zinc-200">

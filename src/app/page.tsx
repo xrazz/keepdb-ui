@@ -84,12 +84,12 @@ export default function Page() {
             className="w-full px-8 py-6 flex items-center justify-between"
           >
             <Link href="/" className="flex items-center gap-2" aria-label="KeepDB home">
-              <div className="text-lg font-bold tracking-tight">
+              <div className="text-lg font-medium tracking-tight">
                 <span className="text-zinc-900">Keep</span>
                 <span className="text-zinc-600">DB</span>
               </div>
             </Link>
-            <div className="flex items-center gap-5 text-sm font-semibold tracking-tight">
+            <div className="flex items-center gap-5 text-sm font-medium tracking-tight">
               <Link href="#features" className="text-gray-600 hover:text-black transition-colors">
                 Features
               </Link>
@@ -119,7 +119,7 @@ export default function Page() {
           >
             <h1
               id="hero-heading"
-              className={`${lora.className} text-4xl md:text-5xl font-bold tracking-tight leading-[1.05] mb-6 text-gray-900 text-left max-w-2xl`}
+              className={`${lora.className} text-4xl md:text-5xl font-medium tracking-tight leading-[1.05] mb-6 text-gray-900 text-left max-w-2xl`}
             >
               Memory for your agents. A private DB for everything else.
             </h1>
@@ -140,7 +140,7 @@ export default function Page() {
         <main className="flex-grow">
           <section id="features" className="w-full border-t border-gray-200">
             <div className="px-8 py-12 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
                 The database you reach for when context matters.
               </h2>
 
@@ -159,7 +159,7 @@ export default function Page() {
             </div>
 
             <div className="px-8 py-12 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
                 Pipe data in from anywhere.
               </h2>
 
@@ -220,7 +220,7 @@ export default function Page() {
             </div>
 
             <div className="px-8 py-12 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
                 Use it for the data that gets lost first.
               </h2>
 
@@ -234,7 +234,7 @@ export default function Page() {
                   ['Shared agent memory', 'Give multiple agents the same project context.'],
                 ].map(([title, body]) => (
                   <div key={title} className="bg-white p-5">
-                    <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
+                    <h3 className="text-sm font-medium text-gray-900">{title}</h3>
                     <p className="mt-2 text-sm font-medium leading-relaxed text-gray-600">{body}</p>
                   </div>
                 ))}
@@ -242,7 +242,7 @@ export default function Page() {
             </div>
 
             <div className="px-8 py-12">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
                 One account. Multiple folders.
               </h2>
 
@@ -282,7 +282,7 @@ agent-memory
 
           <section className="w-full border-t border-gray-200">
             <div className="px-8 py-16 flex flex-col items-center text-center">
-              <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-4">
+              <h2 className="text-2xl md:text-3xl font-medium text-gray-900 mb-4">
                 Stop re-explaining yourself to every new chat window.
               </h2>
 
@@ -298,7 +298,7 @@ agent-memory
           </section>
 
           <section id="faq" className="w-full px-8 pb-24">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6 text-left">
+            <h2 className="text-lg font-medium text-gray-900 mb-6 text-left">
               Common Questions
             </h2>
             <div className="border border-gray-200 divide-y divide-gray-200 rounded-none">
@@ -306,7 +306,7 @@ agent-memory
                 <div key={i}>
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full flex items-center justify-between px-5 py-4 text-sm font-semibold text-gray-900 text-left hover:bg-gray-50 transition-colors"
+                    className="w-full flex items-center justify-between px-5 py-4 text-sm font-medium text-gray-900 text-left hover:bg-gray-50 transition-colors"
                   >
                     {faq.question}
                     <span className="ml-4 text-gray-400 font-mono">{openFaq === i ? '−' : '+'}</span>

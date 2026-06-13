@@ -61,12 +61,12 @@ export default function DocsPage() {
           className="max-w-2xl mx-auto px-6 py-6 flex items-center justify-between"
         >
           <Link href="/" className="flex items-center gap-2" aria-label="KeepDB home">
-            <div className="text-lg font-bold tracking-tight">
+            <div className="text-lg font-medium tracking-tight">
               <span className="text-zinc-900">Keep</span>
               <span className="text-zinc-600">DB</span>
             </div>
           </Link>
-          <div className="flex gap-5 text-sm font-semibold tracking-tight">
+          <div className="flex gap-5 text-sm font-medium tracking-tight">
             <Link href="/docs" className="text-gray-600 hover:text-black transition-colors">
               Docs
             </Link>
@@ -80,7 +80,7 @@ export default function DocsPage() {
         </nav>
 
         <header className="max-w-2xl mx-auto px-6 pt-12 md:pt-16 pb-24">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight leading-tight text-gray-900">
+          <h1 className="text-3xl md:text-4xl font-medium tracking-tight leading-tight text-gray-900">
             API Reference
           </h1>
           <p className="text-sm text-gray-500 mt-2">Last updated: June 2026</p>
@@ -90,7 +90,7 @@ export default function DocsPage() {
       <main className="max-w-2xl mx-auto px-6 -mt-8 pb-24 relative z-10">
         <div className="text-sm text-gray-600 leading-relaxed space-y-10">
           <section>
-            <h2 className="text-sm text-gray-900 font-bold mb-3">KeepDB V1</h2>
+            <h2 className="text-sm text-gray-900 font-medium mb-3">KeepDB V1</h2>
             <p>
               KeepDB is a small memory API for agents and indie apps. One API key can save
               full memories into named collections, then search them later with hybrid retrieval,
@@ -100,7 +100,7 @@ export default function DocsPage() {
           </section>
 
           <section>
-            <h2 className="text-sm text-gray-900 font-bold mb-3">Authentication</h2>
+            <h2 className="text-sm text-gray-900 font-medium mb-3">Authentication</h2>
             <p>
               All memory endpoints require a bearer API key. Missing keys return{' '}
               <span className="font-mono">401 API key is required</span>. Invalid keys return{' '}
@@ -110,7 +110,7 @@ export default function DocsPage() {
           </section>
 
           <section>
-            <h2 className="text-sm text-gray-900 font-bold mb-3">Save a memory</h2>
+            <h2 className="text-sm text-gray-900 font-medium mb-3">Save a memory</h2>
             <p>
               Send text content and a collection name. If the collection does not exist, KeepDB
               creates it for the authenticated user.
@@ -129,7 +129,7 @@ export default function DocsPage() {
           </section>
 
           <section>
-            <h2 className="text-sm text-gray-900 font-bold mb-3">Search memory</h2>
+            <h2 className="text-sm text-gray-900 font-medium mb-3">Search memory</h2>
             <p>
               Search is global by default. Add a collection, folder, tag, type, or date filter when
               the scope is clear.
@@ -141,14 +141,14 @@ export default function DocsPage() {
           </section>
 
           <section>
-            <h2 className="text-sm text-gray-900 font-bold mb-3">Endpoints</h2>
+            <h2 className="text-sm text-gray-900 font-medium mb-3">Endpoints</h2>
             <div className="space-y-5">
               {endpoints.map((endpoint) => (
                 <div key={`${endpoint.method}-${endpoint.path}`}>
                   <p className="font-mono text-xs text-gray-500">
                     {endpoint.method} {endpoint.path}
                   </p>
-                  <h3 className="text-sm text-gray-900 font-bold mt-1">{endpoint.title}</h3>
+                  <h3 className="text-sm text-gray-900 font-medium mt-1">{endpoint.title}</h3>
                   <p>{endpoint.description}</p>
                 </div>
               ))}
@@ -156,7 +156,7 @@ export default function DocsPage() {
           </section>
 
           <section>
-            <h2 className="text-sm text-gray-900 font-bold mb-3">Search filters</h2>
+            <h2 className="text-sm text-gray-900 font-medium mb-3">Search filters</h2>
             <p>
               Supported filters are <span className="font-mono">query</span>,{' '}
               <span className="font-mono">limit</span>, <span className="font-mono">threshold</span>,{' '}

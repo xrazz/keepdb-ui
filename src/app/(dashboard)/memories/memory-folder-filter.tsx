@@ -26,7 +26,7 @@ export function MemoryFolderFilter({
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="flex max-w-[160px] items-center gap-1 rounded-md px-1.5 py-1 text-left text-xs font-semibold text-zinc-700 transition-colors hover:bg-zinc-100"
+        className="flex max-w-[160px] items-center gap-1 rounded-md px-1.5 py-1 text-left text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
         aria-haspopup="menu"
         aria-expanded={open}
       >
@@ -44,7 +44,7 @@ export function MemoryFolderFilter({
             role="menuitem"
             onClick={() => selectCollection('')}
             className={`flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-xs ${
-              selectedCollection ? 'text-zinc-600 hover:bg-zinc-50' : 'bg-zinc-50 font-semibold text-zinc-950'
+              selectedCollection ? 'text-zinc-600 hover:bg-zinc-50' : 'bg-zinc-50 font-medium text-zinc-950'
             }`}
           >
             <span>All</span>
@@ -57,7 +57,7 @@ export function MemoryFolderFilter({
               onClick={() => selectCollection(collection.name)}
               className={`flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-xs ${
                 selectedCollection === collection.name
-                  ? 'bg-zinc-50 font-semibold text-zinc-950'
+                  ? 'bg-zinc-50 font-medium text-zinc-950'
                   : 'text-zinc-600 hover:bg-zinc-50'
               }`}
             >

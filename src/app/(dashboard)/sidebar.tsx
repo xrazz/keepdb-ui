@@ -27,7 +27,7 @@ export function Sidebar({ userEmail }: { userEmail: string }) {
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-zinc-200 bg-zinc-50">
       <div className="flex h-16 items-center border-b border-zinc-200 px-5">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="text-lg font-bold tracking-tight">
+          <div className="text-lg font-medium tracking-tight">
             <span className="text-zinc-900">Keep</span>
             <span className="text-zinc-600">DB</span>
           </div>

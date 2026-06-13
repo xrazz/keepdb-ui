@@ -1,6 +1,6 @@
 'use client';
 
-import { Bot, Database, Home, Search } from 'lucide-react';
+import { Database, Home, KeyRound, Search } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useOptimistic } from 'react';
@@ -9,7 +9,7 @@ const navItems = [
   { label: 'Overview', href: '/dashboard', icon: Home },
   { label: 'Search', href: '/search', icon: Search },
   { label: 'Memories', href: '/memories', icon: Database },
-  { label: 'Agents', href: '/agent-setup', icon: Bot },
+  { label: 'API keys', href: '/agent-setup', icon: KeyRound },
 ];
 
 export function Sidebar({ userEmail }: { userEmail: string }) {

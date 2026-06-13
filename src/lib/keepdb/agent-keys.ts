@@ -32,6 +32,11 @@ type AgentKeyRow = {
   created_at: Date | string;
 };
 
+type CollectionRow = {
+  id: string;
+  name: string;
+};
+
 function formatAgentKey(row: AgentKeyRow): AgentApiKey {
   return {
     id: row.id,
@@ -74,26 +79,30 @@ type CreateAgentApiKeyInput = {
   name: string;
   access: AgentKeyAccess;
   collectionId?: string | null;
+  collectionName?: string | null;
 };
 
 export async function createAgentApiKey({
   name,
   access,
   collectionId = null,
+  collectionName: inputCollectionName = null,
 }: CreateAgentApiKeyInput) {
   const keepUser = await getOrCreateKeepDbUser();
   const db = getKeepDbSql();
   const rawKey = createApiKey();
   const cleanName = name.trim() || 'Agent key';
   const cleanCollectionId = collectionId?.trim() || null;
+  const cleanCollectionName = inputCollectionName?.trim() || null;
   const scopes = scopesForAccess(access);
-  let collectionName: string | null = null;
+  let finalCollectionId = cleanCollectionId;
+  let resolvedCollectionName: string | null = null;
 
-  if (cleanCollectionId) {
+  if (finalCollectionId) {
     const rows = await db`
       SELECT id, name
       FROM collections
-      WHERE id = ${cleanCollectionId}
+      WHERE id = ${finalCollectionId}
         AND user_id = ${keepUser.id}
         AND deleted_at IS NULL
       LIMIT 1
@@ -103,7 +112,21 @@ export async function createAgentApiKey({
       throw new Error('Selected folder was not found.');
     }
 
-    collectionName = rows[0].name;
+    resolvedCollectionName = rows[0].name;
+  } else if (cleanCollectionName) {
+    const [collection] = await db`
+      INSERT INTO collections (user_id, name)
+      VALUES (${keepUser.id}, ${cleanCollectionName})
+      ON CONFLICT (user_id, name)
+      DO UPDATE SET
+        updated_at = NOW(),
+        deleted_at = NULL
+      RETURNING id, name
+    `;
+
+    const createdCollection = collection as CollectionRow;
+    finalCollectionId = createdCollection.id;
+    resolvedCollectionName = createdCollection.name;
   }
 
   const [row] = await db`
@@ -119,7 +142,7 @@ export async function createAgentApiKey({
     )
     VALUES (
       ${keepUser.id},
-      ${cleanCollectionId},
+      ${finalCollectionId},
       ${cleanName},
       ${getKeyPrefix(rawKey)},
       ${hashApiKey(rawKey)},
@@ -133,7 +156,7 @@ export async function createAgentApiKey({
   return {
     key: {
       ...formatAgentKey(row as unknown as AgentKeyRow),
-      collectionName,
+      collectionName: resolvedCollectionName,
     },
     rawKey,
   };

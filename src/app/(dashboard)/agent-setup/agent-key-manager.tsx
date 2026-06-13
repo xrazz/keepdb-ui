@@ -37,10 +37,13 @@ export function AgentKeyManager({
   collections: KeepDbCollection[];
 }) {
   const [keys, setKeys] = useState<AgentApiKey[]>(initialKeys);
-  const [name, setName] = useState('Codex agent');
+  const [folderOptions, setFolderOptions] = useState<KeepDbCollection[]>(collections);
+  const [name, setName] = useState('API key');
   const [access, setAccess] = useState<AgentKeyAccess>('read_write');
   const [scopeMode, setScopeMode] = useState<'global' | 'folder'>('global');
+  const [folderMode, setFolderMode] = useState<'existing' | 'new'>('existing');
   const [collectionId, setCollectionId] = useState(collections[0]?.id || '');
+  const [newCollectionName, setNewCollectionName] = useState('');
   const [rawKey, setRawKey] = useState('');
   const [message, setMessage] = useState('');
   const [creating, setCreating] = useState(false);
@@ -57,13 +60,14 @@ export function AgentKeyManager({
       body: JSON.stringify({
         name,
         access,
-        collectionId: scopeMode === 'folder' ? collectionId : null,
+        collectionId: scopeMode === 'folder' && folderMode === 'existing' ? collectionId : null,
+        collectionName: scopeMode === 'folder' && folderMode === 'new' ? newCollectionName : null,
       }),
     });
     const body = (await response.json()) as ApiResponse;
 
     if (body.success && 'rawKey' in body) {
-      const selectedCollection = collections.find((collection) => collection.id === collectionId);
+      const selectedCollection = folderOptions.find((collection) => collection.id === collectionId);
       setRawKey(body.rawKey);
       setCopied(false);
       setKeys((current) => [
@@ -71,10 +75,34 @@ export function AgentKeyManager({
           ...body.key,
           collectionName:
             body.key.collectionName ||
-            (scopeMode === 'folder' ? selectedCollection?.name || null : null),
+            (scopeMode === 'folder'
+              ? selectedCollection?.name || newCollectionName.trim() || null
+              : null),
         },
         ...current,
       ]);
+      if (body.key.collectionId && body.key.collectionName) {
+        const createdCollectionId = body.key.collectionId;
+        const createdCollectionName = body.key.collectionName;
+        setFolderOptions((current) =>
+          current.some((collection) => collection.id === createdCollectionId)
+            ? current
+            : [
+                ...current,
+                {
+                  id: createdCollectionId,
+                  name: createdCollectionName,
+                  memories: 0,
+                  contentBytes: 0,
+                  createdAt: body.key.createdAt,
+                  updatedAt: body.key.createdAt,
+                },
+              ],
+        );
+        setCollectionId(createdCollectionId);
+        setFolderMode('existing');
+        setNewCollectionName('');
+      }
       setMessage('');
     } else if (!body.success) {
       setMessage(body.message);
@@ -105,7 +133,7 @@ export function AgentKeyManager({
     <div className="space-y-4">
       <section className="rounded-md border border-zinc-200 bg-white">
         <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3">
-          <h2 className="text-sm font-medium text-zinc-950">Create an agent key</h2>
+          <h2 className="text-sm font-medium text-zinc-950">Create API or MCP key</h2>
         </div>
         <form onSubmit={createKey} className="space-y-3 px-4 py-4">
           <input
@@ -133,7 +161,10 @@ export function AgentKeyManager({
               <span className="mb-1 block text-xs font-medium text-zinc-500">Scope</span>
               <select
                 value={scopeMode}
-                onChange={(event) => setScopeMode(event.target.value as 'global' | 'folder')}
+                onChange={(event) => {
+                  setScopeMode(event.target.value as 'global' | 'folder');
+                  setMessage('');
+                }}
                 className="h-10 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-zinc-400"
               >
                 <option value="global">All folders</option>
@@ -144,27 +175,49 @@ export function AgentKeyManager({
             <label className="block">
               <span className="mb-1 block text-xs font-medium text-zinc-500">Folder</span>
               <select
-                value={collectionId}
-                onChange={(event) => setCollectionId(event.target.value)}
-                disabled={scopeMode !== 'folder' || collections.length === 0}
+                value={folderMode === 'new' ? '__new__' : collectionId}
+                onChange={(event) => {
+                  if (event.target.value === '__new__') {
+                    setFolderMode('new');
+                    return;
+                  }
+                  setFolderMode('existing');
+                  setCollectionId(event.target.value);
+                }}
+                disabled={scopeMode !== 'folder'}
                 className="h-10 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-zinc-400 disabled:bg-zinc-50 disabled:text-zinc-400"
               >
-                {collections.length === 0 ? (
+                {folderOptions.length === 0 ? (
                   <option value="">No folders yet</option>
                 ) : (
-                  collections.map((collection) => (
+                  folderOptions.map((collection) => (
                     <option key={collection.id} value={collection.id}>
                       {collection.name}
                     </option>
                   ))
                 )}
+                <option value="__new__">Create new folder...</option>
               </select>
             </label>
           </div>
 
+          {scopeMode === 'folder' && folderMode === 'new' && (
+            <input
+              value={newCollectionName}
+              onChange={(event) => setNewCollectionName(event.target.value)}
+              className="h-10 w-full rounded-md border border-zinc-200 px-3 text-sm outline-none focus:border-zinc-400"
+              placeholder="New folder name"
+            />
+          )}
+
           <button
             type="submit"
-            disabled={creating || (scopeMode === 'folder' && !collectionId)}
+            disabled={
+              creating ||
+              (scopeMode === 'folder' &&
+                ((folderMode === 'existing' && !collectionId) ||
+                  (folderMode === 'new' && !newCollectionName.trim())))
+            }
             className="h-10 rounded-md bg-zinc-950 px-4 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
           >
             {creating ? 'Creating...' : 'Create key'}
@@ -199,7 +252,7 @@ export function AgentKeyManager({
 
       <section className="rounded-md border border-zinc-200 bg-white">
         <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3">
-          <h2 className="text-sm font-medium text-zinc-950">Agent keys</h2>
+          <h2 className="text-sm font-medium text-zinc-950">API and MCP keys</h2>
         </div>
         {keys.length > 0 ? (
           <div className="divide-y divide-zinc-200">
@@ -230,7 +283,7 @@ export function AgentKeyManager({
             ))}
           </div>
         ) : (
-          <div className="px-4 py-5 text-sm text-zinc-500">No agent keys yet.</div>
+          <div className="px-4 py-5 text-sm text-zinc-500">No API keys yet.</div>
         )}
       </section>
     </div>

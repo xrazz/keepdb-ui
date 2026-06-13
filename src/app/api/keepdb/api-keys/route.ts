@@ -23,10 +23,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => ({}));
     const access = accessModes.has(body.access) ? (body.access as AgentKeyAccess) : 'read_write';
     const collectionId = typeof body.collectionId === 'string' ? body.collectionId : null;
+    const collectionName = typeof body.collectionName === 'string' ? body.collectionName : null;
     const created = await createAgentApiKey({
       name: String(body.name || 'Agent key'),
       access,
       collectionId,
+      collectionName,
     });
     return NextResponse.json({ success: true, ...created });
   } catch (error) {

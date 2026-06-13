@@ -1,9 +1,8 @@
 import { MemoryFolderFilter } from './memory-folder-filter';
+import { MemoryRows } from './memory-rows';
 import {
-  formatKeepDbDate,
   listKeepDbCollections,
   listKeepDbMemories,
-  previewMemory,
 } from '@/lib/keepdb/client';
 
 type MemoriesPageProps = {
@@ -34,17 +33,7 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
           <span>Memory</span>
           <span>Created</span>
         </div>
-        {memories.length > 0 ? (
-          memories.map((memory) => (
-            <div key={memory.memoryId} className="grid grid-cols-[180px_1fr_140px] px-4 py-4 text-sm">
-              <span className="font-medium text-zinc-950">{memory.collection}</span>
-              <span className="text-zinc-600">{previewMemory(memory)}</span>
-              <span className="text-zinc-400">{formatKeepDbDate(memory.createdAt)}</span>
-            </div>
-          ))
-        ) : (
-          <div className="px-4 py-5 text-sm text-zinc-500">No memories found.</div>
-        )}
+        <MemoryRows memories={memories} />
       </div>
     </div>
   );

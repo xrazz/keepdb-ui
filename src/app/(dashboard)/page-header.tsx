@@ -7,7 +7,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard': 'Overview',
   '/search': 'Search',
   '/memories': 'Memories',
-  '/agent-setup': 'Agents',
+  '/agent-setup': 'API keys',
 };
 
 export function PageHeader({ userEmail }: { userEmail: string }) {

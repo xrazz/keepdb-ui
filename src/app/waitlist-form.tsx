@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 
 type WaitlistState = 'idle' | 'loading' | 'success' | 'error';
 
-export function WaitlistForm() {
+export function WaitlistForm({ align = 'center' }: { align?: 'left' | 'center' }) {
   const [email, setEmail] = useState('');
   const [state, setState] = useState<WaitlistState>('idle');
   const [message, setMessage] = useState('');
@@ -40,7 +40,7 @@ export function WaitlistForm() {
   }
 
   return (
-    <form onSubmit={submit} className="mx-auto w-full max-w-md">
+    <form onSubmit={submit} className={align === 'left' ? 'w-full max-w-xl' : 'mx-auto w-full max-w-xl'}>
       <div className="flex flex-col gap-2 sm:flex-row">
         <input
           type="email"
@@ -48,13 +48,13 @@ export function WaitlistForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@example.com"
-          className="h-12 w-full sm:flex-1 rounded-none border border-gray-400 px-4 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-gray-500"
+          className="h-12 w-full rounded-md border border-gray-200 bg-gray-100 px-4 text-sm font-medium outline-none transition-colors placeholder:text-gray-500  focus:border-gray-300 sm:flex-1"
           disabled={state === 'loading'}
         />
         <button
           type="submit"
           disabled={state === 'loading'}
-          className="h-12 rounded-none bg-black px-5 text-sm font-medium text-white transition-colors hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60 shrink-0"
+          className="h-12 shrink-0 rounded-full bg-black px-6 text-base font-medium text-white transition-colors hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {state === 'loading' ? 'Joining...' : 'Join V1 beta'}
         </button>

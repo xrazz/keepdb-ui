@@ -42,3 +42,19 @@ html {
 .cl-footerActionLink {
   display: none !important;
 }
+
+.font-baskervville {
+  font-family: Baskervville, Georgia, "Inter Display", Inter, -apple-system, "system-ui", sans-serif;
+}
+
+.beta-shimmer {
+  background: linear-gradient(110deg, #6d28d9 8%, #8b5cf6 18%, #6d28d9 33%);
+  background-size: 200% 100%;
+  animation: beta-shimmer 2.4s linear infinite;
+}
+
+@keyframes beta-shimmer {
+  to {
+    background-position-x: -200%;
+  }
+}

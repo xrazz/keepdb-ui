@@ -29,13 +29,10 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
       )}
 
       <div className="rounded-md border border-zinc-200 bg-white">
-        <div className="flex flex-col gap-3 border-b border-zinc-200 bg-zinc-50 px-4 py-3 md:flex-row md:items-center md:justify-between">
-          <div className="grid flex-1 grid-cols-[180px_1fr_140px] text-xs font-medium text-zinc-500">
-            <span>Database</span>
-            <span>Memory</span>
-            <span>Created</span>
-          </div>
+        <div className="grid grid-cols-[180px_1fr_140px] border-b border-zinc-200 bg-zinc-50 px-4 py-3 text-xs font-medium text-zinc-500">
           <MemoryFolderFilter collections={collections} selectedCollection={selectedCollection} />
+          <span>Memory</span>
+          <span>Created</span>
         </div>
         {memories.length > 0 ? (
           memories.map((memory) => (

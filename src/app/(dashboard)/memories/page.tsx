@@ -1,7 +1,23 @@
-import { formatKeepDbDate, listKeepDbMemories, previewMemory } from '@/lib/keepdb/client';
+import Link from 'next/link';
+import {
+  formatKeepDbDate,
+  listKeepDbCollections,
+  listKeepDbMemories,
+  previewMemory,
+} from '@/lib/keepdb/client';
 
-export default async function MemoriesPage() {
-  const response = await listKeepDbMemories(50);
+type MemoriesPageProps = {
+  searchParams?: Promise<{ collection?: string }>;
+};
+
+export default async function MemoriesPage({ searchParams }: MemoriesPageProps) {
+  const params = await searchParams;
+  const selectedCollection = params?.collection?.trim() || '';
+  const [collectionsResponse, response] = await Promise.all([
+    listKeepDbCollections(),
+    listKeepDbMemories(50, selectedCollection),
+  ]);
+  const collections = collectionsResponse.success ? collectionsResponse.data.results : [];
   const memories = response.success ? response.data.results : [];
 
   return (
@@ -11,6 +27,38 @@ export default async function MemoriesPage() {
           {response.message}
         </div>
       )}
+
+      <div className="mb-4 rounded-md border border-zinc-200 bg-white">
+        <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3">
+          <h2 className="text-sm font-semibold text-zinc-950">Folders</h2>
+        </div>
+        <div className="flex flex-wrap gap-2 px-4 py-3">
+          <Link
+            href="/memories"
+            className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+              selectedCollection
+                ? 'border-zinc-200 text-zinc-600 hover:bg-zinc-50'
+                : 'border-zinc-950 bg-zinc-950 text-white'
+            }`}
+          >
+            All
+          </Link>
+          {collections.map((collection) => (
+            <Link
+              key={collection.id}
+              href={`/memories?collection=${encodeURIComponent(collection.name)}`}
+              className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+                selectedCollection === collection.name
+                  ? 'border-zinc-950 bg-zinc-950 text-white'
+                  : 'border-zinc-200 text-zinc-600 hover:bg-zinc-50'
+              }`}
+            >
+              {collection.name}
+              <span className="ml-1 text-[10px] opacity-60">{collection.memories}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
 
       <div className="rounded-md border border-zinc-200 bg-white">
         <div className="grid grid-cols-[180px_1fr_140px] border-b border-zinc-200 bg-zinc-50 px-4 py-3 text-xs font-medium text-zinc-500">

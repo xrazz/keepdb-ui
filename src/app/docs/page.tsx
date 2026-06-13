@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-const API_BASE = 'https://keepdb-api-production.up.railway.app';
+const API_BASE = 'https://api.keepdb.dev';
 
 const endpoints = [
   {

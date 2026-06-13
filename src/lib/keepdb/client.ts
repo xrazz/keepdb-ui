@@ -69,8 +69,10 @@ export async function listKeepDbCollections() {
   return keepDbFetch<{ results: KeepDbCollection[] }>('/collections');
 }
 
-export async function listKeepDbMemories(limit = 50) {
-  return keepDbFetch<{ results: KeepDbMemory[] }>(`/memories?limit=${limit}`);
+export async function listKeepDbMemories(limit = 50, collection?: string) {
+  const params = new URLSearchParams({ limit: String(limit) });
+  if (collection) params.set('collection', collection);
+  return keepDbFetch<{ results: KeepDbMemory[] }>(`/memories?${params}`);
 }
 
 export async function searchKeepDbMemories(query: string, limit = 10) {

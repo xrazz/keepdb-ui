@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAgentApiKey, listAgentApiKeys } from '@/lib/keepdb/agent-keys';
+import { createAgentApiKey, listAgentApiKeys, type AgentKeyAccess } from '@/lib/keepdb/agent-keys';
+
+const accessModes = new Set(['read', 'write', 'read_write']);
 
 export async function GET() {
   try {
@@ -19,7 +21,13 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}));
-    const created = await createAgentApiKey(String(body.name || 'Agent key'));
+    const access = accessModes.has(body.access) ? (body.access as AgentKeyAccess) : 'read_write';
+    const collectionId = typeof body.collectionId === 'string' ? body.collectionId : null;
+    const created = await createAgentApiKey({
+      name: String(body.name || 'Agent key'),
+      access,
+      collectionId,
+    });
     return NextResponse.json({ success: true, ...created });
   } catch (error) {
     return NextResponse.json(

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
-const API_BASE = 'https://keepdb-api-production.up.railway.app';
+const API_BASE = 'https://api.keepdb.dev';
 
 function buildInstructions(apiKey: string, defaultCollection: string) {
   const key = apiKey.trim() || 'keep_sk_your_api_key';

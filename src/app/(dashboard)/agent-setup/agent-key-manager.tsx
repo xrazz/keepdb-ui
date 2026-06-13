@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import type { AgentApiKey } from '@/lib/keepdb/agent-keys';
+import type { AgentApiKey, AgentKeyAccess } from '@/lib/keepdb/agent-keys';
+import type { KeepDbCollection } from '@/lib/keepdb/client';
 
 type ApiResponse =
   | { success: true; results: AgentApiKey[] }
@@ -18,9 +19,28 @@ function formatDate(value: string | null) {
   }).format(new Date(value));
 }
 
-export function AgentKeyManager({ initialKeys }: { initialKeys: AgentApiKey[] }) {
+function scopeLabel(scopes: string[]) {
+  const canRead = scopes.includes('memory:read');
+  const canWrite = scopes.includes('memory:write');
+
+  if (canRead && canWrite) return 'Read + write';
+  if (canRead) return 'Read only';
+  if (canWrite) return 'Write only';
+  return 'No memory access';
+}
+
+export function AgentKeyManager({
+  initialKeys,
+  collections,
+}: {
+  initialKeys: AgentApiKey[];
+  collections: KeepDbCollection[];
+}) {
   const [keys, setKeys] = useState<AgentApiKey[]>(initialKeys);
   const [name, setName] = useState('Codex agent');
+  const [access, setAccess] = useState<AgentKeyAccess>('read_write');
+  const [scopeMode, setScopeMode] = useState<'global' | 'folder'>('global');
+  const [collectionId, setCollectionId] = useState(collections[0]?.id || '');
   const [rawKey, setRawKey] = useState('');
   const [message, setMessage] = useState('');
   const [creating, setCreating] = useState(false);
@@ -34,14 +54,27 @@ export function AgentKeyManager({ initialKeys }: { initialKeys: AgentApiKey[] })
     const response = await fetch('/api/keepdb/api-keys', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({
+        name,
+        access,
+        collectionId: scopeMode === 'folder' ? collectionId : null,
+      }),
     });
     const body = (await response.json()) as ApiResponse;
 
     if (body.success && 'rawKey' in body) {
+      const selectedCollection = collections.find((collection) => collection.id === collectionId);
       setRawKey(body.rawKey);
       setCopied(false);
-      setKeys((current) => [body.key, ...current]);
+      setKeys((current) => [
+        {
+          ...body.key,
+          collectionName:
+            body.key.collectionName ||
+            (scopeMode === 'folder' ? selectedCollection?.name || null : null),
+        },
+        ...current,
+      ]);
       setMessage('');
     } else if (!body.success) {
       setMessage(body.message);
@@ -74,16 +107,64 @@ export function AgentKeyManager({ initialKeys }: { initialKeys: AgentApiKey[] })
         <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3">
           <h2 className="text-sm font-semibold text-zinc-950">Create an agent key</h2>
         </div>
-        <form onSubmit={createKey} className="flex flex-col gap-3 px-4 py-4 sm:flex-row">
+        <form onSubmit={createKey} className="space-y-3 px-4 py-4">
           <input
             value={name}
             onChange={(event) => setName(event.target.value)}
-            className="h-10 min-w-0 flex-1 rounded-md border border-zinc-200 px-3 text-sm outline-none focus:border-zinc-400"
+            className="h-10 w-full rounded-md border border-zinc-200 px-3 text-sm outline-none focus:border-zinc-400"
             placeholder="Key name"
           />
+
+          <div className="grid gap-3 md:grid-cols-3">
+            <label className="block">
+              <span className="mb-1 block text-xs font-medium text-zinc-500">Access</span>
+              <select
+                value={access}
+                onChange={(event) => setAccess(event.target.value as AgentKeyAccess)}
+                className="h-10 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-zinc-400"
+              >
+                <option value="read_write">Read + write</option>
+                <option value="read">Read only</option>
+                <option value="write">Write only</option>
+              </select>
+            </label>
+
+            <label className="block">
+              <span className="mb-1 block text-xs font-medium text-zinc-500">Scope</span>
+              <select
+                value={scopeMode}
+                onChange={(event) => setScopeMode(event.target.value as 'global' | 'folder')}
+                className="h-10 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-zinc-400"
+              >
+                <option value="global">All folders</option>
+                <option value="folder">One folder</option>
+              </select>
+            </label>
+
+            <label className="block">
+              <span className="mb-1 block text-xs font-medium text-zinc-500">Folder</span>
+              <select
+                value={collectionId}
+                onChange={(event) => setCollectionId(event.target.value)}
+                disabled={scopeMode !== 'folder' || collections.length === 0}
+                className="h-10 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-zinc-400 disabled:bg-zinc-50 disabled:text-zinc-400"
+              >
+                {collections.length === 0 ? (
+                  <option value="">No folders yet</option>
+                ) : (
+                  collections.map((collection) => (
+                    <option key={collection.id} value={collection.id}>
+                      {collection.name}
+                    </option>
+                  ))
+                )}
+              </select>
+            </label>
+          </div>
+
           <button
             type="submit"
-            disabled={creating}
+            disabled={creating || (scopeMode === 'folder' && !collectionId)}
             className="h-10 rounded-md bg-zinc-950 px-4 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
           >
             {creating ? 'Creating...' : 'Create key'}
@@ -126,9 +207,17 @@ export function AgentKeyManager({ initialKeys }: { initialKeys: AgentApiKey[] })
               <div key={key.id} className="flex items-center justify-between gap-4 px-4 py-4">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-zinc-950">{key.name}</p>
-                  <p className="mt-1 font-mono text-xs text-zinc-500">
-                    {key.keyPrefix}... - last used {formatDate(key.lastUsedAt)}
-                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <span className="rounded border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs font-medium text-zinc-600">
+                      {scopeLabel(key.scopes)}
+                    </span>
+                    <span className="rounded border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs font-medium text-zinc-600">
+                      {key.collectionName ? key.collectionName : 'All folders'}
+                    </span>
+                    <span className="font-mono text-xs text-zinc-500">
+                      {key.keyPrefix}... - last used {formatDate(key.lastUsedAt)}
+                    </span>
+                  </div>
                 </div>
                 <button
                   type="button"

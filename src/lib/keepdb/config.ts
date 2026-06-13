@@ -1,4 +1,4 @@
-const DEFAULT_KEEPDB_API_BASE = 'https://keepdb-api-production.up.railway.app';
+const DEFAULT_KEEPDB_API_BASE = 'https://api.keepdb.dev';
 
 export function getKeepDbApiBase() {
   return (process.env.KEEPDB_API_BASE || DEFAULT_KEEPDB_API_BASE).replace(/\/$/, '');

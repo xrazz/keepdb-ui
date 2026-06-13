@@ -17,6 +17,7 @@ const clerkAppearance = {
     footerAction: 'hidden',
     footerActionText: 'hidden',
     footerActionLink: 'hidden',
+    logoBox: 'hidden',
   },
 };
 

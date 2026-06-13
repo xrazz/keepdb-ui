@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 
 const API_BASE = 'https://keepdb-api-production.up.railway.app';
@@ -62,13 +61,10 @@ export default function DocsPage() {
           className="max-w-2xl mx-auto px-6 py-6 flex items-center justify-between"
         >
           <Link href="/" className="flex items-center gap-2" aria-label="KeepDB home">
-            <Image
-              src="/keepdb-logo.png"
-              alt="KeepDB logo"
-              width={56}
-              height={56}
-              className="rounded-md"
-            />
+            <div className="text-lg font-bold tracking-tight">
+              <span className="text-zinc-900">Keep</span>
+              <span className="text-zinc-600">DB</span>
+            </div>
           </Link>
           <div className="flex gap-5 text-sm font-semibold tracking-tight">
             <Link href="/docs" className="text-gray-600 hover:text-black transition-colors">

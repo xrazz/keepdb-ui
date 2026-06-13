@@ -6,7 +6,7 @@ import { Lora } from 'next/font/google';
 import Link from 'next/link';
 import { WaitlistForm } from './waitlist-form';
 
-const lora = Lora({ subsets: ['latin'], weight: ['400', '600'] });
+const lora = Lora({ subsets: ['latin'], weight: ['400', '700'] });
 
 const faqs = [
   {
@@ -96,14 +96,6 @@ export default function Page() {
               <Link href="#faq" className="text-gray-600 hover:text-black transition-colors">
                 FAQ
               </Link>
-              <Show when="signed-out">
-                <Link
-                  href="/sign-in"
-                  className="rounded-full bg-black px-3 py-1 text-xs text-white transition-colors hover:bg-gray-900"
-                >
-                  Sign in
-                </Link>
-              </Show>
               <Show when="signed-in">
                 <Link href="/dashboard" className="text-gray-600 transition-colors hover:text-black">
                   Dashboard
@@ -119,7 +111,7 @@ export default function Page() {
           >
             <h1
               id="hero-heading"
-              className={`${lora.className} text-4xl md:text-5xl font-medium tracking-tight leading-[1.05] mb-6 text-gray-900 text-left max-w-2xl`}
+              className={`${lora.className} text-4xl md:text-5xl font-bold tracking-tight leading-[1.05] mb-6 text-gray-900 text-left max-w-2xl`}
             >
               Memory for your agents. A private DB for everything else.
             </h1>

@@ -187,6 +187,7 @@ export function AgentKeyManager({
                 disabled={scopeMode !== 'folder'}
                 className="h-10 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-zinc-400 disabled:bg-zinc-50 disabled:text-zinc-400"
               >
+                <option value="__new__">+ Create new folder...</option>
                 {folderOptions.length === 0 ? (
                   <option value="">No folders yet</option>
                 ) : (
@@ -196,7 +197,6 @@ export function AgentKeyManager({
                     </option>
                   ))
                 )}
-                <option value="__new__">Create new folder...</option>
               </select>
             </label>
           </div>

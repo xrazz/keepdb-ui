@@ -15,13 +15,19 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   return (
     <div className="w-full max-w-4xl pb-12">
       <form action="/search" className="mb-6">
-        <input
-          type="search"
-          name="q"
-          defaultValue={query}
-          placeholder="Search your memory..."
-          className="h-12 w-full rounded-md border border-zinc-200 bg-white px-4 text-base outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-400"
-        />
+        <div className="flex h-12 w-full items-center rounded-md border border-zinc-200 bg-white px-4 transition-colors focus-within:border-zinc-400">
+          <span className="mr-3 shrink-0 text-sm font-medium tracking-tight">
+            <span className="text-zinc-950">K</span>
+            <span className="text-zinc-400">B</span>
+          </span>
+          <input
+            type="search"
+            name="q"
+            defaultValue={query}
+            placeholder="Search your memory..."
+            className="h-full min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-zinc-400"
+          />
+        </div>
       </form>
 
       {!query && (

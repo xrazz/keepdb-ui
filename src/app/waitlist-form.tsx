@@ -26,7 +26,7 @@ export function WaitlistForm({ align = 'center' }: { align?: 'left' | 'center' }
 
       if (response.ok && body?.success) {
         setState('success');
-        setMessage('You are on the waitlist.');
+        setMessage('🎉 You are on the list. We will contact you within 24 hours with your free access.');
         setEmail('');
         return;
       }
@@ -54,14 +54,14 @@ export function WaitlistForm({ align = 'center' }: { align?: 'left' | 'center' }
         <button
           type="submit"
           disabled={state === 'loading'}
-          className="h-12 shrink-0 rounded-full bg-black px-6 text-base font-medium text-white transition-colors hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
+          className="h-12 shrink-0 rounded-full border border-black bg-black px-6 text-base font-medium text-white shadow-[0_2px_8px_rgba(0,0,0,0.16)] transition-colors hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {state === 'loading' ? 'Joining...' : 'Join V1 beta'}
+          {state === 'loading' ? 'Getting...' : 'Get free access'}
         </button>
       </div>
       {message && (
         <p
-          className={`mt-3 text-left text-xs font-medium ${
+          className={`mt-4 text-left text-base font-medium leading-relaxed ${
             state === 'success' ? 'text-emerald-700' : 'text-red-600'
           }`}
         >

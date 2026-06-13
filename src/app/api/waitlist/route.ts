@@ -29,12 +29,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         collection: 'keepdb-waitlist',
         type: 'waitlist-signup',
-        content: [
-          'KeepDB waitlist signup',
-          `email: ${email}`,
-          'source: landing',
-          `timestamp: ${signedUpAt}`,
-        ].join('\n'),
+        content: email,
         metadata: {
           email,
           source: 'landing',
@@ -50,7 +45,17 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown waitlist error';
+    console.error('[waitlist]', message);
+
+    if (message.includes('KEEPDB_WAITLIST_API_KEY')) {
+      return NextResponse.json(
+        { success: false, message: 'Waitlist is not configured yet.' },
+        { status: 500 },
+      );
+    }
+
     return NextResponse.json(
       { success: false, message: 'Could not join the waitlist right now.' },
       { status: 500 },

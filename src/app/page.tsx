@@ -64,105 +64,103 @@ export default function Page() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-white flex justify-center font-[family-name:var(--font-dm-sans)]">
+    <div className="min-h-screen bg-white font-[family-name:var(--font-dm-sans)]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="w-full max-w-4xl bg-white border border-gray-200 flex flex-col min-h-screen">
-        <div
-          style={{
-            backgroundImage: "url('/bs4.png')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center top',
-            backgroundRepeat: 'no-repeat',
-          }}
-        >
-          <nav
-            aria-label="Main navigation"
-            className="w-full px-8 py-6 flex items-center justify-between"
-          >
-            <Link href="/" className="flex items-center gap-2" aria-label="KeepDB home">
-              <div className="text-lg font-medium tracking-tight">
-                <span className="text-zinc-900">Keep</span>
-                <span className="text-zinc-600">DB</span>
-              </div>
+      <nav
+        aria-label="Main navigation"
+        className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 pb-10 pt-24 md:px-10 md:pt-28"
+      >
+        <Link href="/" className="flex items-center gap-2" aria-label="KeepDB home">
+          <div className="grid size-10 place-items-center rounded-full bg-black text-sm font-medium tracking-tight text-white">
+            K
+          </div>
+        </Link>
+        <div className="flex items-center gap-6 text-sm font-medium tracking-tight">
+          <Link href="#features" className="text-gray-500 transition-colors hover:text-black">
+            Features
+          </Link>
+          <Link href="#faq" className="text-gray-500 transition-colors hover:text-black">
+            FAQ
+          </Link>
+          <Show when="signed-in">
+            <Link href="/dashboard" className="text-gray-500 transition-colors hover:text-black">
+              Dashboard
             </Link>
-            <div className="flex items-center gap-5 text-sm font-medium tracking-tight">
-              <Link href="#features" className="text-gray-600 hover:text-black transition-colors">
-                Features
-              </Link>
-              <Link href="#faq" className="text-gray-600 hover:text-black transition-colors">
-                FAQ
-              </Link>
-              <Show when="signed-in">
-                <Link href="/dashboard" className="text-gray-600 transition-colors hover:text-black">
-                  Dashboard
-                </Link>
-                <UserButton />
-              </Show>
-            </div>
-          </nav>
-
-          <section
-            aria-labelledby="hero-heading"
-            className="w-full px-8 pt-12 md:pt-16 pb-16"
-          >
-            <h1
-              id="hero-heading"
-              className={`${lora.className} text-4xl md:text-5xl font-bold tracking-tight leading-[1.05] mb-6 text-gray-900 text-left max-w-2xl`}
-            >
-              Memory for your agents. A private DB for everything else.
-            </h1>
-
-            <p className="text-base md:text-lg font-medium text-gray-600 leading-relaxed mb-8 text-left max-w-2xl">
-              Pipe in feedback, links, prompts, logs, notes, and decisions. KeepDB organizes it into searchable folders so your app, your dashboard, and your agents can find the right context later.
-            </p>
-
-            <div className="mb-8 w-full max-w-md [&_input]:bg-white  [&_input]:rounded-none">
-              <WaitlistForm />
-              <p className="mt-4 text-left text-xs font-medium text-gray-400 tracking-wide">
-                Early access for indie hackers building with agents. Free during beta.
-              </p>
-            </div>
-          </section>
+            <UserButton />
+          </Show>
         </div>
+      </nav>
 
-        <main className="flex-grow">
-          <section id="features" className="w-full border-t border-gray-200">
-            <div className="px-8 py-12 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">
-                The database you reach for when context matters.
-              </h2>
+      <header
+        aria-labelledby="hero-heading"
+        className="mx-auto w-full max-w-6xl px-6 pb-20 md:px-10 md:pb-24"
+      >
+        <h1
+          id="hero-heading"
+          className={`${lora.className} max-w-3xl text-left text-5xl font-bold leading-[0.98] tracking-tight text-gray-900 md:text-7xl`}
+        >
+          Memory for agents.
+          <br />
+          A private DB for everything else.
+        </h1>
 
-              <p className="text-base md:text-lg font-medium text-gray-600 leading-relaxed">
+        <p className="mt-8 max-w-2xl text-left text-lg font-medium leading-relaxed text-gray-500 md:text-xl">
+          Pipe in feedback, links, prompts, logs, notes, and decisions.
+          <span className="text-gray-800"> KeepDB turns messy context into searchable folders.</span>
+        </p>
+
+        <div className="mt-10 w-full max-w-xl [&_form]:mx-0 [&_form]:max-w-none [&_input]:rounded-full [&_input]:border-0 [&_input]:bg-gray-100 [&_button]:rounded-full">
+          <WaitlistForm />
+          <p className="mt-4 text-left text-xs font-medium tracking-wide text-gray-400">
+            Early access for 100 indie hackers building with agents. Free during beta.
+          </p>
+        </div>
+      </header>
+
+      <div
+        className="h-[380px] w-full bg-[url('/bs4.png')] bg-cover bg-center md:h-[520px]"
+        aria-hidden="true"
+      />
+
+      <main>
+        <section id="features" className="mx-auto grid w-full max-w-6xl gap-16 px-6 py-24 md:px-10">
+          <div className="grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:items-start">
+            <h2 className={`${lora.className} text-3xl font-bold leading-tight text-gray-900 md:text-5xl`}>
+              The database you reach for when context matters.
+            </h2>
+
+            <div className="space-y-5 text-lg font-medium leading-relaxed text-gray-500">
+              <p>
                 Your product already creates useful context: app feedback,
                 waitlist signups, support requests, saved links, prompts, logs,
                 project plans, and decisions buried inside chat sessions.
               </p>
-
-              <p className="text-base md:text-lg font-medium text-gray-600 leading-relaxed mt-4">
-                KeepDB gives that context a home. It is not trying to replace
-                PostgreSQL or MongoDB for payments, users, orders, or inventory.
-                It is for the messy, high-signal data you want humans and agents
-                to retrieve later without building a dashboard from scratch.
+              <p>
+                KeepDB gives that context a home. It is for the messy,
+                high-signal data you want humans and agents to retrieve later
+                without building a dashboard from scratch.
               </p>
             </div>
+          </div>
 
-            <div className="px-8 py-12 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">
-                Pipe data in from anywhere.
-              </h2>
+          <div className="grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:items-start">
+            <h2 className={`${lora.className} text-3xl font-bold leading-tight text-gray-900 md:text-5xl`}>
+              Pipe data in from anywhere.
+            </h2>
 
-              <p className="text-base md:text-lg font-medium text-gray-600 leading-relaxed">
+            <div>
+              <p className="text-lg font-medium leading-relaxed text-gray-500">
                 Send one request from your app, landing page, webhook, cron job,
                 or coding agent. Choose a folder, pass the content, and KeepDB
                 handles storage, chunking, indexing, and search.
               </p>
 
-              <div className="mt-5 border border-gray-200 bg-gray-50 p-5 overflow-x-auto">
-                <pre className="text-sm leading-relaxed font-medium">
+              <div className="mt-8 overflow-x-auto bg-gray-50 p-6">
+                <pre className="text-sm font-medium leading-relaxed">
                   <span className="text-purple-600">await</span>{' '}
                   <span className="text-blue-600">fetch</span>(
                   <span className="text-emerald-600">
@@ -186,9 +184,6 @@ export default function Page() {
                   <span className="text-red-600">collection</span>:{' '}
                   <span className="text-emerald-600">&quot;app-feedback&quot;</span>,
                   {'\n    '}
-                  <span className="text-red-600">type</span>:{' '}
-                  <span className="text-emerald-600">&quot;feedback&quot;</span>,
-                  {'\n    '}
                   <span className="text-red-600">content</span>:{' '}
                   <span className="text-emerald-600">
                     &quot;Camera crashes on iPhone 14&quot;
@@ -199,129 +194,109 @@ export default function Page() {
                   {'}'})
                 </pre>
               </div>
-
-              <p className="text-base md:text-lg font-medium text-gray-600 leading-relaxed mt-5">
-                Later, ask your agent the questions you actually care about.
-              </p>
-
-              <div className="mt-5 border border-gray-200 bg-gray-50 p-5 text-base font-medium text-gray-700 space-y-3 leading-relaxed">
-                <div>What are users complaining about most this week?</div>
-                <div>List every SwiftUI link I saved during the build.</div>
-                <div>What did we decide about pricing?</div>
-              </div>
             </div>
+          </div>
 
-            <div className="px-8 py-12 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">
-                Use it for the data that gets lost first.
-              </h2>
-
-              <div className="grid gap-px border border-gray-200 bg-gray-200 md:grid-cols-2">
-                {[
-                  ['App feedback', 'Pipe iOS or web feedback into one searchable folder.'],
-                  ['Links and research', 'Save useful links mid-session and ask for them later.'],
-                  ['Prompt library', 'Keep prompts, agent instructions, and versions searchable.'],
-                  ['Logs and events', 'Store lightweight errors, events, and traces for later recall.'],
-                  ['Session notes', 'Save decisions before a coding session disappears.'],
-                  ['Shared agent memory', 'Give multiple agents the same project context.'],
-                ].map(([title, body]) => (
-                  <div key={title} className="bg-white p-5">
-                    <h3 className="text-sm font-medium text-gray-900">{title}</h3>
-                    <p className="mt-2 text-sm font-medium leading-relaxed text-gray-600">{body}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="px-8 py-12">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">
-                One account. Multiple folders.
-              </h2>
-
-              <p className="text-base md:text-lg font-medium text-gray-600 leading-relaxed mb-5">
-                Keep feedback, logs, notes, prompts, and agent memory separated
-                without creating a new backend for every little data stream.
-              </p>
-
-              <pre className="border border-gray-200 bg-gray-50 p-5 text-sm font-medium text-gray-700 overflow-x-auto leading-relaxed">
-                {`app-feedback
-├─ Camera crashes on iPhone 14
-├─ Dark mode contrast is low
-└─ Widget does not update
-
-waitlist
-├─ raj@example.com
-├─ sam@example.com
-└─ jane@example.com
-
-plans
-├─ Launch strategy
-├─ Pricing notes
-└─ Marketing ideas
-
-prompts
-├─ Onboarding email
-├─ Support assistant
-└─ Landing page copy
-
-agent-memory
-├─ User preferences
-├─ Project context
-└─ Important decisions`}
-              </pre>
-            </div>
-          </section>
-
-          <section className="w-full border-t border-gray-200">
-            <div className="px-8 py-16 flex flex-col items-center text-center">
-              <h2 className="text-2xl md:text-3xl font-medium text-gray-900 mb-4">
-                Stop re-explaining yourself to every new chat window.
-              </h2>
-
-              <p className="text-base md:text-lg font-medium text-gray-600 max-w-2xl mb-8 leading-relaxed">
-                Join the beta and start storing the context your agents should
-                already know.
-              </p>
-
-              <div className="w-full max-w-md">
-                <WaitlistForm />
-              </div>
-            </div>
-          </section>
-
-          <section id="faq" className="w-full px-8 pb-24">
-            <h2 className="text-lg font-medium text-gray-900 mb-6 text-left">
-              Common Questions
+          <div>
+            <h2 className={`${lora.className} max-w-2xl text-3xl font-bold leading-tight text-gray-900 md:text-5xl`}>
+              Use it for the data that gets lost first.
             </h2>
-            <div className="border border-gray-200 divide-y divide-gray-200 rounded-none">
-              {faqs.map((faq, i) => (
-                <div key={i}>
-                  <button
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full flex items-center justify-between px-5 py-4 text-sm font-medium text-gray-900 text-left hover:bg-gray-50 transition-colors"
-                  >
-                    {faq.question}
-                    <span className="ml-4 text-gray-400 font-mono">{openFaq === i ? '−' : '+'}</span>
-                  </button>
-                  {openFaq === i && (
-                    <div className="px-5 pb-5 pt-1 text-sm text-gray-600 font-medium leading-relaxed border-t border-gray-200">
-                      {faq.answer}
-                    </div>
-                  )}
+
+            <div className="mt-10 grid gap-x-12 gap-y-8 md:grid-cols-3">
+              {[
+                ['App feedback', 'Pipe iOS or web feedback into one searchable folder.'],
+                ['Links and research', 'Save useful links mid-session and ask for them later.'],
+                ['Prompt library', 'Keep prompts, agent instructions, and versions searchable.'],
+                ['Logs and events', 'Store lightweight errors, events, and traces for later recall.'],
+                ['Session notes', 'Save decisions before a coding session disappears.'],
+                ['Shared agent memory', 'Give multiple agents the same project context.'],
+              ].map(([title, body]) => (
+                <div key={title}>
+                  <h3 className="text-sm font-medium text-gray-900">{title}</h3>
+                  <p className="mt-2 text-sm font-medium leading-relaxed text-gray-500">{body}</p>
                 </div>
               ))}
             </div>
-          </section>
-        </main>
+          </div>
 
-        <footer className="w-full px-8 py-12 flex flex-col sm:flex-row justify-between items-center gap-6 text-gray-500 text-xs font-medium border-t border-gray-200">
-          <p>© 2026 KeepDB. All rights reserved.</p>
-          <nav className="flex gap-4">
-            <Link href="mailto:hello@keepdb.dev" className="hover:text-black transition-colors">Support</Link>
-            <Link href="#faq" className="hover:text-black transition-colors">FAQ</Link>
-          </nav>
-        </footer>
-      </div>
+          <div className="grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:items-start">
+            <h2 className={`${lora.className} text-3xl font-bold leading-tight text-gray-900 md:text-5xl`}>
+              One account.
+              <br />
+              Multiple folders.
+            </h2>
+
+            <pre className="overflow-x-auto bg-gray-50 p-6 text-sm font-medium leading-relaxed text-gray-600">
+              {`app-feedback
+  Camera crashes on iPhone 14
+  Dark mode contrast is low
+  Widget does not update
+
+waitlist
+  raj@example.com
+  sam@example.com
+  jane@example.com
+
+prompts
+  Onboarding email
+  Support assistant
+  Landing page copy
+
+agent-memory
+  User preferences
+  Project context
+  Important decisions`}
+            </pre>
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-6xl px-6 pb-24 pt-8 text-center md:px-10">
+          <h2 className={`${lora.className} mx-auto max-w-3xl text-4xl font-bold leading-tight text-gray-900 md:text-6xl`}>
+            Stop re-explaining yourself to every new chat window.
+          </h2>
+
+          <p className="mx-auto mt-6 max-w-2xl text-lg font-medium leading-relaxed text-gray-500">
+            Join the beta and start storing the context your agents should
+            already know.
+          </p>
+
+          <div className="mx-auto mt-10 w-full max-w-xl [&_form]:max-w-none [&_input]:rounded-full [&_input]:border-0 [&_input]:bg-gray-100 [&_button]:rounded-full">
+            <WaitlistForm />
+          </div>
+        </section>
+
+        <section id="faq" className="mx-auto w-full max-w-3xl px-6 pb-24 md:px-10">
+          <h2 className={`${lora.className} mb-8 text-3xl font-bold leading-tight text-gray-900`}>
+            Common questions
+          </h2>
+          <div className="space-y-2">
+            {faqs.map((faq, i) => (
+              <div key={i}>
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="flex w-full items-center justify-between py-4 text-left text-sm font-medium text-gray-900 transition-colors hover:text-gray-500"
+                >
+                  {faq.question}
+                  <span className="ml-4 font-mono text-gray-400">{openFaq === i ? '-' : '+'}</span>
+                </button>
+                {openFaq === i && (
+                  <div className="pb-5 text-sm font-medium leading-relaxed text-gray-500">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <footer className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-6 px-6 py-12 text-xs font-medium text-gray-400 sm:flex-row md:px-10">
+        <p>© 2026 KeepDB. All rights reserved.</p>
+        <nav className="flex gap-4">
+          <Link href="mailto:hello@keepdb.dev" className="transition-colors hover:text-black">Support</Link>
+          <Link href="#faq" className="transition-colors hover:text-black">FAQ</Link>
+        </nav>
+      </footer>
     </div>
   );
 }

@@ -14,7 +14,7 @@ export default async function DashboardLayout({
       <Sidebar userEmail={user.email || 'Signed in'} />
       <div className="flex min-w-0 flex-1 flex-col bg-white">
         <PageHeader userEmail={user.email || 'Signed in'} />
-        <section className="flex min-h-0 flex-1 overflow-y-auto p-8">{children}</section>
+        <section className="flex min-h-0 flex-1 overflow-y-auto p-4 md:p-8">{children}</section>
       </div>
     </main>
   );

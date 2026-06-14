@@ -49,18 +49,18 @@ export function MemoryRows({ memories }: { memories: MemoryRow[] }) {
     <div className="divide-y divide-zinc-200">
       {memories.map((memory) => (
         <details key={memory.memoryId} className="group">
-          <summary className="grid cursor-pointer list-none grid-cols-[180px_1fr_140px] items-center px-4 py-4 text-sm">
+          <summary className="grid cursor-pointer list-none gap-1 px-4 py-4 text-sm sm:grid-cols-[180px_1fr_140px] sm:items-center sm:gap-0">
             <span className="flex min-w-0 items-center gap-2 font-medium text-zinc-950">
               <ChevronDown className="size-3 shrink-0 text-zinc-400 transition-transform group-open:rotate-180" />
               <span className="truncate text-blue-700">{memory.collection}</span>
             </span>
-            <span className="truncate text-zinc-600">{memoryPreview(memory)}</span>
-            <span className="text-zinc-400">{formatMemoryDate(memory.createdAt)}</span>
+            <span className="min-w-0 truncate text-zinc-600">{memoryPreview(memory)}</span>
+            <span className="text-xs text-zinc-400 sm:text-sm">{formatMemoryDate(memory.createdAt)}</span>
           </summary>
 
           <div className="border-t border-zinc-100 bg-zinc-50 px-4 py-4">
-            <div className="ml-[24px] max-w-4xl">
-              <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="max-w-4xl sm:ml-[24px]">
+              <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <p className="truncate text-xs font-medium text-zinc-400">{memory.memoryId}</p>
                 <button
                   type="button"
@@ -71,7 +71,7 @@ export function MemoryRows({ memories }: { memories: MemoryRow[] }) {
                   Download
                 </button>
               </div>
-              <pre className="max-h-[520px] overflow-auto whitespace-pre-wrap rounded-md border border-zinc-200 bg-white p-4 text-sm font-medium leading-relaxed text-zinc-700">
+              <pre className="max-h-[520px] overflow-auto whitespace-pre-wrap rounded-md border border-zinc-200 bg-white p-4 font-[family-name:var(--font-dm-sans)] text-sm font-medium leading-relaxed text-zinc-700">
                 {memory.content}
               </pre>
             </div>

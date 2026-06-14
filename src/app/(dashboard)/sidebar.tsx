@@ -1,16 +1,10 @@
 'use client';
 
-import { Database, Home, KeyRound, Search } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useOptimistic } from 'react';
-
-const navItems = [
-  { label: 'Overview', href: '/dashboard', icon: Home },
-  { label: 'Search', href: '/search', icon: Search },
-  { label: 'Memories', href: '/memories', icon: Database },
-  { label: 'API keys', href: '/agent-setup', icon: KeyRound },
-];
+import { dashboardNavItems } from './nav-items';
 
 export function Sidebar({ userEmail }: { userEmail: string }) {
   const pathname = usePathname();
@@ -24,9 +18,10 @@ export function Sidebar({ userEmail }: { userEmail: string }) {
     }`;
 
   return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-zinc-200 bg-zinc-50">
+    <aside className="hidden h-screen w-64 shrink-0 flex-col border-r border-zinc-200 bg-zinc-50 md:flex">
       <div className="flex h-16 items-center border-b border-zinc-200 px-5">
         <Link href="/dashboard" className="flex items-center gap-2">
+          <Image src="/folder.png" alt="" width={28} height={28} className="size-7" aria-hidden="true" />
           <div className="text-lg font-medium tracking-tight">
             <span className="text-zinc-900">Keep</span>
             <span className="text-zinc-600">DB</span>
@@ -35,7 +30,7 @@ export function Sidebar({ userEmail }: { userEmail: string }) {
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 px-3 py-4">
-        {navItems.map(({ label, href, icon: Icon }) => (
+        {dashboardNavItems.map(({ label, href, icon: Icon }) => (
           <Link
             key={href}
             href={href}

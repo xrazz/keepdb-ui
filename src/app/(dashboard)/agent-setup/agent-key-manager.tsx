@@ -229,7 +229,7 @@ export function AgentKeyManager({
         <section className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-4">
           <p className="text-base font-medium text-emerald-950">Copy this key now</p>
           <p className="mt-1 text-sm font-medium text-emerald-800">It will only be shown once.</p>
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row">
             <code className="min-w-0 flex-1 overflow-x-auto rounded-md border border-emerald-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900">
               {rawKey}
             </code>
@@ -257,7 +257,7 @@ export function AgentKeyManager({
         {keys.length > 0 ? (
           <div className="divide-y divide-zinc-200">
             {keys.map((key) => (
-              <div key={key.id} className="flex items-center justify-between gap-4 px-4 py-4">
+              <div key={key.id} className="flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-zinc-950">{key.name}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -275,7 +275,7 @@ export function AgentKeyManager({
                 <button
                   type="button"
                   onClick={() => void revokeKey(key.id)}
-                  className="h-8 rounded-md border border-zinc-200 px-3 text-xs font-medium text-zinc-600 hover:bg-zinc-50"
+                  className="h-8 w-fit rounded-md border border-zinc-200 px-3 text-xs font-medium text-zinc-600 hover:bg-zinc-50"
                 >
                   Revoke
                 </button>

@@ -80,7 +80,7 @@ export function SearchResults({ results }: { results: KeepDbMemory[] }) {
                   Download
                 </button>
               </div>
-              <pre className="max-h-[520px] overflow-auto whitespace-pre-wrap bg-white p-4 text-xs font-medium leading-relaxed text-zinc-700">
+              <pre className="max-h-[520px] overflow-auto whitespace-pre-wrap bg-white p-4 font-[family-name:var(--font-dm-sans)] text-xs font-medium leading-relaxed text-zinc-700">
                 {memory.content}
               </pre>
             </div>

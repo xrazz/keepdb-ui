@@ -153,13 +153,13 @@ export default function Page() {
         <div className="flex items-center gap-6 text-base font-medium tracking-tight">
           <Link
             href="#features"
-            className="font-medium underline text-gray-600 transition-colors hover:text-gray-700"
+            className="font-medium text-gray-600 transition-colors hover:text-gray-700"
           >
             Features
           </Link>
           <Link
             href="#faq"
-            className="font-medium underline text-gray-600 transition-colors hover:text-gray-700"
+            className="font-medium text-gray-600 transition-colors hover:text-gray-700"
           >
             FAQ
           </Link>

@@ -52,7 +52,7 @@ export function MemoryRows({ memories }: { memories: MemoryRow[] }) {
           <summary className="grid cursor-pointer list-none grid-cols-[180px_1fr_140px] items-center px-4 py-4 text-sm">
             <span className="flex min-w-0 items-center gap-2 font-medium text-zinc-950">
               <ChevronDown className="size-3 shrink-0 text-zinc-400 transition-transform group-open:rotate-180" />
-              <span className="truncate">{memory.collection}</span>
+              <span className="truncate text-blue-700">{memory.collection}</span>
             </span>
             <span className="truncate text-zinc-600">{memoryPreview(memory)}</span>
             <span className="text-zinc-400">{formatMemoryDate(memory.createdAt)}</span>

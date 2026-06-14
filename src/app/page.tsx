@@ -315,7 +315,7 @@ export default function Page() {
       <footer className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-6 px-6 py-12 text-xs font-medium text-gray-400 sm:flex-row md:px-10">
         <p>© 2026 KeepDB. All rights reserved.</p>
         <nav className="flex gap-4">
-          <Link href="mailto:hello@keepdb.dev" className="transition-colors hover:text-black">
+          <Link href="mailto:raj@keepdb.dev" className="transition-colors hover:text-black">
             Support
           </Link>
           <Link href="#faq" className="transition-colors hover:text-black">

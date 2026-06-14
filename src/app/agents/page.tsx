@@ -200,7 +200,7 @@ export default function AgentsPage() {
           <Link href="/docs" className="hover:text-black transition-colors">
             Docs
           </Link>
-          <Link href="mailto:hello@keepdb.dev" className="hover:text-black transition-colors">
+          <Link href="mailto:raj@keepdb.dev" className="hover:text-black transition-colors">
             Support
           </Link>
         </nav>

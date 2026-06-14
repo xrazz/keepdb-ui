@@ -176,7 +176,7 @@ export default function DocsPage() {
           <Link href="/agents" className="hover:text-black transition-colors">
             Agents
           </Link>
-          <Link href="mailto:hello@keepdb.dev" className="hover:text-black transition-colors">
+          <Link href="mailto:raj@keepdb.dev" className="hover:text-black transition-colors">
             Support
           </Link>
         </nav>

@@ -11,7 +11,7 @@ function responseMessage(response: { success: boolean; message?: string }) {
 
 export default async function DashboardPage() {
   const collectionsResponse = await listKeepDbCollections();
-  const memoriesResponse = await listKeepDbMemories(5);
+  const memoriesResponse = await listKeepDbMemories(15);
 
   const collections = collectionsResponse.success ? collectionsResponse.data.results : [];
   const memories = memoriesResponse.success ? memoriesResponse.data.results : [];

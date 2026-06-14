@@ -170,7 +170,7 @@ export default function Page() {
         className="mx-auto w-full max-w-6xl px-6 pb-10 md:px-10 md:pb-12"
       >
         <div className="beta-shimmer mb-6 inline-flex rounded-full px-3 py-1 text-xs font-medium text-white">
-          Free for first 100 users
+          Invite only · free forever for first 100 users
         </div>
 
         <h1
@@ -315,6 +315,9 @@ export default function Page() {
       <footer className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-6 px-6 py-12 text-xs font-medium text-gray-400 sm:flex-row md:px-10">
         <p>© 2026 KeepDB. All rights reserved.</p>
         <nav className="flex gap-4">
+          <Link href="/use-cases" className="transition-colors hover:text-black">
+            Use cases
+          </Link>
           <Link href="mailto:raj@keepdb.dev" className="transition-colors hover:text-black">
             Support
           </Link>

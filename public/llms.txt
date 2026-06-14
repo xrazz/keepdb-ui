@@ -1,0 +1,39 @@
+# KeepDB
+
+> Structured memory for AI agents, and a quick database for everything else.
+
+KeepDB lets developers save feedback, waitlist signups, notes, prompts, logs,
+links, and agent memory into folders. The same data can be searched from the
+dashboard, API, or agents.
+
+## Core Pages
+
+- [Home](https://keepdb.dev): Product overview and private access signup.
+- [Docs](https://keepdb.dev/docs): REST API examples for saving and searching memory.
+- [Agents](https://keepdb.dev/agents): Copy-paste instructions for AI agents.
+- [Use cases](https://keepdb.dev/use-cases): Common ways to use KeepDB.
+
+## Use Cases
+
+- [Agent memory](https://keepdb.dev/use-cases/agent-memory): Shared memory for AI agents and coding agents.
+- [Customer feedback database](https://keepdb.dev/use-cases/customer-feedback): Store and search feedback, support notes, and bug reports.
+- [Quick database](https://keepdb.dev/use-cases/quick-database): A simple place for waitlists, logs, links, notes, and side data.
+- [Prompt library](https://keepdb.dev/use-cases/prompt-library): Store reusable prompts and agent instructions.
+
+## API
+
+Base URL: `https://api.keepdb.dev`
+
+Main endpoints:
+
+- `POST /memory`: Save one memory into a folder.
+- `GET /memory`: Search globally or inside a folder.
+- `GET /collections/:name/memories`: List memories in one folder.
+- `DELETE /memory/:memoryId`: Soft delete a memory.
+
+Authentication uses bearer API keys. API keys can be global or folder-scoped,
+and can be read-only, write-only, or read + write.
+
+## More Context
+
+- [Full LLM context](https://keepdb.dev/llms-full.txt)

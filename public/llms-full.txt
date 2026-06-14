@@ -1,0 +1,152 @@
+# KeepDB Full LLM Context
+
+KeepDB is a structured memory product for developers building with AI agents.
+It also works as a quick database for data that does not need to live in the
+main application database.
+
+## What KeepDB Does
+
+KeepDB stores useful context in folders:
+
+- customer feedback
+- waitlist signups
+- notes
+- prompts
+- logs
+- links
+- project decisions
+- agent memory
+
+Developers can save this data through the REST API, browse it in the dashboard,
+or let agents search it later.
+
+## Positioning
+
+KeepDB is not trying to replace PostgreSQL, MySQL, MongoDB, or transactional
+application databases. It is for context: the useful but messy data that often
+gets lost across feedback forms, chat sessions, notes, logs, prompts, and agent
+workflows.
+
+The product promise is:
+
+KeepDB is structured memory that also works as a quick database. Everything
+stays organized in folders, so the data does not turn into one giant mess.
+
+## Primary Users
+
+- indie hackers
+- AI app builders
+- developers using coding agents
+- founders collecting customer feedback
+- teams that want shared agent memory
+
+## Primary Use Cases
+
+### Agent memory
+
+Developers can ask an agent to save project context, plans, decisions, or user
+preferences into a folder. Later, the same or another agent can search that
+folder and use the saved context.
+
+Example folders:
+
+- `codex-memory`
+- `claude-prompts`
+- `project-decisions`
+- `agent-memory`
+
+### Customer feedback
+
+Developers can connect a feedback form, support bot, or app event to KeepDB.
+The feedback can be searched later by a person or summarized by an agent.
+
+Example folders:
+
+- `app-feedback`
+- `support`
+- `cavenote-feedback`
+- `bug-reports`
+
+### Quick database
+
+KeepDB can be used as a fast database for things that do not justify creating
+a new product table or internal dashboard.
+
+Example data:
+
+- waitlist emails
+- lightweight logs
+- saved links
+- notes
+- small events
+- research snippets
+
+### Prompt library
+
+Developers can save prompts, agent instructions, and reusable workflows in
+folders, then search them later.
+
+## How The Product Works
+
+1. Create or choose a folder.
+2. Save memory using `POST /memory`.
+3. KeepDB stores the full memory and chunks it for search.
+4. Search globally or inside a folder using `GET /memory`.
+5. Read the full memory back from the result.
+
+Folders keep memory addressable. Search can be global when the user does not
+know where the data lives, or folder-scoped when the user wants only one kind of
+context.
+
+## API
+
+Base URL:
+
+`https://api.keepdb.dev`
+
+Save memory:
+
+```bash
+curl -sS -X POST "https://api.keepdb.dev/memory" \
+  -H "Authorization: Bearer keep_sk_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "collection": "app-feedback",
+    "content": "User says the app crashes when opening the camera.",
+    "metadata": {
+      "source": "feedback-form",
+      "platform": "ios"
+    }
+  }'
+```
+
+Search memory:
+
+```bash
+curl -sS "https://api.keepdb.dev/memory?query=camera%20crash&collection=app-feedback&limit=5" \
+  -H "Authorization: Bearer keep_sk_your_api_key"
+```
+
+## API Key Scoping
+
+KeepDB API keys can be scoped for safety.
+
+Examples:
+
+- A write-only API key scoped to `app-feedback` can save feedback but cannot
+  read private memory back.
+- A read-only API key scoped to `support` can let a support bot answer from
+  support memory without changing data.
+- A read + write API key can be used for trusted agents that need to save and
+  search memory.
+
+## Public Pages
+
+- Home: https://keepdb.dev
+- Docs: https://keepdb.dev/docs
+- Agents: https://keepdb.dev/agents
+- Use cases: https://keepdb.dev/use-cases
+- Agent memory: https://keepdb.dev/use-cases/agent-memory
+- Customer feedback: https://keepdb.dev/use-cases/customer-feedback
+- Quick database: https://keepdb.dev/use-cases/quick-database
+- Prompt library: https://keepdb.dev/use-cases/prompt-library

@@ -1,4 +1,5 @@
-import { formatKeepDbDate, previewMemory, timedSearchKeepDbMemories } from '@/lib/keepdb/client';
+import { timedSearchKeepDbMemories } from '@/lib/keepdb/client';
+import { SearchResults } from './search-results';
 
 type SearchPageProps = {
   searchParams?: Promise<{ q?: string }>;
@@ -46,33 +47,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       )}
 
       {query && response?.success && (
-        <div className="rounded-md border border-zinc-200 bg-white">
-          <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3 text-xs font-medium text-zinc-500">
+        <div className="bg-white">
+          <div className="mb-5 text-xs font-medium text-zinc-500">
             {results.length} results for <span>&quot;{query}&quot;</span>
             {searchMs !== null && <span> in {searchMs} ms</span>}
           </div>
-          {results.length > 0 ? (
-            <div className="divide-y divide-zinc-200">
-              {results.map((memory) => (
-                <article key={memory.memoryId} className="px-4 py-4">
-                  <div className="mb-2 flex items-center justify-between gap-3">
-                    <span className="font-mono text-xs font-medium text-zinc-500">
-                      {memory.collection}
-                    </span>
-                    <span className="shrink-0 text-xs text-zinc-400">
-                      {formatKeepDbDate(memory.createdAt)}
-                    </span>
-                  </div>
-                  <p className="text-sm leading-relaxed text-zinc-800">{previewMemory(memory, 320)}</p>
-                  {typeof memory.score === 'number' && (
-                    <p className="mt-2 text-xs text-zinc-400">Score {memory.score.toFixed(4)}</p>
-                  )}
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="px-4 py-5 text-sm text-zinc-500">No matching memories found.</div>
-          )}
+          <SearchResults results={results} />
         </div>
       )}
     </div>

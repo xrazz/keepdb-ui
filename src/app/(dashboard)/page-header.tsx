@@ -16,7 +16,7 @@ export function PageHeader({ userEmail }: { userEmail: string }) {
 
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-zinc-200 px-8">
-      <h1 className="text-base font-medium">{title}</h1>
+      <h1 className="text-lg font-medium">{title}</h1>
 
       <div className="flex items-center gap-3">
         <span className="max-w-52 truncate text-xs font-medium text-zinc-500">{userEmail}</span>

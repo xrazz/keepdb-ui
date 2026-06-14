@@ -61,7 +61,7 @@ export function MemoryRows({ memories }: { memories: MemoryRow[] }) {
           <div className="border-t border-zinc-100 bg-zinc-50 px-4 py-4">
             <div className="ml-[24px] max-w-4xl">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="font-mono text-xs text-zinc-400">{memory.memoryId}</p>
+                <p className="truncate text-xs font-medium text-zinc-400">{memory.memoryId}</p>
                 <button
                   type="button"
                   onClick={() => downloadMemory(memory)}
@@ -71,7 +71,7 @@ export function MemoryRows({ memories }: { memories: MemoryRow[] }) {
                   Download
                 </button>
               </div>
-              <pre className="max-h-[520px] overflow-auto whitespace-pre-wrap rounded-md border border-zinc-200 bg-white p-4 font-mono text-xs leading-relaxed text-zinc-700">
+              <pre className="max-h-[520px] overflow-auto whitespace-pre-wrap rounded-md border border-zinc-200 bg-white p-4 text-sm font-medium leading-relaxed text-zinc-700">
                 {memory.content}
               </pre>
             </div>

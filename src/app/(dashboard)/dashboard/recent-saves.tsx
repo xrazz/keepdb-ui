@@ -13,7 +13,7 @@ export function RecentSaves({ memories }: { memories: KeepDbMemory[] }) {
           <summary className="grid cursor-pointer list-none grid-cols-[140px_1fr_120px] items-center gap-3 text-sm">
             <Link
               href={`/search?q=${encodeURIComponent(memory.collection)}`}
-              className="truncate font-mono text-xs font-medium text-blue-600 hover:text-blue-700"
+              className="truncate text-sm font-medium text-blue-600 hover:text-blue-700"
             >
               {memory.collection}
             </Link>

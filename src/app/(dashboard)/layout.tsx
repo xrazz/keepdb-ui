@@ -10,7 +10,7 @@ export default async function DashboardLayout({
   const user = await requireCurrentUser();
 
   return (
-    <main className="flex h-screen overflow-hidden bg-white text-zinc-950 font-[family-name:var(--font-dm-sans)]">
+    <main className="flex h-screen overflow-hidden bg-white font-medium text-zinc-950 font-[family-name:var(--font-dm-sans)]">
       <Sidebar userEmail={user.email || 'Signed in'} />
       <div className="flex min-w-0 flex-1 flex-col bg-white">
         <PageHeader userEmail={user.email || 'Signed in'} />

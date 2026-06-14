@@ -28,7 +28,7 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
       )}
 
       <div className="rounded-md border border-zinc-200 bg-white">
-        <div className="grid grid-cols-[180px_1fr_140px] border-b border-zinc-200 bg-zinc-50 px-4 py-3 text-xs font-medium text-zinc-500">
+        <div className="grid grid-cols-[180px_1fr_140px] border-b border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-medium text-zinc-500">
           <MemoryFolderFilter collections={collections} selectedCollection={selectedCollection} />
           <span>Memory</span>
           <span>Created</span>

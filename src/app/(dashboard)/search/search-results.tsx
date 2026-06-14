@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, Download } from 'lucide-react';
+import { Download } from 'lucide-react';
 import type { KeepDbMemory } from '@/lib/keepdb/client';
 
 function formatResultDate(value?: string | null) {
@@ -43,25 +43,22 @@ export function SearchResults({ results }: { results: KeepDbMemory[] }) {
         return (
           <details key={memory.memoryId} className="group">
             <summary className="cursor-pointer list-none">
-              <div className="flex items-start gap-2">
-                <ChevronDown className="mt-1 size-3.5 shrink-0 text-zinc-400 transition-transform group-open:rotate-180" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-lg font-medium leading-snug text-blue-700 hover:underline">
-                    {title}
-                  </p>
-                  <div className="mt-1 flex min-w-0 items-center gap-2 text-xs font-medium text-zinc-500">
-                    <span className="truncate text-emerald-700">{memory.collection}</span>
-                    <span className="text-zinc-300">·</span>
-                    <span className="shrink-0">{formatResultDate(memory.createdAt)}</span>
-                  </div>
-                  <p className="mt-1 truncate text-sm font-medium leading-relaxed text-zinc-700">
-                    {previewResult(memory, 240)}
-                  </p>
+              <div className="min-w-0">
+                <p className="truncate text-lg font-medium leading-snug text-blue-700 hover:underline">
+                  {title}
+                </p>
+                <div className="mt-1 flex min-w-0 items-center gap-2 text-xs font-medium text-zinc-500">
+                  <span className="truncate text-emerald-700">{memory.collection}</span>
+                  <span className="text-zinc-300">·</span>
+                  <span className="shrink-0">{formatResultDate(memory.createdAt)}</span>
                 </div>
+                <p className="mt-1 truncate text-sm font-medium leading-relaxed text-zinc-700">
+                  {previewResult(memory, 240)}
+                </p>
               </div>
             </summary>
 
-            <div className="ml-6 mt-3 max-w-4xl bg-zinc-50 p-4">
+            <div className="mt-3 max-w-4xl bg-zinc-50 p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <p className="truncate text-xs font-medium text-zinc-400">{memory.memoryId}</p>
                 <button

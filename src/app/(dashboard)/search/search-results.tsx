@@ -18,6 +18,16 @@ function previewResult(memory: KeepDbMemory, maxLength = 180) {
   return preview.length > maxLength ? `${preview.slice(0, maxLength).trim()}...` : preview;
 }
 
+function bodyTitle(memory: KeepDbMemory, maxLength = 88) {
+  const firstLine = memory.content
+    .split('\n')
+    .map((line) => line.trim())
+    .find(Boolean);
+  const title = firstLine || memory.content.trim() || memory.collection;
+
+  return title.length > maxLength ? `${title.slice(0, maxLength).trim()}...` : title;
+}
+
 function downloadMemory(memory: KeepDbMemory) {
   const blob = new Blob([memory.content], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -38,7 +48,7 @@ export function SearchResults({ results }: { results: KeepDbMemory[] }) {
   return (
     <div className="space-y-5">
       {results.map((memory) => {
-        const title = memory.metadata?.title || memory.collection;
+        const title = bodyTitle(memory);
 
         return (
           <details key={memory.memoryId} className="group">

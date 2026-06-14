@@ -65,6 +65,14 @@ const featureSections = [
     icon: '/titleicons/search.png',
   },
   {
+    title: 'Your private search engine.',
+    underline: 'decoration-blue-400',
+    image: '/dashboard-search.png',
+    imageWidth: 2380,
+    imageHeight: 1642,
+    icon: '/titleicons/search.png',
+  },
+  {
     title: 'Share context between agents.',
     underline: 'decoration-emerald-400',
     image: '/share2.png',
@@ -250,8 +258,8 @@ export default function Page() {
                   <Image
                     src={feature.image}
                     alt=""
-                    width={2338}
-                    height={1110}
+                    width={feature.imageWidth ?? 2338}
+                    height={feature.imageHeight ?? 1110}
                     className="mt-6 h-auto w-full border border-gray-200"
                     sizes="(min-width: 768px) 1024px, calc(100vw - 48px)"
                     aria-hidden="true"

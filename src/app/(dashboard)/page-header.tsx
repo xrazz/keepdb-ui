@@ -9,12 +9,14 @@ import { dashboardNavItems } from './nav-items';
 const pageTitles: Record<string, string> = {
   '/dashboard': 'Overview',
   '/search': 'Search',
+  '/folders': 'Folders',
   '/memories': 'Memories',
   '/agent-setup': 'API keys',
 };
 
 export function PageHeader({ userEmail }: { userEmail: string }) {
   const pathname = usePathname();
+  const isFolderDetail = pathname.startsWith('/folders/');
   const title = pageTitles[pathname] ?? 'Overview';
 
   return (
@@ -24,7 +26,13 @@ export function PageHeader({ userEmail }: { userEmail: string }) {
           <Link href="/dashboard" className="flex items-center gap-2 md:hidden" aria-label="KeepDB dashboard">
             <Image src="/folder.png" alt="" width={28} height={28} className="size-7" aria-hidden="true" />
           </Link>
-          <h1 className="text-lg font-medium">{title}</h1>
+          {isFolderDetail ? (
+            <Link href="/folders" className="text-lg font-medium text-zinc-950 hover:text-blue-700">
+              &lt; Folders
+            </Link>
+          ) : (
+            <h1 className="text-lg font-medium">{title}</h1>
+          )}
         </div>
 
         <div className="flex items-center gap-3">
@@ -35,7 +43,7 @@ export function PageHeader({ userEmail }: { userEmail: string }) {
 
       <nav className="-mx-1 flex gap-1 overflow-x-auto pb-3 md:hidden" aria-label="Dashboard navigation">
         {dashboardNavItems.map(({ label, href, icon: Icon }) => {
-          const active = pathname === href;
+          const active = pathname === href || (href === '/folders' && pathname.startsWith('/folders/'));
 
           return (
             <Link

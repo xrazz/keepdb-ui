@@ -12,7 +12,7 @@ export type KeepDbMemory = {
   contentBytes?: number;
   matchedChunk?: string;
   score?: number;
-  metadata?: {
+  metadata?: Record<string, unknown> & {
     preview?: string;
     title?: string | null;
     document?: unknown;

@@ -11,6 +11,7 @@ const pageTitles: Record<string, string> = {
   '/search': 'Search',
   '/folders': 'Folders',
   '/memories': 'Memories',
+  '/agent-skills': 'Agents',
   '/agent-setup': 'API keys',
 };
 

@@ -60,19 +60,23 @@ const clerkLocalization = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://keepdb.dev'),
-  title: 'KeepDB',
+  title: 'KeepDB — Searchable memory for AI agents',
   description:
-    'KeepDB saves plans, notes, ideas, decisions, and project context into KB folders your agents can search.',
+    'KeepDB gives AI agents searchable long-term memory. Save decisions, prompts, links, logs, and project context into folders agents can retrieve later.',
   keywords: [
-    'ai memory',
     'agent memory',
+    'ai agent memory',
+    'long term memory for agents',
+    'searchable agent memory',
+    'ai memory api',
     'mcp memory',
-    'knowledge base memory',
+    'rag memory',
+    'agent context',
     'keepdb',
   ],
   openGraph: {
-    title: 'KeepDB — Structured memory for your AI',
-    description: 'Save plans, notes, ideas, decisions, and project context into KB folders agents can search.',
+    title: 'KeepDB — Searchable memory for AI agents',
+    description: 'Save project context into folders your agents can search and retrieve later.',
     url: 'https://keepdb.dev',
     siteName: 'KeepDB',
     images: [{ url: '/og-image.png', width: 1200, height: 630 }],
@@ -80,8 +84,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'KeepDB — Structured memory for your AI',
-    description: 'Save plans, notes, ideas, decisions, and project context into KB folders agents can search.',
+    title: 'KeepDB — Searchable memory for AI agents',
+    description: 'Save project context into folders your agents can search and retrieve later.',
     images: ['/og-image.png'],
   },
   alternates: {

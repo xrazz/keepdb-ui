@@ -10,82 +10,108 @@ const faqs = [
   {
     question: 'What is KeepDB?',
     answer:
-      'KeepDB is a small memory database for agent-era products. Pipe in feedback, links, logs, prompts, notes, and decisions, then let your app or agent search it later.',
+      'KeepDB is searchable long-term memory for AI agents. Agents can save project context, decisions, prompts, links, logs, and notes into folders, then search the right memory later.',
   },
   {
-    question: 'What is a folder?',
+    question: 'Why not just use a vector database?',
     answer:
-      'A folder is a dedicated space for one kind of context. For example: app-feedback, waitlist, prompts, logs, research, or project-memory. Folders keep agent memory from turning into one giant mixed blob.',
+      'Vector databases store embeddings. KeepDB gives agents a higher-level memory workflow: folders, full readable memories, hybrid search, API keys, dashboard browsing, and date filters.',
   },
   {
-    question: 'Can agents search all memory?',
+    question: 'Can agents search globally or inside one folder?',
     answer:
-      'Yes. Agents can search a specific folder when they know where something belongs, or search across all folders when they need broader context.',
+      'Yes. Agents can search across all memory when they need broad context, or search inside one folder when the task is scoped to a project, app, customer, or workflow.',
   },
   {
     question: 'What should I store in KeepDB?',
     answer:
-      'Store the context you want to search later: app feedback, support tickets, waitlist emails, saved links, markdown notes, prompts, project decisions, logs, and agent memory.',
+      'Store the context your agents need later: product decisions, implementation notes, prompts, links, logs, markdown notes, research, and customer feedback.',
   },
   {
-    question: 'Can KeepDB replace PostgreSQL, MySQL, or MongoDB?',
+    question: 'Can KeepDB replace my app database?',
     answer:
-      'Not completely. KeepDB is a database for context, not transactions. Store customer feedback, prompts, plans, documentation, and agent memory in KeepDB. Store orders, payments, users, inventory, and other transactional data in a traditional database. Many teams use both together.',
+      'No. KeepDB is memory and retrieval for context, not a transactional database. Keep users, payments, orders, and inventory in PostgreSQL or another primary database. Use KeepDB for searchable agent memory.',
   },
   {
-    question: 'Is KeepDB built for MCP agents?',
+    question: 'Is KeepDB built for agent workflows?',
     answer:
-      'Yes. KeepDB is designed to work through REST today and MCP-style agent workflows next, so agents can write, search, inspect, and organize memory.',
+      'Yes. KeepDB works through REST today, with agent instruction files for Codex, Claude, and generic agents. MCP-style workflows can come later without changing the core memory model.',
   },
 ];
 
-const featureSections = [
+type FeatureSection = {
+  title: string;
+  description: string;
+  underline: string;
+  icon: string;
+  image?: string;
+  imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  kind?: 'scopes';
+};
+
+const featureSections: FeatureSection[] = [
   {
-    title: 'Tell agents exactly where to save context.',
+    title: 'Tell agents where to save working context.',
+    description:
+      'Your agent can save plans, implementation notes, research, links, prompts, and decisions into named folders instead of losing them in a chat transcript.',
     underline: 'decoration-orange-400',
     image: '/demo5.png',
+    imageAlt: 'Agent saving a project plan into a KeepDB folder for later retrieval.',
     icon: '/titleicons/clicking.png',
   },
   {
-    title: 'Use it as a quick DB for everything else.',
-    underline: 'decoration-amber-400',
-    image: '/quickdb.png',
-    icon: '/titleicons/structure.png',
-  },
-  {
-    title: 'Keep your data structured and searchable.',
+    title: 'Retrieve the right thing months later.',
+    description:
+      'KeepDB focuses on retrieval, not just storage. Search project memory by meaning, keyword, folder, and date so your agent can find the exact context again.',
     underline: 'decoration-sky-400',
-    image: '/demo6.png',
-    icon: '/titleicons/ewewewe.png',
-  },
-  {
-    title: 'Search globally or by folder.',
-    underline: 'decoration-violet-400',
-    image: '/search3.png',
-    icon: '/titleicons/search.png',
-  },
-  {
-    title: 'Your private search engine.',
-    underline: 'decoration-blue-400',
     image: '/dashboard-search.png',
     imageWidth: 2380,
     imageHeight: 1642,
+    imageAlt: 'KeepDB search results showing relevant saved project memories with folder names and timestamps.',
     icon: '/titleicons/search.png',
   },
   {
-    title: 'Share context between agents.',
+    title: 'Keep agent memory structured in folders.',
+    description:
+      'Use folders like codex, claude, project-memory, customer-feedback, prompts, and logs so memory stays addressable instead of becoming one giant blob.',
+    underline: 'decoration-amber-400',
+    image: '/demo6.png',
+    imageAlt: 'KeepDB folders organizing different kinds of agent memory and project context.',
+    icon: '/titleicons/ewewewe.png',
+  },
+  {
+    title: 'Search globally or inside one folder.',
+    description:
+      'Agents can search all memory for broad recall or scope retrieval to a single folder when the task has a clear project or data boundary.',
+    underline: 'decoration-violet-400',
+    image: '/search3.png',
+    imageAlt: 'KeepDB scoped search showing global and folder-specific memory retrieval.',
+    icon: '/titleicons/search.png',
+  },
+  {
+    title: 'Share context between Codex, Claude, and your tools.',
+    description:
+      'Give multiple agents the same searchable project memory so each new session can pick up the decisions, constraints, and plans that already exist.',
     underline: 'decoration-emerald-400',
     image: '/share2.png',
+    imageAlt: 'Multiple agents reading and writing shared KeepDB project memory.',
     icon: '/titleicons/share.png',
   },
   {
-    title: 'Plug into your daily workflows.',
+    title: 'Plug memory into your agent workflow.',
+    description:
+      'Use REST today with downloadable agent instructions for Codex, Claude, and generic agents. Save from code, scripts, or agent sessions.',
     underline: 'decoration-rose-400',
     image: '/plug2.png',
+    imageAlt: 'KeepDB REST API and agent instructions connecting memory to developer workflows.',
     icon: '/titleicons/plug.png',
   },
   {
-    title: 'Scope every API key by job.',
+    title: 'Scope every API key by folder and job.',
+    description:
+      'Create read-only, write-only, or read-write API keys for specific folders so agents and apps only touch the memory they need.',
     underline: 'decoration-amber-400',
     kind: 'scopes',
     icon: '/titleicons/plug.png',
@@ -127,7 +153,7 @@ const jsonLd = {
     },
   ],
   description:
-    'KeepDB is a private memory database for AI agents, app feedback, prompts, logs, notes, and project context.',
+    'KeepDB is searchable long-term memory for AI agents. Save project context into folders, then let agents retrieve the right thing later.',
   url: 'https://keepdb.dev',
   image: 'https://keepdb.dev/screen.png',
 };
@@ -177,22 +203,23 @@ export default function Page() {
         aria-labelledby="hero-heading"
         className="mx-auto w-full max-w-6xl px-6 pb-10 md:px-10 md:pb-12"
       >
-        <div className="beta-shimmer mb-6 inline-flex rounded-full px-3 py-1 text-xs font-medium text-white">
+        {/* <div className="beta-shimmer mb-6 inline-flex rounded-full px-3 py-1 text-xs font-medium text-white">
           Invite only · free forever for first 100 users
-        </div>
+        </div> */}
 
         <h1
           id="hero-heading"
           className="font-baskervville max-w-xl text-left text-[32px] font-medium leading-[1.28] tracking-normal text-black md:text-5xl"
         >
-          Memory for agents.
+          Structured memory
           <br />
-          A private DB for you.
+          for your AI.
         </h1>
 
         <p className="mt-7 max-w-xl text-left text-lg font-medium text-gray-600">
-          KeepDB is structured memory that also works as a quick database.
-          <span> Collect customer feedback, waitlist signups, notes, or use it as your agent memory. Everything stays organized in folders, so your data never turns into a giant mess.</span>
+          KeepDB gives AI agents searchable long-term memory. Save decisions,
+          prompts, links, logs, and project context into folders, then retrieve
+          the right thing months later.
         </p>
 
         <div className="mt-10 w-full max-w-xl">
@@ -222,6 +249,9 @@ export default function Page() {
                   />
                   {feature.title}
                 </h2>
+                <p className="mt-3 max-w-3xl text-base font-medium leading-relaxed text-gray-600 md:text-lg">
+                  {feature.description}
+                </p>
                 {feature.kind === 'scopes' ? (
                   <div className="mt-6 flex aspect-[2338/1110] w-full flex-col justify-between border border-gray-200 bg-white p-5 md:p-8">
                     <div>
@@ -257,12 +287,11 @@ export default function Page() {
                 ) : feature.image ? (
                   <Image
                     src={feature.image}
-                    alt=""
+                    alt={feature.imageAlt || feature.title}
                     width={feature.imageWidth ?? 2338}
                     height={feature.imageHeight ?? 1110}
                     className="mt-6 h-auto w-full border border-gray-200"
                     sizes="(min-width: 768px) 1024px, calc(100vw - 48px)"
-                    aria-hidden="true"
                   />
                 ) : (
                   <div
@@ -278,10 +307,11 @@ export default function Page() {
         {/* CTA */}
         <section className="mx-auto w-full max-w-6xl px-6 py-20 text-center md:px-10">
           <h2 className="mx-auto max-w-2xl text-2xl font-semibold leading-snug text-gray-900 md:text-3xl">
-            Give your agents memory.
+            Give your agents searchable memory.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base font-medium leading-relaxed text-gray-600">
-            Join the private beta. Free for the first 100 builders.
+            Join the private beta for developers building with AI agents. Free
+            for the first 100 builders.
           </p>
           <div className="mx-auto mt-10 w-full max-w-xl">
             <WaitlistForm />

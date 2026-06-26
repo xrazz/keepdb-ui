@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { buildAgentMarkdown } from '@/lib/keepdb/agent-instructions';
+import { buildAgentMarkdown, buildMcpCommand } from '@/lib/keepdb/agent-instructions';
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -31,6 +31,7 @@ export default function AgentsPage() {
     () => buildAgentMarkdown({ apiKey, defaultCollection: collection }),
     [apiKey, collection],
   );
+  const mcpCommand = useMemo(() => buildMcpCommand(apiKey), [apiKey]);
 
   return (
     <div className="min-h-screen bg-white text-gray-900 font-medium font-[family-name:var(--font-dm-sans)]">
@@ -80,8 +81,9 @@ export default function AgentsPage() {
           <section>
             <h2 className="text-sm text-gray-900 font-medium mb-3">Copy-paste memory for agents</h2>
             <p>
-              Generate instructions for Codex, Claude, Cursor, or any agent that can call HTTP APIs.
-              The API key stays in your browser while this page creates the text.
+              Use MCP for Claude Code, or generate instruction files for Codex, Cursor, and any
+              agent that can call HTTP APIs. The API key stays in your browser while this page
+              creates the text.
             </p>
           </section>
 
@@ -105,6 +107,22 @@ export default function AgentsPage() {
                 className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 font-mono text-sm outline-none transition-colors focus:border-gray-500"
               />
             </label>
+          </section>
+
+          <section className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+            <div className="flex items-center justify-between gap-3 border-b border-gray-200 bg-gray-50 px-4 py-3">
+              <h2 className="text-sm text-gray-900 font-medium">Claude Code MCP</h2>
+              <CopyButton text={mcpCommand} />
+            </div>
+            <div className="px-4 py-4">
+              <p className="mb-3 text-sm font-medium text-gray-600">
+                Paste this once in your terminal. Claude Code will keep using the same KeepDB API key
+                for future MCP calls.
+              </p>
+              <p className="break-all rounded-md bg-gray-50 px-3 py-3 text-sm font-medium leading-6 text-gray-700">
+                {mcpCommand}
+              </p>
+            </div>
           </section>
 
           <section className="overflow-hidden rounded-lg border border-gray-200 bg-white">

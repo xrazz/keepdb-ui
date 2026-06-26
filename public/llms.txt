@@ -20,9 +20,10 @@ dashboard, API, or agents.
 - [Quick database](https://keepdb.dev/use-cases/quick-database): A simple place for waitlists, logs, links, notes, and side data.
 - [Prompt library](https://keepdb.dev/use-cases/prompt-library): Store reusable prompts and agent instructions.
 
-## API
+## API and MCP
 
 Base URL: `https://api.keepdb.dev`
+MCP URL: `https://mcp.keepdb.dev/mcp`
 
 Main endpoints:
 
@@ -33,6 +34,13 @@ Main endpoints:
 
 Authentication uses bearer API keys. API keys can be global or folder-scoped,
 and can be read-only, write-only, or read + write.
+
+Claude Code MCP setup:
+
+```bash
+claude mcp add --transport http keepdb https://mcp.keepdb.dev/mcp \
+  --header "Authorization: Bearer keep_sk_your_api_key"
+```
 
 ## More Context
 

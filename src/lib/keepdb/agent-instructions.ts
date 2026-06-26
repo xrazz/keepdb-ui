@@ -1,4 +1,5 @@
 const API_BASE = 'https://api.keepdb.dev';
+const MCP_BASE = 'https://mcp.keepdb.dev/mcp';
 
 type AgentInstructionInput = {
   apiKey?: string;
@@ -77,6 +78,13 @@ No API key response:
 
 Bad API key response:
 {"success":false,"status":401,"message":"Invalid API key"}`;
+}
+
+export function buildMcpCommand(apiKey?: string) {
+  const key = cleanValue(apiKey, 'keep_sk_your_api_key');
+
+  return `claude mcp add --transport http keepdb ${MCP_BASE} \\
+  --header "Authorization: Bearer ${key}"`;
 }
 
 export function buildCodexSkillMarkdown(input: AgentInstructionInput = {}) {

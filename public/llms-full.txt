@@ -140,6 +140,24 @@ Examples:
 - A read + write API key can be used for trusted agents that need to save and
   search memory.
 
+## MCP
+
+KeepDB has a hosted MCP server at:
+
+```txt
+https://mcp.keepdb.dev/mcp
+```
+
+Claude Code setup:
+
+```bash
+claude mcp add --transport http keepdb https://mcp.keepdb.dev/mcp \
+  --header "Authorization: Bearer keep_sk_your_api_key"
+```
+
+The MCP server uses the same scoped KeepDB API key. Add the key once in the
+agent client, then MCP calls authenticate through that key.
+
 ## Public Pages
 
 - Home: https://keepdb.dev

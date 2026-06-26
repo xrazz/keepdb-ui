@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 const API_BASE = 'https://api.keepdb.dev';
+const MCP_BASE = 'https://mcp.keepdb.dev/mcp';
 
 const endpoints = [
   {
@@ -107,6 +108,16 @@ export default function DocsPage() {
               <span className="font-mono">401 Invalid API key</span>.
             </p>
             <CodeBlock>{`Authorization: Bearer keep_sk_your_api_key`}</CodeBlock>
+          </section>
+
+          <section>
+            <h2 className="text-sm text-gray-900 font-medium mb-3">Claude Code MCP</h2>
+            <p>
+              MCP uses the same scoped KeepDB API key. Add it once, then Claude Code can save,
+              search, and list memory through KeepDB.
+            </p>
+            <CodeBlock>{`claude mcp add --transport http keepdb ${MCP_BASE} \\
+  --header "Authorization: Bearer keep_sk_your_api_key"`}</CodeBlock>
           </section>
 
           <section>

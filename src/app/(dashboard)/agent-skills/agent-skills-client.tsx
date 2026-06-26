@@ -8,6 +8,7 @@ import {
   buildAgentMarkdown,
   buildClaudeMarkdown,
   buildCodexSkillMarkdown,
+  buildMcpCommand,
 } from '@/lib/keepdb/agent-instructions';
 
 type AgentSkillsClientProps = {
@@ -98,6 +99,7 @@ export function AgentSkillsClient({ keys }: AgentSkillsClientProps) {
     () => buildClaudeMarkdown({ apiKey }),
     [apiKey],
   );
+  const mcpCommand = useMemo(() => buildMcpCommand(apiKey), [apiKey]);
 
   return (
     <div className="space-y-4">
@@ -139,6 +141,24 @@ export function AgentSkillsClient({ keys }: AgentSkillsClientProps) {
               ))}
             </div>
           )}
+
+          <div className="overflow-hidden rounded-md border border-zinc-200 bg-white">
+            <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3">
+              <h3 className="text-sm font-medium text-zinc-950">MCP setup</h3>
+            </div>
+            <div className="space-y-3 px-4 py-4">
+              <p className="text-sm font-medium leading-6 text-zinc-600">
+                Use this for Claude Code. Paste it once in your terminal and Claude will send this
+                API key automatically when it calls KeepDB.
+              </p>
+              <div className="flex flex-col gap-3 rounded-md border border-zinc-200 bg-zinc-50 p-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="break-all text-sm font-medium leading-6 text-zinc-700">{mcpCommand}</p>
+                <div className="shrink-0">
+                  <CopyButton text={mcpCommand} />
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div className="overflow-hidden rounded-md border border-zinc-200 bg-white">
             <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3">

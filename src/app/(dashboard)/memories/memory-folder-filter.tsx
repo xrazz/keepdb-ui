@@ -22,28 +22,29 @@ export function MemoryFolderFilter({
   }
 
   return (
-    <div className="relative -my-1 w-fit">
+    <div className="relative w-fit">
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="flex max-w-[160px] items-center gap-1 rounded-md px-1.5 py-1 text-left text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
+        className="flex h-9 max-w-[240px] items-center gap-2 rounded-full border border-zinc-200/70 bg-zinc-50 px-3 text-left text-xs font-medium text-zinc-600 shadow-[inset_0_1px_2px_rgba(24,24,27,0.04)] transition-colors hover:bg-zinc-100"
         aria-haspopup="menu"
         aria-expanded={open}
       >
+        <span className="text-zinc-400">📁</span>
         <span className="truncate">{activeLabel}</span>
-        <ChevronDown className="size-3 shrink-0 text-zinc-400" aria-hidden="true" />
+        <ChevronDown className="size-4 shrink-0 text-zinc-500" strokeWidth={1.8} aria-hidden="true" />
       </button>
 
       {open && (
         <div
           role="menu"
-          className="absolute left-0 top-7 z-20 max-h-72 w-64 overflow-y-auto rounded-md border border-zinc-200 bg-white py-1 shadow-lg"
+          className="absolute left-0 top-10 z-20 max-h-72 w-64 overflow-y-auto rounded-md border border-zinc-200 bg-white py-1 shadow-[0_10px_30px_rgba(24,24,27,0.06)]"
         >
           <button
             type="button"
             role="menuitem"
             onClick={() => selectCollection('')}
-            className={`flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-xs ${
+            className={`flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-xs font-medium ${
               selectedCollection ? 'text-zinc-600 hover:bg-zinc-50' : 'bg-zinc-50 font-medium text-zinc-950'
             }`}
           >
@@ -55,7 +56,7 @@ export function MemoryFolderFilter({
               type="button"
               role="menuitem"
               onClick={() => selectCollection(collection.name)}
-              className={`flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-xs ${
+              className={`flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-xs font-medium ${
                 selectedCollection === collection.name
                   ? 'bg-zinc-50 font-medium text-zinc-950'
                   : 'text-zinc-600 hover:bg-zinc-50'

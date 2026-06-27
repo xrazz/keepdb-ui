@@ -35,8 +35,16 @@ export const getOrCreateKeepDbUser = cache(async function getOrCreateKeepDbUser(
       name = COALESCE(EXCLUDED.name, users.name),
       updated_at = NOW(),
       deleted_at = NULL
-    RETURNING id, email, name
+    RETURNING id, email, name, plan, status, storage_used_bytes, storage_limit_bytes
   `;
 
-  return keepUser as { id: string; email: string; name: string | null };
+  return keepUser as {
+    id: string;
+    email: string;
+    name: string | null;
+    plan: string;
+    status: string;
+    storage_used_bytes: number;
+    storage_limit_bytes: number;
+  };
 });

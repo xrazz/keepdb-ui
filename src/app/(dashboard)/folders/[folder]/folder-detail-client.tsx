@@ -13,11 +13,11 @@ type TableRow = Record<string, string>;
 
 const hiddenMetadataKeys = new Set(['preview', 'title', 'document']);
 const tableHeaderCell =
-  'whitespace-nowrap border-r border-zinc-200 px-3 py-2 text-left text-[11px] font-medium tracking-wide text-zinc-800 last:border-r-0';
+  'whitespace-nowrap border-r border-zinc-200 px-3 py-2 text-left text-xs font-medium text-zinc-700 last:border-r-0';
 const tableBodyCell =
-  'h-10 max-w-[320px] border-r border-zinc-100 p-0 last:border-r-0 hover:bg-zinc-50';
+  'h-9 max-w-[320px] border-r border-zinc-100 p-0 last:border-r-0 hover:bg-zinc-50';
 const tableCellText =
-  'block h-10 w-full truncate bg-transparent px-3 text-left text-sm font-medium leading-10 text-zinc-700';
+  'block h-9 w-full truncate bg-transparent px-3 text-left text-xs font-medium leading-9 text-zinc-700';
 
 function formatKeepDbDate(value?: string | null) {
   if (!value) return 'No memories yet';
@@ -114,13 +114,13 @@ export function FolderDetailClient({ folder, memories }: FolderDetailClientProps
   const { columns, rows } = useMemo(() => buildTable(memories), [memories]);
 
   return (
-    <div className="w-full pb-12">
+    <div className="w-full max-w-3xl pb-12">
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <div className="flex min-w-0 items-center gap-2">
             <span aria-hidden="true">📁</span>
-            <h1 className="truncate text-xl font-medium text-blue-700">{readableName(folder)}</h1>
-            <span className="shrink-0 text-sm font-medium text-zinc-500">
+            <h1 className="truncate text-sm font-medium text-blue-700">{readableName(folder)}</h1>
+            <span className="shrink-0 text-xs font-medium text-zinc-500">
               {memories.length.toLocaleString()} {memories.length === 1 ? 'memory' : 'memories'}
             </span>
           </div>
@@ -130,10 +130,10 @@ export function FolderDetailClient({ folder, memories }: FolderDetailClientProps
           <button
             type="button"
             onClick={() => setView('memory')}
-            className={`h-10 rounded-md border px-3 text-sm font-medium ${
+            className={`h-8 rounded-full px-3 text-xs font-medium ${
               view === 'memory'
-                ? 'border-zinc-900 bg-zinc-950 text-white'
-                : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50'
+                ? 'bg-blue-600 text-white'
+                : 'bg-zinc-50 text-zinc-600 hover:bg-zinc-100'
             }`}
           >
             Memories
@@ -141,63 +141,63 @@ export function FolderDetailClient({ folder, memories }: FolderDetailClientProps
           <button
             type="button"
             onClick={() => setView('table')}
-            className={`inline-flex h-10 items-center gap-2 rounded-md border px-3 text-sm font-medium ${
+            className={`inline-flex h-8 items-center gap-2 rounded-full px-3 text-xs font-medium ${
               view === 'table'
-                ? 'border-zinc-900 bg-zinc-950 text-white'
-                : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50'
+                ? 'bg-blue-600 text-white'
+                : 'bg-zinc-50 text-zinc-600 hover:bg-zinc-100'
             }`}
           >
-            <Table2 className="size-4" />
+            <Table2 className="size-3.5" />
             Make table
           </button>
           <button
             type="button"
             onClick={() => downloadCsv(folder, columns, rows)}
             disabled={rows.length === 0}
-            className="inline-flex h-10 items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex h-8 items-center gap-2 rounded-full bg-zinc-50 px-3 text-xs font-medium text-zinc-600 hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Download className="size-4" />
+            <Download className="size-3.5" />
             Export CSV
           </button>
         </div>
       </div>
 
       {view === 'memory' ? (
-        <div className="rounded-md border border-zinc-200 bg-white">
-          <div className="divide-y divide-zinc-100">
-            {memories.map((memory) => (
-              <details key={memory.memoryId} className="group">
-                <summary className="grid cursor-pointer list-none gap-1 px-4 py-3 text-sm sm:grid-cols-[1fr_140px] sm:items-center">
-                  <p className="min-w-0 truncate font-medium text-blue-700">{previewMemory(memory, 150)}</p>
-                  <p className="text-xs font-medium text-zinc-400 sm:text-right">{formatKeepDbDate(memory.createdAt)}</p>
-                </summary>
-                <div className="border-t border-zinc-100 bg-zinc-50 px-4 py-4">
-                  <div className="mb-3 flex items-center justify-between gap-3">
-                    <p className="truncate text-xs font-medium text-zinc-400">{memory.memoryId}</p>
-                    <button
-                      type="button"
-                      onClick={() => downloadMemory(memory)}
-                      className="inline-flex h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-600 hover:bg-zinc-50"
-                    >
-                      <Download className="size-3.5" />
-                      Download
-                    </button>
-                  </div>
-                  <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-zinc-700">
-                    {memory.content}
-                  </p>
+        <div className="space-y-2">
+          {memories.map((memory) => (
+            <details key={memory.memoryId} className="group rounded-md bg-zinc-50 px-3 py-2">
+              <summary className="grid cursor-pointer list-none gap-1 text-sm sm:grid-cols-[1fr_140px] sm:items-center">
+                <p className="min-w-0 truncate font-medium text-blue-600">{previewMemory(memory, 150)}</p>
+                <p className="text-xs font-medium text-zinc-400 sm:text-right">{formatKeepDbDate(memory.createdAt)}</p>
+              </summary>
+              <div className="mt-3 border-t border-zinc-100 pt-3">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <p className="truncate text-xs font-medium text-zinc-400">{memory.memoryId}</p>
+                  <button
+                    type="button"
+                    onClick={() => downloadMemory(memory)}
+                    className="inline-flex h-8 items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-600 hover:bg-zinc-50"
+                  >
+                    <Download className="size-3.5" />
+                    Download
+                  </button>
                 </div>
-              </details>
-            ))}
-            {memories.length === 0 && (
-              <div className="px-4 py-5 text-sm font-medium text-zinc-500">No memories found.</div>
-            )}
-          </div>
+                <p className="whitespace-pre-wrap rounded-md bg-white p-3 text-xs font-medium leading-relaxed text-zinc-700">
+                  {memory.content}
+                </p>
+              </div>
+            </details>
+          ))}
+          {memories.length === 0 && (
+            <div className="flex min-h-40 items-center justify-center text-center text-sm font-medium text-zinc-500">
+              No memories found.
+            </div>
+          )}
         </div>
       ) : (
         <div className="overflow-x-auto rounded-md border border-zinc-200 bg-white">
           <table className="w-full min-w-max table-auto border-collapse">
-            <thead className="bg-zinc-50">
+            <thead>
               <tr className="border-b border-zinc-200">
                 {columns.map((column) => (
                   <th key={column} className={tableHeaderCell}>

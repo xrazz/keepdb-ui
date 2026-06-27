@@ -1,25 +1,19 @@
 export default function MemoriesLoading() {
   return (
-    <div className="w-full animate-pulse pb-12">
-      <div className="overflow-hidden rounded-md border border-zinc-200 bg-white">
-        <div className="grid grid-cols-[1fr_auto] gap-3 border-b border-zinc-200 bg-zinc-50 px-4 py-3 sm:grid-cols-[180px_1fr_140px] sm:gap-0">
-          <div className="h-5 w-24 rounded bg-zinc-100" />
-          <div className="hidden h-5 w-20 rounded bg-zinc-100 sm:block" />
-          <div className="h-5 w-16 rounded bg-zinc-100" />
-        </div>
+    <div className="w-full max-w-3xl animate-pulse pb-12">
+      <div className="mb-4 h-9 w-40 rounded-full border border-zinc-200/70 bg-zinc-50 shadow-[inset_0_1px_2px_rgba(24,24,27,0.04)]" />
 
-        <div className="divide-y divide-zinc-200">
-          {[0, 1, 2, 3, 4, 5].map((item) => (
-            <div
-              key={item}
-              className="grid gap-2 px-4 py-4 sm:grid-cols-[180px_1fr_140px] sm:items-center sm:gap-0"
-            >
-              <div className="h-4 w-28 rounded bg-zinc-100" />
-              <div className="h-4 w-4/5 rounded bg-zinc-100" />
-              <div className="h-4 w-20 rounded bg-zinc-100 sm:ml-0" />
-            </div>
-          ))}
-        </div>
+      <div className="space-y-2">
+        {[0, 1, 2, 3, 4, 5].map((item) => (
+          <div
+            key={item}
+            className="grid gap-2 rounded-md bg-zinc-50 px-3 py-2 sm:grid-cols-[140px_1fr_120px] sm:items-center sm:gap-3"
+          >
+            <div className="h-4 w-28 rounded bg-zinc-100" />
+            <div className="h-4 w-4/5 rounded bg-zinc-100" />
+            <div className="h-3 w-20 rounded bg-zinc-100 sm:justify-self-end" />
+          </div>
+        ))}
       </div>
     </div>
   );

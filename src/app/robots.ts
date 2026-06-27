@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/dashboard', '/account', '/memories', '/search', '/agent-setup'],
+      disallow: ['/dashboard', '/account', '/memories', '/search', '/agent-setup', '/agent-skills', '/folders', '/settings'],
     },
     sitemap: 'https://keepdb.dev/sitemap.xml',
   };

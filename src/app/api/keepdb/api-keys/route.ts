@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAgentApiKey, listAgentApiKeys, type AgentKeyAccess } from '@/lib/keepdb/agent-keys';
 
-const accessModes = new Set(['read', 'write', 'read_write']);
+const accessModes = new Set(['read', 'write', 'read_write', 'read_write_delete']);
 
 export async function GET() {
   try {

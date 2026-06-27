@@ -10,11 +10,11 @@ export default async function DashboardLayout({
   const user = await requireCurrentUser();
 
   return (
-    <main className="flex h-screen overflow-hidden bg-white font-medium text-zinc-950 font-[family-name:var(--font-dm-sans)]">
+    <main className="flex h-screen overflow-hidden bg-zinc-50 font-medium text-zinc-950 font-[family-name:var(--font-dm-sans)]">
       <Sidebar userEmail={user.email || 'Signed in'} />
-      <div className="flex min-w-0 flex-1 flex-col bg-white">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-tl-xl border border-r-0 border-b-0 border-zinc-200 bg-white">
         <PageHeader userEmail={user.email || 'Signed in'} />
-        <section className="flex min-h-0 flex-1 overflow-y-auto p-4 md:p-8">{children}</section>
+        <section className="flex min-h-0 flex-1 overflow-y-auto rounded-tl-xl p-4 md:p-8">{children}</section>
       </div>
     </main>
   );

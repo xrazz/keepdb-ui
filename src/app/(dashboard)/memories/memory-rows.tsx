@@ -1,6 +1,7 @@
 'use client';
 
-import { ChevronDown, Download } from 'lucide-react';
+import { useState } from 'react';
+import { Download, Trash2 } from 'lucide-react';
 
 type MemoryRow = {
   memoryId: string;
@@ -41,43 +42,81 @@ function downloadMemory(memory: MemoryRow) {
 }
 
 export function MemoryRows({ memories }: { memories: MemoryRow[] }) {
-  if (memories.length === 0) {
-    return <div className="px-4 py-5 text-sm text-zinc-500">No memories found.</div>;
+  const [rows, setRows] = useState(memories);
+  const [deletingId, setDeletingId] = useState('');
+  const [message, setMessage] = useState('');
+
+  async function deleteMemory(memory: MemoryRow) {
+    const confirmed = window.confirm('Delete this memory?');
+    if (!confirmed) return;
+
+    setDeletingId(memory.memoryId);
+    setMessage('');
+    const response = await fetch(`/api/keepdb/memories/${memory.memoryId}`, { method: 'DELETE' });
+    const body = (await response.json().catch(() => null)) as { success?: boolean; message?: string } | null;
+
+    if (response.ok && body?.success) {
+      setRows((current) => current.filter((row) => row.memoryId !== memory.memoryId));
+    } else {
+      setMessage(body?.message || 'Could not delete memory.');
+    }
+    setDeletingId('');
+  }
+
+  if (rows.length === 0) {
+    return <div className="flex min-h-40 items-center justify-center text-center text-sm font-medium text-zinc-500">No memories found.</div>;
   }
 
   return (
-    <div className="divide-y divide-zinc-200">
-      {memories.map((memory) => (
-        <details key={memory.memoryId} className="group">
-          <summary className="grid cursor-pointer list-none gap-1 px-4 py-4 text-sm sm:grid-cols-[180px_1fr_140px] sm:items-center sm:gap-0">
-            <span className="flex min-w-0 items-center gap-2 font-medium text-zinc-950">
-              <ChevronDown className="size-3 shrink-0 text-zinc-400 transition-transform group-open:rotate-180" />
-              <span className="truncate text-blue-700">{memory.collection}</span>
-            </span>
-            <span className="min-w-0 truncate text-zinc-600">{memoryPreview(memory)}</span>
-            <span className="text-xs text-zinc-400 sm:text-sm">{formatMemoryDate(memory.createdAt)}</span>
-          </summary>
+    <div className="space-y-2">
+      {message && (
+        <div className="rounded-md bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
+          {message}
+        </div>
+      )}
+      <div className="space-y-2">
+        {rows.map((memory) => (
+          <details key={memory.memoryId} className="group rounded-md bg-zinc-50 px-3 py-2">
+            <summary className="grid cursor-pointer list-none gap-1 text-sm sm:grid-cols-[140px_1fr_120px] sm:items-center sm:gap-3">
+              <span className="min-w-0 truncate font-medium text-blue-600">
+                {memory.collection}
+              </span>
+              <span className="min-w-0 truncate font-medium text-zinc-700">{memoryPreview(memory)}</span>
+              <span className="text-xs font-medium text-zinc-400 sm:text-right">{formatMemoryDate(memory.createdAt)}</span>
+            </summary>
 
-          <div className="border-t border-zinc-100 bg-zinc-50 px-4 py-4">
-            <div className="max-w-4xl sm:ml-[24px]">
-              <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="truncate text-xs font-medium text-zinc-400">{memory.memoryId}</p>
-                <button
-                  type="button"
-                  onClick={() => downloadMemory(memory)}
-                  className="inline-flex h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-600 hover:bg-zinc-50"
-                >
-                  <Download className="size-3.5" />
-                  Download
-                </button>
+            <div className="mt-3 border-t border-zinc-100 pt-3">
+              <div>
+                <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="truncate text-xs font-medium text-zinc-400">{memory.memoryId}</p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => downloadMemory(memory)}
+                      className="inline-flex h-8 items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-600 hover:bg-zinc-50"
+                    >
+                      <Download className="size-3.5" />
+                      Download
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void deleteMemory(memory)}
+                      disabled={deletingId === memory.memoryId}
+                      className="inline-flex h-8 items-center gap-2 rounded-full bg-red-50 px-3 text-xs font-medium text-red-700 hover:bg-red-100 disabled:opacity-50"
+                    >
+                      <Trash2 className="size-3.5" />
+                      {deletingId === memory.memoryId ? 'Deleting' : 'Delete'}
+                    </button>
+                  </div>
+                </div>
+                <pre className="max-h-[520px] overflow-auto whitespace-pre-wrap rounded-md bg-white p-3 font-[family-name:var(--font-dm-sans)] text-xs font-medium leading-relaxed text-zinc-700">
+                  {memory.content}
+                </pre>
               </div>
-              <pre className="max-h-[520px] overflow-auto whitespace-pre-wrap rounded-md border border-zinc-200 bg-white p-4 font-[family-name:var(--font-dm-sans)] text-sm font-medium leading-relaxed text-zinc-700">
-                {memory.content}
-              </pre>
             </div>
-          </div>
-        </details>
-      ))}
+          </details>
+        ))}
+      </div>
     </div>
   );
 }

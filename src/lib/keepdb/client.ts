@@ -36,12 +36,14 @@ type KeepDbResponse<T> =
   | { configured: true; success: false; message: string }
   | { configured: false; success: false; message: string };
 
-async function keepDbFetch<T>(path: string): Promise<KeepDbResponse<T>> {
+async function keepDbFetch<T>(path: string, init: RequestInit = {}): Promise<KeepDbResponse<T>> {
   try {
     const clientKey = await getOrCreateDashboardClientKey();
     const response = await fetch(`${getKeepDbApiBase()}${path}`, {
+      ...init,
       headers: {
         Authorization: `Bearer ${clientKey}`,
+        ...init.headers,
       },
       cache: 'no-store',
     });
@@ -78,6 +80,12 @@ export async function listKeepDbMemories(limit = 50, collection?: string) {
 export async function searchKeepDbMemories(query: string, limit = 10) {
   const params = new URLSearchParams({ query, limit: String(limit) });
   return keepDbFetch<{ results: KeepDbMemory[]; retrieval?: unknown }>(`/memory?${params}`);
+}
+
+export async function deleteKeepDbMemory(memoryId: string) {
+  return keepDbFetch<{ memoryId: string; deleted: boolean }>(`/memory/${encodeURIComponent(memoryId)}`, {
+    method: 'DELETE',
+  });
 }
 
 export async function timedSearchKeepDbMemories(query: string, limit = 10) {

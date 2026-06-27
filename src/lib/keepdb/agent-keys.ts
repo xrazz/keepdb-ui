@@ -2,11 +2,12 @@ import { getKeepDbSql } from '@/lib/keepdb/database';
 import { getOrCreateKeepDbUser } from '@/lib/keepdb/keep-user';
 import { createApiKey, getKeyPrefix, hashApiKey } from '@/lib/keepdb/key-crypto';
 
-export type AgentKeyAccess = 'read' | 'write' | 'read_write';
+export type AgentKeyAccess = 'read' | 'write' | 'read_write' | 'read_write_delete';
 
 function scopesForAccess(access: AgentKeyAccess) {
   if (access === 'read') return ['memory:read'];
   if (access === 'write') return ['memory:write'];
+  if (access === 'read_write_delete') return ['memory:read', 'memory:write', 'memory:delete'];
   return ['memory:read', 'memory:write'];
 }
 

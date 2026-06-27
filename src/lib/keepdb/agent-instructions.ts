@@ -87,6 +87,25 @@ export function buildMcpCommand(apiKey?: string) {
   --header "Authorization: Bearer ${key}"`;
 }
 
+export function buildCodexMcpCommand(apiKey?: string) {
+  const key = cleanValue(apiKey, 'keep_sk_your_api_key');
+
+  return `export KEEPDB_API_KEY="${key}"
+
+codex mcp add keepdb \\
+  --url ${MCP_BASE} \\
+  --bearer-token-env-var KEEPDB_API_KEY`;
+}
+
+export function buildRestSaveExample(apiKey?: string) {
+  const key = cleanValue(apiKey, 'keep_sk_your_api_key');
+
+  return `curl -sS -X POST "${API_BASE}/memory" \\
+  -H "Authorization: Bearer ${key}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"folder":"agent-memory","content":"Important project context to remember"}'`;
+}
+
 export function buildCodexSkillMarkdown(input: AgentInstructionInput = {}) {
   return `---
 name: keepdb

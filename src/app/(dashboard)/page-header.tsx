@@ -12,6 +12,8 @@ const pageTitles: Record<string, string> = {
   '/search': 'Search',
   '/folders': 'Folders',
   '/memories': 'Memories',
+  '/workflows': 'Workflows',
+  '/ai-sdr-agents': 'AI SDR Agents',
   '/agent-skills': 'Connect',
   '/agent-setup': 'API keys',
   '/settings': 'Settings',

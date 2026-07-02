@@ -10,6 +10,12 @@ import { dashboardNavItems } from './nav-items';
 export function Sidebar({ userEmail }: { userEmail: string }) {
   const pathname = usePathname();
   const [optimisticPathname, setOptimisticPathname] = useOptimistic(pathname);
+  const activePathname = optimisticPathname || pathname;
+
+  function isActive(href: string) {
+    if (href === '/folders') return activePathname === href || activePathname.startsWith('/folders/');
+    return activePathname === href;
+  }
 
   const navLinkClass = (active: boolean) =>
     `flex w-full items-center gap-3 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors ${
@@ -36,7 +42,7 @@ export function Sidebar({ userEmail }: { userEmail: string }) {
             key={href}
             href={href}
             onClick={() => setOptimisticPathname(href)}
-            className={navLinkClass(optimisticPathname === href)}
+            className={navLinkClass(isActive(href))}
           >
             <span className="w-4 shrink-0 text-center text-sm leading-none text-zinc-500">{emoji}</span>
             <span>{label}</span>

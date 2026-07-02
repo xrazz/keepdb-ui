@@ -5,7 +5,18 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/dashboard', '/account', '/memories', '/search', '/agent-setup', '/agent-skills', '/folders', '/settings'],
+      disallow: [
+        '/dashboard',
+        '/account',
+        '/memories',
+        '/search',
+        '/workflows',
+        '/ai-sdr-agents',
+        '/agent-setup',
+        '/agent-skills',
+        '/folders',
+        '/settings',
+      ],
     },
     sitemap: 'https://keepdb.dev/sitemap.xml',
   };

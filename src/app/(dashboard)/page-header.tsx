@@ -26,7 +26,10 @@ export function PageHeader({ userEmail }: { userEmail: string }) {
   const folderName = isFolderDetail
     ? decodeURIComponent(pathname.split('/').slice(2).join('/') || '').replaceAll('-', ' ')
     : '';
-  const title = isSdrAgentDetail ? 'AI SDR Agent' : pageTitles[pathname] ?? 'Overview';
+  const sdrAgentName = isSdrAgentDetail
+    ? decodeURIComponent(pathname.split('/')[2] || '').replaceAll('-', ' ')
+    : '';
+  const title = pageTitles[pathname] ?? 'Overview';
 
   return (
     <header className="shrink-0 px-4 md:px-8">
@@ -35,17 +38,17 @@ export function PageHeader({ userEmail }: { userEmail: string }) {
           <Link href="/dashboard" className="flex items-center gap-2 md:hidden" aria-label="KeepDB dashboard">
             <Image src="/folder.png" alt="" width={28} height={28} className="size-7" aria-hidden="true" />
           </Link>
-          {isFolderDetail ? (
+          {isFolderDetail || isSdrAgentDetail ? (
             <div className="flex min-w-0 items-center gap-2">
               <Link
-                href="/folders"
-                aria-label="Back to folders"
+                href={isFolderDetail ? '/folders' : '/ai-sdr-agents'}
+                aria-label={isFolderDetail ? 'Back to folders' : 'Back to AI SDR agents'}
                 className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-zinc-50 text-zinc-500 shadow-[inset_0_1px_2px_rgba(24,24,27,0.04)] hover:text-zinc-700"
               >
                 <ArrowLeft className="size-5" strokeWidth={2.2} />
               </Link>
               <h1 className="min-w-0 truncate text-lg font-medium text-zinc-950">
-                {folderName}
+                {isFolderDetail ? folderName : sdrAgentName}
               </h1>
             </div>
           ) : (

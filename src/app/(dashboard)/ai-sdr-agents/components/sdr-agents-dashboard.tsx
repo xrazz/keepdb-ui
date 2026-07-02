@@ -2,17 +2,11 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ChevronDown, Plus, Search, UsersRound } from 'lucide-react';
-import type { SdrAgent, SdrAgentStatus } from '../data';
+import { ChevronDown, Plus, Search } from 'lucide-react';
+import type { SdrAgent } from '../data';
 
 type DraftAgent = SdrAgent & {
   draftOnly?: boolean;
-};
-
-const statusClass: Record<SdrAgentStatus, string> = {
-  Live: 'bg-emerald-50 text-emerald-700',
-  Draft: 'bg-zinc-100 text-zinc-600',
-  'Needs review': 'bg-amber-50 text-amber-700',
 };
 
 function slugify(value: string) {
@@ -191,22 +185,18 @@ export function SdrAgentsDashboard({ agents }: { agents: SdrAgent[] }) {
               href={href}
               className="flex items-center justify-between gap-4 rounded-md bg-zinc-50 px-3 py-2 text-sm font-medium hover:bg-zinc-100/70"
             >
-              <span className="flex min-w-0 items-center gap-3">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-blue-700">
-                  <UsersRound className="size-4" strokeWidth={1.8} />
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-blue-700">{agent.name}</span>
-                  <span className="mt-0.5 block truncate text-xs text-zinc-500">
-                    {agent.client} / {agent.channel} / {agent.chats.length} chats
-                  </span>
-                </span>
+              <span className="flex min-w-0 items-center gap-2">
+                <span aria-hidden="true">🤖</span>
+                <span className="truncate text-blue-700">{agent.name}</span>
               </span>
-              <span className="flex shrink-0 items-center gap-2">
-                {unread > 0 && (
-                  <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] text-white">{unread}</span>
+              <span className="shrink-0 text-zinc-500">
+                {unread > 0 ? (
+                  <span className="text-red-600">
+                    {unread.toLocaleString()} {unread === 1 ? 'new reply' : 'new replies'}
+                  </span>
+                ) : (
+                  <span>{agent.chats.length.toLocaleString()} {agent.chats.length === 1 ? 'chat' : 'chats'}</span>
                 )}
-                <span className={`rounded-full px-2 py-1 text-[11px] ${statusClass[agent.status]}`}>{agent.status}</span>
               </span>
             </Link>
           );

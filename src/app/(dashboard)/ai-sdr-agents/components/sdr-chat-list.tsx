@@ -2,78 +2,128 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Bot, ChevronDown, MessageCircle, Search } from 'lucide-react';
-import type { SdrAgent, SdrChat } from '../data';
+import { Search, Send } from 'lucide-react';
+import type { SdrAgent, SdrChat, SdrMessage } from '../data';
 
-type SortMode = 'recent' | 'name' | 'unread' | 'status';
+function MessageBubble({ message }: { message: SdrMessage }) {
+  if (message.from === 'system') {
+    return (
+      <div className="rounded-md bg-zinc-50 px-3 py-2 text-xs font-medium leading-5 text-zinc-500">
+        {message.content}
+      </div>
+    );
+  }
 
-const chatStatusClass: Record<SdrChat['status'], string> = {
-  Open: 'bg-zinc-100 text-zinc-600',
-  Booked: 'bg-emerald-50 text-emerald-700',
-  'Needs reply': 'bg-blue-50 text-blue-700',
-  Review: 'bg-amber-50 text-amber-700',
-};
+  const fromAgent = message.from === 'agent';
 
-function sortChats(chats: SdrChat[], sortMode: SortMode) {
-  return [...chats].sort((a, b) => {
-    if (sortMode === 'name') return a.leadName.localeCompare(b.leadName);
-    if (sortMode === 'unread') return b.unread - a.unread;
-    if (sortMode === 'status') return a.status.localeCompare(b.status);
-    return b.unread - a.unread;
-  });
+  return (
+    <div className={`flex ${fromAgent ? 'justify-end' : 'justify-start'}`}>
+      <div className={`max-w-[78%] rounded-md px-3 py-2 text-sm font-medium leading-6 ${
+        fromAgent ? 'bg-blue-600 text-white' : 'bg-zinc-50 text-zinc-700'
+      }`}>
+        <p>{message.content}</p>
+        <p className={`mt-1 text-[10px] ${fromAgent ? 'text-blue-100' : 'text-zinc-400'}`}>{message.time}</p>
+      </div>
+    </div>
+  );
+}
+
+function ChatPane({ agent, chat }: { agent: SdrAgent; chat: SdrChat | null }) {
+  const [draft, setDraft] = useState('');
+  const [extraMessages, setExtraMessages] = useState<SdrMessage[]>([]);
+
+  function sendMessage(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const content = draft.trim();
+    if (!content || !chat) return;
+
+    setExtraMessages((current) => [
+      ...current,
+      {
+        id: `reply-${Date.now()}`,
+        from: 'agent',
+        sender: agent.name,
+        content,
+        time: 'Now',
+      },
+    ]);
+    setDraft('');
+  }
+
+  if (!chat) {
+    return (
+      <div className="flex min-h-[420px] flex-1 items-center justify-center rounded-md bg-zinc-50 text-sm font-medium text-zinc-500">
+        No chats yet.
+      </div>
+    );
+  }
+
+  const messages = [...chat.messages, ...extraMessages];
+
+  return (
+    <section className="flex min-h-[520px] min-w-0 flex-1 flex-col rounded-md bg-white">
+      <div className="border-b border-zinc-100 px-4 py-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h2 className="truncate text-sm font-medium text-zinc-950">{chat.leadName}</h2>
+            <p className="mt-1 truncate text-xs font-medium text-zinc-400">{chat.leadPhone}</p>
+          </div>
+          <Link
+            href={`/ai-sdr-agents/${agent.id}/chats/${chat.id}`}
+            className="shrink-0 rounded-full bg-zinc-50 px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100"
+          >
+            Open
+          </Link>
+        </div>
+      </div>
+
+      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+        {messages.map((message) => (
+          <MessageBubble key={message.id} message={message} />
+        ))}
+      </div>
+
+      <form onSubmit={sendMessage} className="flex gap-2 border-t border-zinc-100 px-3 py-3">
+        <input
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          placeholder="Write a reply..."
+          className="h-9 min-w-0 flex-1 rounded-full border border-zinc-200/70 bg-zinc-50 px-3 text-xs font-medium text-zinc-700 outline-none placeholder:text-zinc-400 focus:border-zinc-300"
+        />
+        <button
+          type="submit"
+          aria-label="Send reply"
+          className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700"
+        >
+          <Send className="size-3.5" strokeWidth={1.8} />
+        </button>
+      </form>
+    </section>
+  );
 }
 
 export function SdrChatList({ agent }: { agent: SdrAgent }) {
   const [query, setQuery] = useState('');
-  const [sortMode, setSortMode] = useState<SortMode>('recent');
+  const [selectedChatId, setSelectedChatId] = useState(agent.chats[0]?.id || '');
 
   const visibleChats = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    const filtered = normalizedQuery
-      ? agent.chats.filter((chat) =>
-          [chat.leadName, chat.leadPhone, chat.status, chat.source, chat.lastMessage]
-            .join(' ')
-            .toLowerCase()
-            .includes(normalizedQuery)
-        )
-      : agent.chats;
+    if (!normalizedQuery) return agent.chats;
 
-    return sortChats(filtered, sortMode);
-  }, [agent.chats, query, sortMode]);
+    return agent.chats.filter((chat) =>
+      [chat.leadName, chat.leadPhone, chat.lastMessage].join(' ').toLowerCase().includes(normalizedQuery)
+    );
+  }, [agent.chats, query]);
 
-  const unread = agent.chats.reduce((sum, chat) => sum + chat.unread, 0);
+  const selectedChat =
+    agent.chats.find((chat) => chat.id === selectedChatId) ||
+    visibleChats[0] ||
+    null;
 
   return (
-    <div className="w-full max-w-3xl pb-12">
-      <div className="mb-5">
-        <Link href="/ai-sdr-agents" className="mb-4 inline-flex items-center gap-2 text-xs font-medium text-zinc-500 hover:text-zinc-950">
-          <ArrowLeft className="size-3.5" strokeWidth={1.8} />
-          AI SDR bots
-        </Link>
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="flex items-center gap-3">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-50 text-blue-700">
-                <Bot className="size-4.5" strokeWidth={1.8} />
-              </span>
-              <div className="min-w-0">
-                <h2 className="truncate text-xl font-medium tracking-tight text-zinc-950">{agent.name}</h2>
-                <p className="mt-1 truncate text-sm text-zinc-500">
-                  {agent.client} / {agent.channel} / {agent.chats.length} chats
-                </p>
-              </div>
-            </div>
-          </div>
-          {unread > 0 && (
-            <span className="shrink-0 rounded-full bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white">
-              {unread} unread
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <label className="flex h-9 w-full items-center rounded-full border border-zinc-200/70 bg-zinc-50 px-3 shadow-[inset_0_1px_2px_rgba(24,24,27,0.04)] sm:max-w-sm">
+    <div className="flex w-full max-w-5xl flex-col gap-4 pb-12 lg:flex-row">
+      <aside className="w-full shrink-0 lg:w-80">
+        <label className="mb-3 flex h-9 w-full items-center rounded-full border border-zinc-200/70 bg-zinc-50 px-3 shadow-[inset_0_1px_2px_rgba(24,24,27,0.04)]">
           <Search className="mr-2 size-3.5 text-blue-600" strokeWidth={1.8} />
           <input
             value={query}
@@ -83,57 +133,38 @@ export function SdrChatList({ agent }: { agent: SdrAgent }) {
           />
         </label>
 
-        <div className="relative sm:w-40">
-          <select
-            value={sortMode}
-            onChange={(event) => setSortMode(event.target.value as SortMode)}
-            className="h-9 w-full appearance-none rounded-full border border-zinc-200/70 bg-zinc-50 pl-3 pr-10 text-xs font-medium text-zinc-600 shadow-[inset_0_1px_2px_rgba(24,24,27,0.04)] outline-none focus:border-zinc-300"
-          >
-            <option value="recent">Recently active</option>
-            <option value="unread">Unread</option>
-            <option value="name">Lead name</option>
-            <option value="status">Status</option>
-          </select>
-          <ChevronDown className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-zinc-500" strokeWidth={1.8} />
-        </div>
-      </div>
+        <div className="space-y-2">
+          {visibleChats.map((chat) => {
+            const active = selectedChat?.id === chat.id;
 
-      <div className="space-y-2">
-        {visibleChats.map((chat) => (
-          <Link
-            key={chat.id}
-            href={`/ai-sdr-agents/${agent.id}/chats/${chat.id}`}
-            className="flex items-center justify-between gap-4 rounded-md bg-zinc-50 px-3 py-2 text-sm font-medium hover:bg-zinc-100/70"
-          >
-            <span className="flex min-w-0 items-center gap-3">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-emerald-700">
-                <MessageCircle className="size-4" strokeWidth={1.8} />
-              </span>
-              <span className="min-w-0">
-                <span className="flex min-w-0 items-center gap-2">
-                  <span className="truncate text-blue-700">{chat.leadName}</span>
-                  <span className="hidden shrink-0 text-xs text-zinc-400 sm:inline">{chat.leadPhone}</span>
+            return (
+              <button
+                key={chat.id}
+                type="button"
+                onClick={() => setSelectedChatId(chat.id)}
+                className={`flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left text-sm font-medium ${
+                  active ? 'bg-zinc-100' : 'bg-zinc-50 hover:bg-zinc-100/70'
+                }`}
+              >
+                <span className="min-w-0">
+                  <span className="block truncate text-blue-700">{chat.leadName}</span>
+                  <span className="mt-0.5 block truncate text-xs text-zinc-500">{chat.lastMessage}</span>
                 </span>
-                <span className="mt-0.5 block truncate text-xs text-zinc-500">{chat.lastMessage}</span>
-              </span>
-            </span>
-            <span className="flex shrink-0 items-center gap-2">
-              {chat.unread > 0 && (
-                <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] text-white">{chat.unread}</span>
-              )}
-              <span className={`rounded-full px-2 py-1 text-[11px] ${chatStatusClass[chat.status]}`}>{chat.status}</span>
-              <span className="hidden text-xs text-zinc-400 sm:inline">{chat.lastActive}</span>
-            </span>
-          </Link>
-        ))}
+                <span className="flex shrink-0 flex-col items-end gap-1">
+                  <span className="text-xs text-zinc-400">{chat.lastActive}</span>
+                  {chat.unread > 0 && (
+                    <span className="text-xs font-medium text-red-600">
+                      {chat.unread}
+                    </span>
+                  )}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </aside>
 
-        {visibleChats.length === 0 && (
-          <div className="flex min-h-40 flex-col items-center justify-center gap-2 rounded-md bg-zinc-50 text-center text-zinc-400">
-            <MessageCircle className="size-4" strokeWidth={1.8} />
-            <p className="text-sm font-medium text-zinc-500">No chats yet.</p>
-          </div>
-        )}
-      </div>
+      <ChatPane agent={agent} chat={selectedChat} />
     </div>
   );
 }

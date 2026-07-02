@@ -1,4 +1,4 @@
-import { WhatsappAgentScreen } from '../../../components/whatsapp-agent-screen';
+import { SdrChatDetail } from '../../../components/sdr-chat-detail';
 import { getSdrChat } from '../../../data';
 
 type ChatPageProps = {
@@ -9,5 +9,5 @@ export default async function AiSdrChatPage({ params }: ChatPageProps) {
   const { agentId, chatId } = await params;
   const { agent, chat } = getSdrChat(agentId, chatId);
 
-  return <WhatsappAgentScreen agent={agent} chat={chat} />;
+  return <SdrChatDetail agent={agent} chat={chat} />;
 }

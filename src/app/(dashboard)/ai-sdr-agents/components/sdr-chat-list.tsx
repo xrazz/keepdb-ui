@@ -2,27 +2,40 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search, Send } from 'lucide-react';
+import { ArrowUp, CirclePlus, Search, SmilePlus } from 'lucide-react';
 import type { SdrAgent, SdrChat, SdrMessage } from '../data';
 
-function MessageBubble({ message }: { message: SdrMessage }) {
+function messageGroupLabel(message: SdrMessage, index: number) {
+  if (message.from === 'system') return null;
+  if (index === 0) return message.time;
+  return null;
+}
+
+function MessageBubble({ message, index }: { message: SdrMessage; index: number }) {
   if (message.from === 'system') {
     return (
-      <div className="mx-auto max-w-[82%] rounded-full border border-zinc-200/70 bg-zinc-50 px-3 py-1.5 text-center text-[11px] font-medium leading-5 text-zinc-500">
+      <div className="mx-auto max-w-[82%] rounded-full border border-zinc-200/70 bg-white px-3 py-1.5 text-center text-[11px] font-medium leading-5 text-zinc-500">
         {message.content}
       </div>
     );
   }
 
   const fromAgent = message.from === 'agent';
+  const groupLabel = messageGroupLabel(message, index);
 
   return (
-    <div className={`flex ${fromAgent ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-[78%] rounded-[18px] px-3.5 py-2 text-sm font-medium leading-6 shadow-[0_1px_2px_rgba(24,24,27,0.04)] ${
-        fromAgent ? 'rounded-br-md bg-blue-600 text-white' : 'rounded-bl-md border border-zinc-200/70 bg-white text-zinc-700'
-      }`}>
-        <p>{message.content}</p>
-        <p className={`mt-1 text-[10px] ${fromAgent ? 'text-blue-100' : 'text-zinc-400'}`}>{message.time}</p>
+    <div>
+      {groupLabel && (
+        <p className="mb-3 text-center text-[11px] font-medium text-zinc-400">{groupLabel}</p>
+      )}
+      <div className={`flex ${fromAgent ? 'justify-end' : 'justify-start'}`}>
+        <div className={`relative max-w-[78%] rounded-[20px] px-3.5 py-2 text-sm font-medium leading-6 ${
+          fromAgent
+            ? 'bg-blue-500 text-white after:absolute after:bottom-0 after:right-[-4px] after:size-3 after:rounded-bl-full after:bg-blue-500'
+            : 'border border-zinc-200/70 bg-white text-zinc-700 after:absolute after:bottom-0 after:left-[-4px] after:size-3 after:rounded-br-full after:border-b after:border-l after:border-zinc-200/70 after:bg-white'
+        }`}>
+          <p>{message.content}</p>
+        </div>
       </div>
     </div>
   );
@@ -77,13 +90,20 @@ function ChatPane({ agent, chat }: { agent: SdrAgent; chat: SdrChat | null }) {
         </div>
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto bg-zinc-50/40 px-4 py-4">
-        {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} />
+      <div className="flex-1 space-y-2 overflow-y-auto bg-zinc-50/30 px-4 py-4">
+        {messages.map((message, index) => (
+          <MessageBubble key={message.id} message={message} index={index} />
         ))}
       </div>
 
-      <form onSubmit={sendMessage} className="flex gap-2 border-t border-zinc-100 px-3 py-3">
+      <form onSubmit={sendMessage} className="flex items-center gap-2 border-t border-zinc-100 px-3 py-3">
+        <button
+          type="button"
+          aria-label="Add attachment"
+          className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-50 hover:text-zinc-700"
+        >
+          <CirclePlus className="size-5" strokeWidth={1.8} />
+        </button>
         <input
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
@@ -91,11 +111,18 @@ function ChatPane({ agent, chat }: { agent: SdrAgent; chat: SdrChat | null }) {
           className="h-9 min-w-0 flex-1 rounded-full border border-zinc-200/70 bg-zinc-50 px-3 text-xs font-medium text-zinc-700 outline-none placeholder:text-zinc-400 focus:border-zinc-300"
         />
         <button
+          type="button"
+          aria-label="Add emoji"
+          className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-50 hover:text-zinc-700"
+        >
+          <SmilePlus className="size-5" strokeWidth={1.8} />
+        </button>
+        <button
           type="submit"
           aria-label="Send reply"
-          className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700"
+          className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600"
         >
-          <Send className="size-3.5" strokeWidth={1.8} />
+          <ArrowUp className="size-4" strokeWidth={2.2} />
         </button>
       </form>
     </section>

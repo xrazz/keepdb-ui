@@ -30,10 +30,10 @@ function MessageRow({ message, index }: { message: SdrMessage; index: number }) 
         <p className="mb-3 text-center text-[11px] font-medium text-zinc-400">{groupLabel}</p>
       )}
       <div className={`flex ${fromAgent ? 'justify-end' : 'justify-start'}`}>
-        <div className={`relative max-w-[760px] rounded-[20px] px-3.5 py-2 text-sm font-medium leading-6 ${
+        <div className={`max-w-[760px] rounded-[18px] px-3 py-1.5 text-xs font-medium leading-5 ${
           fromAgent
-            ? 'bg-blue-500 text-white after:absolute after:bottom-0 after:right-[-4px] after:size-3 after:rounded-bl-full after:bg-blue-500'
-            : 'border border-zinc-200/70 bg-white text-zinc-700 after:absolute after:bottom-0 after:left-[-4px] after:size-3 after:rounded-br-full after:border-b after:border-l after:border-zinc-200/70 after:bg-white'
+            ? 'bg-blue-500 text-white'
+            : 'border border-zinc-200/70 bg-white text-zinc-700'
         }`}>
           <p>{message.content}</p>
         </div>

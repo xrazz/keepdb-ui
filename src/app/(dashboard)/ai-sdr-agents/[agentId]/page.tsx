@@ -1,12 +1,12 @@
-import { WhatsappAgentScreen } from '../components/whatsapp-agent-screen';
+import { SdrChatList } from '../components/sdr-chat-list';
 import { getSdrAgent, type SdrAgent } from '../data';
 
 type AgentPageProps = {
   params: Promise<{ agentId: string }>;
-  searchParams?: Promise<{ name?: string; client?: string }>;
+  searchParams?: Promise<{ name?: string; client?: string; channel?: string }>;
 };
 
-function draftAgent(agentId: string, name?: string, client?: string): SdrAgent {
+function draftAgent(agentId: string, name?: string, client?: string, channel?: string): SdrAgent {
   const safeName = name?.trim() || 'Draft SDR Agent';
   const safeClient = client?.trim() || 'New client';
 
@@ -14,7 +14,7 @@ function draftAgent(agentId: string, name?: string, client?: string): SdrAgent {
     id: agentId,
     name: safeName,
     client: safeClient,
-    channel: 'WhatsApp',
+    channel: channel?.trim() || 'WhatsApp',
     status: 'Draft',
     goal: 'Qualify leads, answer key questions, and route qualified prospects to the right booking flow.',
     folder: `sdr/${agentId}`,
@@ -26,15 +26,7 @@ function draftAgent(agentId: string, name?: string, client?: string): SdrAgent {
     owner: 'Unassigned',
     handoffRule: 'Hand off when the lead asks for a human, pricing approval, or an unsupported request.',
     knowledge: ['sales-scripts', 'lead-qualification', 'objections', 'booking-rules'],
-    messages: [
-      {
-        id: `${agentId}-draft`,
-        from: 'system',
-        sender: 'KeepDB',
-        content: 'Draft SDR agent created. Add scripts, qualification rules, objections, and booking context before launch.',
-        time: 'Now',
-      },
-    ],
+    chats: [],
   };
 }
 
@@ -42,8 +34,8 @@ export default async function AiSdrAgentPage({ params, searchParams }: AgentPage
   const { agentId } = await params;
   const query = await searchParams;
   const agent = query?.name || query?.client
-    ? draftAgent(agentId, query.name, query.client)
+    ? draftAgent(agentId, query.name, query.client, query.channel)
     : getSdrAgent(agentId);
 
-  return <WhatsappAgentScreen agent={agent} />;
+  return <SdrChatList agent={agent} />;
 }

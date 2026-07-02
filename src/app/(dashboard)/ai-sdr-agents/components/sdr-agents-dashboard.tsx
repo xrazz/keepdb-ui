@@ -2,12 +2,8 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Bot, Check, MessageCircle, Plus, Search, SlidersHorizontal, UsersRound } from 'lucide-react';
+import { ChevronDown, Plus, Search, UsersRound } from 'lucide-react';
 import type { SdrAgent, SdrAgentStatus } from '../data';
-
-type SdrAgentsDashboardProps = {
-  agents: SdrAgent[];
-};
 
 type DraftAgent = SdrAgent & {
   draftOnly?: boolean;
@@ -48,85 +44,45 @@ function newDraftAgent(name: string, client: string, channel: string): DraftAgen
     owner: 'Unassigned',
     handoffRule: 'Hand off when the lead asks for a human, pricing approval, or an unsupported request.',
     knowledge: ['sales-scripts', 'lead-qualification', 'objections', 'booking-rules'],
-    messages: [
-      {
-        id: `${id}-welcome`,
-        from: 'system',
-        sender: 'KeepDB',
-        content: 'Draft SDR agent created. Add scripts, qualification rules, objections, and booking context before launch.',
-        time: 'Now',
-      },
-    ],
+    chats: [],
     draftOnly: true,
   };
 }
 
-function AgentCard({ agent }: { agent: DraftAgent }) {
-  const href = agent.draftOnly
-    ? `/ai-sdr-agents/${agent.id}?name=${encodeURIComponent(agent.name)}&client=${encodeURIComponent(agent.client)}`
-    : `/ai-sdr-agents/${agent.id}`;
+type SortMode = 'recent' | 'name' | 'chats' | 'booked';
 
-  return (
-    <Link href={href} className="block rounded-md bg-zinc-50 p-3 hover:bg-zinc-100/70">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-zinc-950">{agent.name}</p>
-          <p className="mt-1 truncate text-xs font-medium text-zinc-500">{agent.client}</p>
-        </div>
-        <span className={`shrink-0 rounded-full px-2 py-1 text-[11px] font-medium ${statusClass[agent.status]}`}>
-          {agent.status}
-        </span>
-      </div>
-
-      <p className="mt-3 line-clamp-2 min-h-10 text-xs leading-5 text-zinc-600">{agent.goal}</p>
-
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        <div>
-          <p className="text-[11px] font-medium text-zinc-400">Leads</p>
-          <p className="mt-1 text-xs font-medium text-zinc-900">{agent.leads.toLocaleString()}</p>
-        </div>
-        <div>
-          <p className="text-[11px] font-medium text-zinc-400">Booked</p>
-          <p className="mt-1 text-xs font-medium text-zinc-900">{agent.booked.toLocaleString()}</p>
-        </div>
-        <div>
-          <p className="text-[11px] font-medium text-zinc-400">Reply</p>
-          <p className="mt-1 text-xs font-medium text-zinc-900">{agent.replyRate}</p>
-        </div>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between gap-3 border-t border-zinc-200/70 pt-3">
-        <span className="truncate text-xs font-medium text-blue-700">{agent.channel}</span>
-        <span className="text-xs font-medium text-zinc-400">{agent.lastActive}</span>
-      </div>
-    </Link>
-  );
+function sortAgents(agents: DraftAgent[], sortMode: SortMode) {
+  return [...agents].sort((a, b) => {
+    if (sortMode === 'name') return a.name.localeCompare(b.name);
+    if (sortMode === 'chats') return b.chats.length - a.chats.length;
+    if (sortMode === 'booked') return b.booked - a.booked;
+    return a.status === 'Live' && b.status !== 'Live' ? -1 : 1;
+  });
 }
 
-export function SdrAgentsDashboard({ agents }: SdrAgentsDashboardProps) {
+export function SdrAgentsDashboard({ agents }: { agents: SdrAgent[] }) {
   const [query, setQuery] = useState('');
+  const [sortMode, setSortMode] = useState<SortMode>('recent');
   const [showCreate, setShowCreate] = useState(false);
   const [agentName, setAgentName] = useState('');
   const [clientName, setClientName] = useState('');
   const [channel, setChannel] = useState('WhatsApp');
   const [draftAgents, setDraftAgents] = useState<DraftAgent[]>([]);
 
-  const allAgents = useMemo(() => [...draftAgents, ...agents], [agents, draftAgents]);
   const visibleAgents = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return allAgents;
+    const allAgents = [...draftAgents, ...agents];
+    const filtered = normalizedQuery
+      ? allAgents.filter((agent) =>
+          [agent.name, agent.client, agent.channel, agent.status, agent.goal]
+            .join(' ')
+            .toLowerCase()
+            .includes(normalizedQuery)
+        )
+      : allAgents;
 
-    return allAgents.filter((agent) =>
-      [agent.name, agent.client, agent.channel, agent.status, agent.goal]
-        .join(' ')
-        .toLowerCase()
-        .includes(normalizedQuery)
-    );
-  }, [allAgents, query]);
-
-  const liveAgents = allAgents.filter((agent) => agent.status === 'Live').length;
-  const booked = allAgents.reduce((sum, agent) => sum + agent.booked, 0);
-  const leads = allAgents.reduce((sum, agent) => sum + agent.leads, 0);
+    return sortAgents(filtered, sortMode);
+  }, [agents, draftAgents, query, sortMode]);
 
   function createAgent(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -139,47 +95,46 @@ export function SdrAgentsDashboard({ agents }: SdrAgentsDashboardProps) {
   }
 
   return (
-    <div className="w-full max-w-5xl pb-12">
-      <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="max-w-2xl">
-          <div className="mb-3 inline-flex size-9 items-center justify-center rounded-md bg-zinc-50 text-blue-600">
-            <UsersRound className="size-[18px]" strokeWidth={1.8} />
-          </div>
-          <h2 className="text-xl font-medium tracking-tight text-zinc-950">AI SDR Agents</h2>
-          <p className="mt-2 text-sm leading-6 text-zinc-600">
-            Manage the sales reps your agency runs across clients. Each agent keeps its scripts, lead replies,
-            objections, booking rules, and chat context in one SDR workspace.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setShowCreate((current) => !current)}
-          className="inline-flex h-9 w-fit items-center gap-2 rounded-full bg-zinc-950 px-3 text-xs font-medium text-white hover:bg-zinc-800"
-        >
-          <Plus className="size-3.5" strokeWidth={1.8} />
-          Create bot
-        </button>
-      </div>
+    <div className="w-full max-w-3xl pb-12">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <label className="flex h-9 w-full items-center rounded-full border border-zinc-200/70 bg-zinc-50 px-3 shadow-[inset_0_1px_2px_rgba(24,24,27,0.04)] sm:max-w-sm">
+          <Search className="mr-2 size-3.5 text-blue-600" strokeWidth={1.8} />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search SDR bot"
+            className="h-full min-w-0 flex-1 bg-transparent text-xs font-medium text-zinc-700 outline-none placeholder:text-zinc-400"
+          />
+        </label>
 
-      <div className="grid gap-3 md:grid-cols-3">
-        {[
-          { label: 'Agents', value: allAgents.length.toLocaleString(), icon: Bot },
-          { label: 'Live agents', value: liveAgents.toLocaleString(), icon: Check },
-          { label: 'Booked from SDR', value: `${booked.toLocaleString()} / ${leads.toLocaleString()}`, icon: MessageCircle },
-        ].map(({ label, value, icon: Icon }) => (
-          <div key={label} className="rounded-md bg-zinc-50 px-3 py-2">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-xs font-medium text-zinc-500">{label}</p>
-              <Icon className="size-3.5 text-zinc-400" strokeWidth={1.8} />
-            </div>
-            <p className="mt-1 truncate text-sm font-medium text-zinc-950">{value}</p>
+        <div className="flex gap-2">
+          <div className="relative w-40">
+            <select
+              value={sortMode}
+              onChange={(event) => setSortMode(event.target.value as SortMode)}
+              className="h-9 w-full appearance-none rounded-full border border-zinc-200/70 bg-zinc-50 pl-3 pr-9 text-xs font-medium text-zinc-600 shadow-[inset_0_1px_2px_rgba(24,24,27,0.04)] outline-none focus:border-zinc-300"
+            >
+              <option value="recent">Recently active</option>
+              <option value="name">Name</option>
+              <option value="chats">Most chats</option>
+              <option value="booked">Most booked</option>
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" strokeWidth={1.8} />
           </div>
-        ))}
+          <button
+            type="button"
+            onClick={() => setShowCreate((current) => !current)}
+            className="inline-flex h-9 items-center gap-2 rounded-full bg-zinc-950 px-3 text-xs font-medium text-white hover:bg-zinc-800"
+          >
+            <Plus className="size-3.5" strokeWidth={1.8} />
+            Create bot
+          </button>
+        </div>
       </div>
 
       {showCreate && (
-        <form onSubmit={createAgent} className="mt-5 rounded-md border border-zinc-200 bg-white p-4 shadow-[0_10px_30px_rgba(24,24,27,0.04)]">
-          <div className="grid gap-3 lg:grid-cols-[1fr_1fr_160px_auto] lg:items-end">
+        <form onSubmit={createAgent} className="mb-4 rounded-md border border-zinc-200 bg-white p-4 shadow-[0_10px_30px_rgba(24,24,27,0.04)]">
+          <div className="grid gap-3 sm:grid-cols-2">
             <label className="block">
               <span className="text-xs font-medium text-zinc-500">Bot name</span>
               <input
@@ -198,7 +153,9 @@ export function SdrAgentsDashboard({ agents }: SdrAgentsDashboardProps) {
                 className="mt-1 h-9 w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 text-xs font-medium text-zinc-700 outline-none focus:border-zinc-300"
               />
             </label>
-            <label className="block">
+          </div>
+          <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
+            <label className="block sm:w-44">
               <span className="text-xs font-medium text-zinc-500">Channel</span>
               <select
                 value={channel}
@@ -213,7 +170,7 @@ export function SdrAgentsDashboard({ agents }: SdrAgentsDashboardProps) {
             </label>
             <button
               type="submit"
-              className="inline-flex h-9 items-center justify-center rounded-full bg-blue-600 px-4 text-xs font-medium text-white hover:bg-blue-700"
+              className="inline-flex h-9 w-fit items-center justify-center rounded-full bg-blue-600 px-4 text-xs font-medium text-white hover:bg-blue-700"
             >
               Create draft
             </button>
@@ -221,29 +178,47 @@ export function SdrAgentsDashboard({ agents }: SdrAgentsDashboardProps) {
         </form>
       )}
 
-      <div className="mt-5 flex h-9 items-center rounded-full border border-zinc-200/70 bg-zinc-50 px-3 shadow-[inset_0_1px_2px_rgba(24,24,27,0.04)]">
-        <Search className="mr-2 size-3.5 text-blue-600" strokeWidth={1.8} />
-        <input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search agents, clients, channels..."
-          className="h-full min-w-0 flex-1 bg-transparent text-xs font-medium text-zinc-700 outline-none placeholder:text-zinc-400"
-        />
-        <SlidersHorizontal className="size-3.5 text-zinc-400" strokeWidth={1.8} />
-      </div>
+      <div className="space-y-2">
+        {visibleAgents.map((agent) => {
+          const href = agent.draftOnly
+            ? `/ai-sdr-agents/${agent.id}?name=${encodeURIComponent(agent.name)}&client=${encodeURIComponent(agent.client)}&channel=${encodeURIComponent(agent.channel)}`
+            : `/ai-sdr-agents/${agent.id}`;
+          const unread = agent.chats.reduce((sum, chat) => sum + chat.unread, 0);
 
-      <div className="mt-4 grid gap-3 lg:grid-cols-3">
-        {visibleAgents.map((agent) => (
-          <AgentCard key={agent.id} agent={agent} />
-        ))}
-      </div>
+          return (
+            <Link
+              key={agent.id}
+              href={href}
+              className="flex items-center justify-between gap-4 rounded-md bg-zinc-50 px-3 py-2 text-sm font-medium hover:bg-zinc-100/70"
+            >
+              <span className="flex min-w-0 items-center gap-3">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-blue-700">
+                  <UsersRound className="size-4" strokeWidth={1.8} />
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-blue-700">{agent.name}</span>
+                  <span className="mt-0.5 block truncate text-xs text-zinc-500">
+                    {agent.client} / {agent.channel} / {agent.chats.length} chats
+                  </span>
+                </span>
+              </span>
+              <span className="flex shrink-0 items-center gap-2">
+                {unread > 0 && (
+                  <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] text-white">{unread}</span>
+                )}
+                <span className={`rounded-full px-2 py-1 text-[11px] ${statusClass[agent.status]}`}>{agent.status}</span>
+              </span>
+            </Link>
+          );
+        })}
 
-      {visibleAgents.length === 0 && (
-        <div className="mt-4 flex min-h-40 flex-col items-center justify-center rounded-md bg-zinc-50 text-center">
-          <Search className="size-4 text-zinc-400" strokeWidth={1.8} />
-          <p className="mt-2 text-sm font-medium text-zinc-500">No SDR agents match this search.</p>
-        </div>
-      )}
+        {visibleAgents.length === 0 && (
+          <div className="flex min-h-40 flex-col items-center justify-center gap-2 rounded-md bg-zinc-50 text-center text-zinc-400">
+            <Search className="size-4" strokeWidth={1.8} />
+            <p className="text-sm font-medium text-zinc-500">No SDR bots match this search</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -14,10 +14,11 @@ import {
   ShieldCheck,
   Video,
 } from 'lucide-react';
-import type { SdrAgent, SdrMessage } from '../data';
+import type { SdrAgent, SdrChat, SdrMessage } from '../data';
 
 type WhatsappAgentScreenProps = {
   agent: SdrAgent;
+  chat: SdrChat;
 };
 
 const statusClass = {
@@ -125,8 +126,8 @@ function AgentInfoPanel({ agent }: { agent: SdrAgent }) {
   );
 }
 
-export function WhatsappAgentScreen({ agent }: WhatsappAgentScreenProps) {
-  const [messages, setMessages] = useState(agent.messages);
+export function WhatsappAgentScreen({ agent, chat }: WhatsappAgentScreenProps) {
+  const [messages, setMessages] = useState(chat.messages);
   const [draft, setDraft] = useState('');
 
   function sendMessage(event: React.FormEvent<HTMLFormElement>) {
@@ -153,8 +154,8 @@ export function WhatsappAgentScreen({ agent }: WhatsappAgentScreenProps) {
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-zinc-200 bg-zinc-50 px-3">
           <div className="flex min-w-0 items-center gap-3">
             <Link
-              href="/ai-sdr-agents"
-              aria-label="Back to AI SDR agents"
+              href={`/ai-sdr-agents/${agent.id}`}
+              aria-label="Back to SDR chats"
               className="inline-flex size-9 shrink-0 items-center justify-center rounded-full text-zinc-500 hover:bg-white hover:text-zinc-800"
             >
               <ArrowLeft className="size-4" strokeWidth={1.9} />
@@ -164,13 +165,13 @@ export function WhatsappAgentScreen({ agent }: WhatsappAgentScreenProps) {
             </div>
             <div className="min-w-0">
               <div className="flex min-w-0 items-center gap-2">
-                <h2 className="truncate text-sm font-medium text-zinc-950">{agent.name}</h2>
+                <h2 className="truncate text-sm font-medium text-zinc-950">{chat.leadName}</h2>
                 <span className={`hidden shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium sm:inline ${statusClass[agent.status]}`}>
                   {agent.status}
                 </span>
               </div>
               <p className="truncate text-xs font-medium text-zinc-500">
-                {agent.client} / {agent.channel} / {agent.lastActive}
+                {agent.name} / {chat.source} / {chat.leadPhone}
               </p>
             </div>
           </div>

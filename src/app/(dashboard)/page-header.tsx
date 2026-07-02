@@ -22,10 +22,11 @@ const pageTitles: Record<string, string> = {
 export function PageHeader({ userEmail }: { userEmail: string }) {
   const pathname = usePathname();
   const isFolderDetail = pathname.startsWith('/folders/');
+  const isSdrAgentDetail = pathname.startsWith('/ai-sdr-agents/');
   const folderName = isFolderDetail
     ? decodeURIComponent(pathname.split('/').slice(2).join('/') || '').replaceAll('-', ' ')
     : '';
-  const title = pageTitles[pathname] ?? 'Overview';
+  const title = isSdrAgentDetail ? 'AI SDR Agent' : pageTitles[pathname] ?? 'Overview';
 
   return (
     <header className="shrink-0 px-4 md:px-8">
@@ -60,7 +61,10 @@ export function PageHeader({ userEmail }: { userEmail: string }) {
 
       <nav className="-mx-1 flex gap-1 overflow-x-auto pb-3 md:hidden" aria-label="Dashboard navigation">
         {dashboardNavItems.map(({ label, href, icon: Icon }) => {
-          const active = pathname === href || (href === '/folders' && pathname.startsWith('/folders/'));
+          const active =
+            pathname === href ||
+            (href === '/folders' && pathname.startsWith('/folders/')) ||
+            (href === '/ai-sdr-agents' && pathname.startsWith('/ai-sdr-agents/'));
 
           return (
             <Link

@@ -55,7 +55,7 @@ export function TaskSpacePage({
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="max-w-2xl">
           <div className="mb-3 inline-flex size-9 items-center justify-center rounded-md bg-zinc-50 text-blue-600">
-            <Icon className="size-4.5" strokeWidth={1.8} />
+            <Icon className="size-[18px]" strokeWidth={1.8} />
           </div>
           <h2 className="text-xl font-medium tracking-tight text-zinc-950">{title}</h2>
           <p className="mt-2 text-sm leading-6 text-zinc-600">{description}</p>

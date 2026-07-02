@@ -14,6 +14,7 @@ export function Sidebar({ userEmail }: { userEmail: string }) {
 
   function isActive(href: string) {
     if (href === '/folders') return activePathname === href || activePathname.startsWith('/folders/');
+    if (href === '/ai-sdr-agents') return activePathname === href || activePathname.startsWith('/ai-sdr-agents/');
     return activePathname === href;
   }
 

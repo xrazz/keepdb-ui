@@ -8,7 +8,7 @@ import type { SdrAgent, SdrChat, SdrMessage } from '../data';
 function MessageBubble({ message }: { message: SdrMessage }) {
   if (message.from === 'system') {
     return (
-      <div className="rounded-md bg-zinc-50 px-3 py-2 text-xs font-medium leading-5 text-zinc-500">
+      <div className="mx-auto max-w-[82%] rounded-full border border-zinc-200/70 bg-zinc-50 px-3 py-1.5 text-center text-[11px] font-medium leading-5 text-zinc-500">
         {message.content}
       </div>
     );
@@ -18,8 +18,8 @@ function MessageBubble({ message }: { message: SdrMessage }) {
 
   return (
     <div className={`flex ${fromAgent ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-[78%] rounded-md px-3 py-2 text-sm font-medium leading-6 ${
-        fromAgent ? 'bg-blue-600 text-white' : 'bg-zinc-50 text-zinc-700'
+      <div className={`max-w-[78%] rounded-[18px] px-3.5 py-2 text-sm font-medium leading-6 shadow-[0_1px_2px_rgba(24,24,27,0.04)] ${
+        fromAgent ? 'rounded-br-md bg-blue-600 text-white' : 'rounded-bl-md border border-zinc-200/70 bg-white text-zinc-700'
       }`}>
         <p>{message.content}</p>
         <p className={`mt-1 text-[10px] ${fromAgent ? 'text-blue-100' : 'text-zinc-400'}`}>{message.time}</p>
@@ -61,7 +61,7 @@ function ChatPane({ agent, chat }: { agent: SdrAgent; chat: SdrChat | null }) {
   const messages = [...chat.messages, ...extraMessages];
 
   return (
-    <section className="flex min-h-[520px] min-w-0 flex-1 flex-col rounded-md bg-white">
+    <section className="flex min-h-[520px] min-w-0 flex-1 flex-col overflow-hidden rounded-md border border-zinc-200/70 bg-white shadow-[0_10px_30px_rgba(24,24,27,0.03)]">
       <div className="border-b border-zinc-100 px-4 py-3">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
@@ -77,7 +77,7 @@ function ChatPane({ agent, chat }: { agent: SdrAgent; chat: SdrChat | null }) {
         </div>
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+      <div className="flex-1 space-y-3 overflow-y-auto bg-zinc-50/40 px-4 py-4">
         {messages.map((message) => (
           <MessageBubble key={message.id} message={message} />
         ))}

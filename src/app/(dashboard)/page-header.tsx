@@ -1,7 +1,7 @@
 'use client';
 
 import { UserButton } from '@clerk/nextjs';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Folder, Settings, Workflow } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -29,6 +29,8 @@ export function PageHeader({ userEmail }: { userEmail: string }) {
   const sdrAgentName = isSdrAgentDetail
     ? decodeURIComponent(pathname.split('/')[2] || '').replaceAll('-', ' ')
     : '';
+  const sdrAgentId = isSdrAgentDetail ? pathname.split('/')[2] || '' : '';
+  const sdrFolder = sdrAgentId ? `sdr/${decodeURIComponent(sdrAgentId)}` : '';
   const title = pageTitles[pathname] ?? 'Overview';
 
   return (
@@ -56,9 +58,39 @@ export function PageHeader({ userEmail }: { userEmail: string }) {
           )}
         </div>
 
-        <div className="flex items-center gap-3 md:hidden">
-          <span className="hidden max-w-52 truncate text-xs font-medium text-zinc-500 sm:block">{userEmail}</span>
-          <UserButton />
+        <div className="flex items-center gap-2">
+          {isSdrAgentDetail && sdrFolder && (
+            <div className="flex items-center gap-1.5">
+              <Link
+                href={`/folders/${encodeURIComponent(sdrFolder)}`}
+                title={`Connected folder: ${sdrFolder}`}
+                className="hidden h-8 max-w-44 items-center gap-1.5 rounded-full border border-zinc-200/70 bg-zinc-50 px-2.5 text-xs font-medium text-zinc-500 shadow-[inset_0_1px_2px_rgba(24,24,27,0.04)] hover:bg-zinc-100 sm:inline-flex"
+              >
+                <Folder className="size-3.5 text-blue-600" strokeWidth={1.8} />
+                <span className="truncate">{sdrFolder}</span>
+              </Link>
+              <button
+                type="button"
+                aria-label="Open workflow"
+                title="Workflow"
+                className="inline-flex size-8 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800"
+              >
+                <Workflow className="size-4" strokeWidth={1.8} />
+              </button>
+              <button
+                type="button"
+                aria-label="Open agent settings"
+                title="Settings"
+                className="inline-flex size-8 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800"
+              >
+                <Settings className="size-4" strokeWidth={1.8} />
+              </button>
+            </div>
+          )}
+          <div className="flex items-center gap-3 md:hidden">
+            <span className="hidden max-w-52 truncate text-xs font-medium text-zinc-500 sm:block">{userEmail}</span>
+            <UserButton />
+          </div>
         </div>
       </div>
 

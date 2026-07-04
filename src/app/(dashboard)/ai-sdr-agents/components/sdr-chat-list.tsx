@@ -29,10 +29,10 @@ function MessageBubble({ message, index }: { message: SdrMessage; index: number 
         <p className="mb-3 text-center text-[11px] font-medium text-zinc-400">{groupLabel}</p>
       )}
       <div className={`flex ${fromAgent ? 'justify-end' : 'justify-start'}`}>
-        <div className={`max-w-[78%] rounded-[18px] px-3 py-1.5 text-xs font-medium leading-5 ${
+        <div className={`max-w-[78%] rounded-[18px] px-3 py-1.5 text-sm font-medium leading-6 ${
           fromAgent
-            ? 'bg-blue-500 text-white'
-            : 'border border-zinc-200/70 bg-white text-zinc-700'
+            ? 'rounded-br-md bg-blue-500 text-white'
+            : 'rounded-bl-md bg-zinc-200 text-zinc-800'
         }`}>
           <p>{message.content}</p>
         </div>
@@ -74,8 +74,8 @@ function ChatPane({ agent, chat }: { agent: SdrAgent; chat: SdrChat | null }) {
   const messages = [...chat.messages, ...extraMessages];
 
   return (
-    <section className="flex min-h-[520px] min-w-0 flex-1 flex-col overflow-hidden rounded-md border border-zinc-200/70 bg-white shadow-[0_10px_30px_rgba(24,24,27,0.03)]">
-      <div className="border-b border-zinc-100 px-4 py-3">
+    <section className="flex min-h-[520px] min-w-0 flex-1 flex-col overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 shadow-[0_10px_30px_rgba(24,24,27,0.04)]">
+      <div className="border-b border-zinc-100 bg-white px-4 py-3">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <h2 className="truncate text-sm font-medium text-zinc-950">{chat.leadName}</h2>
@@ -90,13 +90,13 @@ function ChatPane({ agent, chat }: { agent: SdrAgent; chat: SdrChat | null }) {
         </div>
       </div>
 
-      <div className="flex-1 space-y-2 overflow-y-auto bg-zinc-50/30 px-4 py-4">
+      <div className="flex-1 space-y-2 overflow-y-auto bg-zinc-50 px-4 py-4">
         {messages.map((message, index) => (
           <MessageBubble key={message.id} message={message} index={index} />
         ))}
       </div>
 
-      <form onSubmit={sendMessage} className="flex items-center gap-2 border-t border-zinc-100 px-3 py-3">
+      <form onSubmit={sendMessage} className="flex items-center gap-2 border-t border-zinc-100 bg-white px-3 py-3">
         <button
           type="button"
           aria-label="Add attachment"

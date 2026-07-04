@@ -41,7 +41,7 @@ function downloadMemory(memory: MemoryRow) {
   URL.revokeObjectURL(url);
 }
 
-export function MemoryRows({ memories }: { memories: MemoryRow[] }) {
+export function MemoryRows({ memories, showCollection = true }: { memories: MemoryRow[]; showCollection?: boolean }) {
   const [rows, setRows] = useState(memories);
   const [deletingId, setDeletingId] = useState('');
   const [message, setMessage] = useState('');
@@ -77,10 +77,14 @@ export function MemoryRows({ memories }: { memories: MemoryRow[] }) {
       <div className="space-y-2">
         {rows.map((memory) => (
           <details key={memory.memoryId} className="group rounded-md bg-zinc-50 px-3 py-2">
-            <summary className="grid cursor-pointer list-none gap-1 text-sm sm:grid-cols-[140px_1fr_120px] sm:items-center sm:gap-3">
-              <span className="min-w-0 truncate font-medium text-blue-600">
-                {memory.collection}
-              </span>
+            <summary className={`grid cursor-pointer list-none gap-1 text-sm sm:items-center sm:gap-3 ${
+              showCollection ? 'sm:grid-cols-[140px_1fr_120px]' : 'sm:grid-cols-[1fr_120px]'
+            }`}>
+              {showCollection && (
+                <span className="min-w-0 truncate font-medium text-blue-600">
+                  {memory.collection}
+                </span>
+              )}
               <span className="min-w-0 truncate font-medium text-zinc-700">{memoryPreview(memory)}</span>
               <span className="text-xs font-medium text-zinc-400 sm:text-right">{formatMemoryDate(memory.createdAt)}</span>
             </summary>

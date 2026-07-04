@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { ArrowLeft, ArrowUp, CirclePlus, SmilePlus } from 'lucide-react';
+import { ArrowUp, CirclePlus, SmilePlus } from 'lucide-react';
 import type { SdrAgent, SdrChat, SdrMessage } from '../data';
 
 function messageGroupLabel(message: SdrMessage, index: number) {
@@ -30,10 +29,10 @@ function MessageRow({ message, index }: { message: SdrMessage; index: number }) 
         <p className="mb-3 text-center text-[11px] font-medium text-zinc-400">{groupLabel}</p>
       )}
       <div className={`flex ${fromAgent ? 'justify-end' : 'justify-start'}`}>
-        <div className={`max-w-[760px] rounded-[18px] px-3 py-1.5 text-xs font-medium leading-5 ${
+        <div className={`max-w-[760px] rounded-[18px] px-3 py-1.5 text-sm font-medium leading-6 ${
           fromAgent
-            ? 'bg-blue-500 text-white'
-            : 'border border-zinc-200/70 bg-white text-zinc-700'
+            ? 'rounded-br-md bg-blue-500 text-white'
+            : 'rounded-bl-md bg-zinc-200 text-zinc-800'
         }`}>
           <p>{message.content}</p>
         </div>
@@ -66,11 +65,6 @@ export function SdrChatDetail({ agent, chat }: { agent: SdrAgent; chat: SdrChat 
 
   return (
     <div className="flex w-full max-w-3xl flex-col pb-12">
-      <Link href={`/ai-sdr-agents/${agent.id}`} className="mb-4 inline-flex items-center gap-2 text-xs font-medium text-zinc-500 hover:text-zinc-950">
-        <ArrowLeft className="size-3.5" strokeWidth={1.8} />
-        {agent.name}
-      </Link>
-
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="min-w-0">
           <div className="flex min-w-0 items-center gap-2">
@@ -86,8 +80,8 @@ export function SdrChatDetail({ agent, chat }: { agent: SdrAgent; chat: SdrChat 
         )}
       </div>
 
-      <div className="overflow-hidden rounded-md border border-zinc-200/70 bg-white shadow-[0_10px_30px_rgba(24,24,27,0.03)]">
-        <div className="space-y-2 bg-zinc-50/30 px-4 py-4">
+      <div className="overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 shadow-[0_10px_30px_rgba(24,24,27,0.04)]">
+        <div className="space-y-2 bg-zinc-50 px-4 py-4">
           {messages.map((message, index) => (
             <MessageRow key={message.id} message={message} index={index} />
           ))}
